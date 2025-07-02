@@ -25,7 +25,7 @@ export default function NavUser() {
   return (
     <div>
       {user ? (
-        <Sheet2 title={user.displayName || "USER"} menu={c.user_menu} triggerIcon={<User />}>
+        <Sheet2 title={user.name || "USER"} menu={c.user_menu} triggerIcon={<User />}>
           <SheetClose asChild>
             <Button variant={"default"} onClick={onLogout}>
               Logout
