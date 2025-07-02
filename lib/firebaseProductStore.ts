@@ -6,6 +6,10 @@ interface FirebaseProductState {
   setProducts: (product: IProduct[]) => void;
   pending: boolean;
   setPending: (pending: boolean) => void;
+  product: IProduct | null;
+  setProduct: (product: IProduct | null) => void;
+  pendingProduct: boolean;
+  setPendingProduct: (pendingProduct: boolean) => void;
 }
 
 export const useFirebaseProductStore = create<FirebaseProductState>((set) => ({
@@ -13,4 +17,8 @@ export const useFirebaseProductStore = create<FirebaseProductState>((set) => ({
   setProducts: (product) => set({ products: product }),
   pending: false,
   setPending: (pending) => set({ pending }),
+  product: null,
+  setProduct: (product) => set({ product }),
+  pendingProduct: false,
+  setPendingProduct: (pendingProduct) => set({ pendingProduct }),
 }));

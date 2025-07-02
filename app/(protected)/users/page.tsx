@@ -1,5 +1,6 @@
 "use client";
 
+import ProtectedRouteRoles from "@/layouts/ProtectedRouteRoles";
 import { firestore } from "@/lib/firebase";
 import { useFirebaseUserStore } from "@/lib/firebaseUsersStore";
 import { IUser } from "@/lib/types";
@@ -55,11 +56,13 @@ export default function Users() {
   }
 
   return (
-    <section>
-      <div className="container">
-        <h1 className="h1">Users</h1>
-        {content}
-      </div>
-    </section>
+    <ProtectedRouteRoles authorizedRoles={["admin", "superadmin"]}>
+      <section>
+        <div className="container">
+          <h1 className="h1">Users</h1>
+          {content}
+        </div>
+      </section>
+    </ProtectedRouteRoles>
   );
 }

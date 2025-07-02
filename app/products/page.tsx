@@ -46,6 +46,7 @@ export default function Products() {
             <div key={product.id} className="border">
               <h3>{product.name}</h3>
               <p>{product.price}</p>
+              <Link href={`/products/show/${product.id}`}>Detail</Link>
             </div>
           ))}
         </div>

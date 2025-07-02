@@ -15,10 +15,13 @@ import { auth, firestore } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { RegisterSchema } from "@/lib/rules";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { useFirebaseStore } from "@/lib/firebaseStore";
+import ProtectedRouteAuth from "@/layouts/ProtectedRouteAuth";
 
 type RegisterType = z.infer<typeof RegisterSchema>;
 
 export default function Register() {
+  const { setUser } = useFirebaseStore();
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
@@ -26,6 +29,7 @@ export default function Register() {
     resolver: zodResolver(RegisterSchema),
     defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
+
   const onSubmit = async (values: RegisterType) => {
     setPending(true);
 
@@ -33,13 +37,26 @@ export default function Register() {
       const res = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(res.user, { displayName: values.name });
 
-      await setDoc(doc(firestore, "users", res.user.uid), {
+      // 🔥 Simpan ke Firestore
+      const userRef = doc(firestore, "users", res.user.uid);
+      await setDoc(userRef, {
         name: values.name,
         email: values.email,
         role: "user",
         photoURL: "",
         createdAt: serverTimestamp(),
       });
+
+      // ✅ Simpan juga ke Zustand
+      setUser({
+        id: res.user.uid,
+        name: values.name,
+        email: values.email,
+        photoURL: "",
+        role: "user",
+        createdAt: new Date(), // sebagai placeholder (karena serverTimestamp belum dikembalikan)
+      });
+
       toast.success("Register success");
       router.push("/dashboard");
     } catch (error) {
@@ -50,87 +67,90 @@ export default function Register() {
       setPending(false);
     }
   };
+
   return (
-    <section className="bg-secondary py-12">
-      <div className="container">
-        <div className="bg-card p-8 rounded-md shadow-md max-w-md mx-auto">
-          <div className="mb-4">
-            <h1 className="h1">Register</h1>
-            <p>
-              Already have an account?{" "}
-              <Link href="/login" className="link">
-                Login
-              </Link>
-            </p>
-          </div>
-          <div>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input type="text" disabled={pending} placeholder="Name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" disabled={pending} placeholder="Email" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" disabled={pending} placeholder="******" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" disabled={pending} placeholder="******" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button
-                  type="submit"
-                  disabled={pending || (form.formState.isSubmitted && !form.formState.isValid)}
-                  className="w-full"
-                >
-                  {pending && <Loader2 className="animate-spin size-4 mr-2" />}
-                  Register
-                </Button>
-              </form>
-            </Form>
+    <ProtectedRouteAuth>
+      <section className="bg-secondary py-12">
+        <div className="container">
+          <div className="bg-card p-8 rounded-md shadow-md max-w-md mx-auto">
+            <div className="mb-4">
+              <h1 className="h1">Register</h1>
+              <p>
+                Already have an account?{" "}
+                <Link href="/login" className="link">
+                  Login
+                </Link>
+              </p>
+            </div>
+            <div>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input type="text" disabled={pending} placeholder="Name" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" disabled={pending} placeholder="Email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" disabled={pending} placeholder="******" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirm Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" disabled={pending} placeholder="******" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={pending || (form.formState.isSubmitted && !form.formState.isValid)}
+                    className="w-full"
+                  >
+                    {pending && <Loader2 className="animate-spin size-4 mr-2" />}
+                    Register
+                  </Button>
+                </form>
+              </Form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </ProtectedRouteAuth>
   );
 }

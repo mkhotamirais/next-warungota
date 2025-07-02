@@ -1,9 +1,11 @@
+export type TUserRole = "superadmin" | "admin" | "editor" | "user";
+
 export interface IUser {
   id: string;
   name: string | null;
   email: string | null;
   photoURL: string | null;
-  role: "admin" | "editor" | "user";
+  role: TUserRole;
   createdAt?: Date;
 }
 
