@@ -18,7 +18,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
           const userData = userDoc.exists() ? userDoc.data() : {};
 
           setUser({
-            uid: user.uid,
+            id: user.uid,
             email: user.email,
             name: userData.displayName || "",
             role: userData.role || "",
