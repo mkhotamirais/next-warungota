@@ -34,3 +34,17 @@ export const PostSchema = z.object({
     .refine((file) => file === undefined || file instanceof File, { message: "File must be an image" })
     .optional(),
 });
+
+export const ProductSchema = z.object({
+  name: z.string().min(1, { message: "Name is required" }),
+  // description: z.string().min(1, { message: "Description is required" }),
+  price: z
+    .string()
+    .min(1, { message: "Price is required" })
+    .refine((val) => /^\d+$/.test(val), {
+      message: "Price must be a number",
+    }), // banner: z
+  //   .any()
+  //   .refine((file) => file === undefined || file instanceof File, { message: "File must be an image" })
+  //   .optional(),
+});

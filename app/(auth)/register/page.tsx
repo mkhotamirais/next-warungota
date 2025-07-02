@@ -11,9 +11,10 @@ import { useState } from "react";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { auth } from "@/lib/firebase";
+import { auth, firestore } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { RegisterSchema } from "@/lib/rules";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 type RegisterType = z.infer<typeof RegisterSchema>;
 
@@ -31,6 +32,14 @@ export default function Register() {
     try {
       const res = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(res.user, { displayName: values.name });
+
+      await setDoc(doc(firestore, "users", res.user.uid), {
+        name: values.name,
+        email: values.email,
+        role: "user",
+        photoURL: "",
+        createdAt: serverTimestamp(),
+      });
       toast.success("Register success");
       router.push("/dashboard");
     } catch (error) {

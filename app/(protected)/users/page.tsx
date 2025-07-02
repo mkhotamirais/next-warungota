@@ -1,26 +1,24 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { firestore } from "@/lib/firebase";
-import { useFirebaseProductStore } from "@/lib/firebaseProductStore";
-import { IProduct } from "@/lib/types";
+import { useFirebaseUserStore } from "@/lib/firebaseUsersStore";
+import { IUser } from "@/lib/types";
 import { collection, getDocs, query } from "firebase/firestore";
-import Link from "next/link";
 import React, { useCallback, useEffect } from "react";
 
-export default function Products() {
-  const { products, setProducts, pending, setPending } = useFirebaseProductStore();
+export default function Users() {
+  const { users, setUsers, pending, setPending } = useFirebaseUserStore();
 
   const getData = useCallback(async () => {
     try {
       setPending(true);
 
-      const q = query(collection(firestore, "products"));
+      const q = query(collection(firestore, "users"));
       const querySnapshot = await getDocs(q);
       const filteredData = querySnapshot.docs.map((doc) => {
         return { id: doc.id, ...doc.data() };
       });
-      setProducts(filteredData as IProduct[]);
+      setUsers(filteredData as IUser[]);
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -28,7 +26,7 @@ export default function Products() {
     } finally {
       setPending(false);
     }
-  }, [setPending, setProducts]);
+  }, [setPending, setUsers]);
 
   useEffect(() => {
     getData();
@@ -39,28 +37,27 @@ export default function Products() {
   if (pending) {
     content = <p>Loading...</p>;
   } else {
-    if (products && products.length > 0) {
+    if (users.length > 0) {
       content = (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-1 lg:gap-2">
-          {products.map((product: IProduct) => (
-            <div key={product.id} className="border">
-              <h3>{product.name}</h3>
-              <p>{product.price}</p>
+        <div className="grid grid-cols-1 gap-2">
+          {users.map((user) => (
+            <div key={user.id} className="border">
+              <p>{user.name}</p>
+              <p>{user.email}</p>
+              <p>{user.role}</p>
             </div>
           ))}
         </div>
       );
     } else {
-      content = <p>No products found</p>;
+      content = <p>No users found</p>;
     }
   }
+
   return (
     <section>
       <div className="container">
-        <h1>Products</h1>
-        <Link href="/products/create">
-          <Button>add product</Button>
-        </Link>
+        <h1 className="h1">Users</h1>
         {content}
       </div>
     </section>

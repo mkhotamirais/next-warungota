@@ -1,14 +1,11 @@
-import { User } from "firebase/auth";
 import { create } from "zustand";
-// import { Post } from "./types";
+import { IUser } from "./types";
 
 interface FirebaseState {
-  user: User | null;
-  setUser: (user: User | null) => void;
+  user: IUser | null;
+  setUser: (user: IUser | null) => void;
   isMounted: boolean;
   setIsMounted: (isMounted: boolean) => void;
-  //   posts: Post[];
-  //   setPosts: (posts: Post[]) => void;
 }
 
 export const useFirebaseStore = create<FirebaseState>((set) => ({
@@ -16,6 +13,4 @@ export const useFirebaseStore = create<FirebaseState>((set) => ({
   setUser: (user) => set({ user }),
   isMounted: false,
   setIsMounted: (isMounted) => set({ isMounted }),
-  //   posts: [],
-  //   setPosts: (posts) => set({ posts }),
 }));
