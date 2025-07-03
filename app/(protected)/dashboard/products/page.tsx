@@ -4,10 +4,11 @@ import PendingPage from "@/components/PendingPage";
 import { Button } from "@/components/ui/button";
 import { useFetchProducts } from "@/lib/hooks/useFetchProducts";
 import { IProduct } from "@/lib/types";
-import { Edit, Info, Trash } from "lucide-react";
+import { Edit, Info } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import DeleteProduct from "./DeleteProduct";
 
 export default function Products() {
   const { products, pendingProducts } = useFetchProducts();
@@ -41,9 +42,7 @@ export default function Products() {
                     <Info />
                   </Button>
                 </Link>
-                <Button variant="destructive" size={"icon"} aria-label="Delete">
-                  <Trash />
-                </Button>
+                <DeleteProduct product={product} />
               </div>
             </div>
           ))}
