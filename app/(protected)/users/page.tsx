@@ -1,18 +1,20 @@
 "use client";
 
+import PendingPage from "@/components/PendingPage";
 import ProtectedRouteRoles from "@/layouts/ProtectedRouteRoles";
 import { firestore } from "@/lib/firebase";
-import { useFirebaseUserStore } from "@/lib/firebaseUsersStore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 import { IUser } from "@/lib/types";
 import { collection, getDocs, query } from "firebase/firestore";
 import React, { useCallback, useEffect } from "react";
+import { RoleSelect } from "./RoleSelect";
 
 export default function Users() {
-  const { users, setUsers, pending, setPending } = useFirebaseUserStore();
+  const { users, setUsers, pendingUsers, setPendingUsers } = useUserStore();
 
   const getData = useCallback(async () => {
     try {
-      setPending(true);
+      setPendingUsers(true);
 
       const q = query(collection(firestore, "users"));
       const querySnapshot = await getDocs(q);
@@ -25,9 +27,9 @@ export default function Users() {
         console.log(error.message);
       }
     } finally {
-      setPending(false);
+      setPendingUsers(false);
     }
-  }, [setPending, setUsers]);
+  }, [setPendingUsers, setUsers]);
 
   useEffect(() => {
     getData();
@@ -35,17 +37,25 @@ export default function Users() {
 
   let content;
 
-  if (pending) {
-    content = <p>Loading...</p>;
+  if (pendingUsers) {
+    content = <PendingPage />;
   } else {
     if (users.length > 0) {
       content = (
-        <div className="grid grid-cols-1 gap-2">
+        <div className="grid grid-cols-1 gap-1">
           {users.map((user) => (
-            <div key={user.id} className="border">
-              <p>{user.name}</p>
-              <p>{user.email}</p>
-              <p>{user.role}</p>
+            <div key={user.id} className="border py-1 px-2 bg-card rounded flex items-center justify-between">
+              <div>
+                <p>{user.name}</p>
+                <p>{user.email}</p>
+              </div>
+              <div>
+                {user.role === "superadmin" ? (
+                  <span className="font-bold text-muted-foreground capitalize">{user.role}</span>
+                ) : (
+                  <RoleSelect userId={user.id} currentRole={user.role} />
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -59,8 +69,10 @@ export default function Users() {
     <ProtectedRouteRoles authorizedRoles={["admin", "superadmin"]}>
       <section>
         <div className="container">
-          <h1 className="h1">Users</h1>
-          {content}
+          <div className="max-w-lg">
+            <h1 className="h1">Users</h1>
+            {content}
+          </div>
         </div>
       </section>
     </ProtectedRouteRoles>

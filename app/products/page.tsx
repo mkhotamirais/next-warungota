@@ -1,43 +1,17 @@
 "use client";
 
 import PendingPage from "@/components/PendingPage";
-import { Button } from "@/components/ui/button";
-import { firestore } from "@/lib/firebase";
-import { useFirebaseProductStore } from "@/lib/firebaseProductStore";
+import { useFetchProducts } from "@/lib/hooks/useFetchProducts";
 import { IProduct } from "@/lib/types";
-import { collection, getDocs, query } from "firebase/firestore";
 import Link from "next/link";
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 
 export default function Products() {
-  const { products, setProducts, pending, setPending } = useFirebaseProductStore();
-
-  const getData = useCallback(async () => {
-    try {
-      setPending(true);
-
-      const q = query(collection(firestore, "products"));
-      const querySnapshot = await getDocs(q);
-      const filteredData = querySnapshot.docs.map((doc) => {
-        return { id: doc.id, ...doc.data() };
-      });
-      setProducts(filteredData as IProduct[]);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log(error.message);
-      }
-    } finally {
-      setPending(false);
-    }
-  }, [setPending, setProducts]);
-
-  useEffect(() => {
-    getData();
-  }, [getData]);
+  const { products, pendingProducts } = useFetchProducts();
 
   let content;
 
-  if (pending) {
+  if (pendingProducts) {
     content = <PendingPage />;
   } else {
     if (!products || products.length === 0) {
@@ -56,13 +30,11 @@ export default function Products() {
       );
     }
   }
+
   return (
     <section>
       <div className="container">
         <h1>Products</h1>
-        <Link href="/products/create">
-          <Button>add product</Button>
-        </Link>
         {content}
       </div>
     </section>

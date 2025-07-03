@@ -11,16 +11,19 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { auth } from "@/lib/firebase";
+import { auth, firestore } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import GoogleLogin from "./GoogleLogin";
 import { LoginSchema } from "@/lib/rules";
 import ProtectedRouteAuth from "@/layouts/ProtectedRouteAuth";
+import { doc, getDoc } from "firebase/firestore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 type LoginType = z.infer<typeof LoginSchema>;
 
 export default function Login() {
+  const { setUser } = useUserStore();
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
@@ -33,7 +36,26 @@ export default function Login() {
     setPending(true);
 
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const res = await signInWithEmailAndPassword(auth, values.email, values.password);
+      const user = res.user;
+
+      const userRef = doc(firestore, "users", user.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUser({
+          id: user.uid,
+          name: data.name ?? "",
+          email: data.email ?? "",
+          photoURL: data.photoURL ?? "",
+          role: data.role ?? "user",
+          createdAt: data.createdAt.toDate?.() ?? new Date(),
+        });
+      } else {
+        toast.error("User not found");
+        return;
+      }
       toast.success("Login success");
       router.push("/dashboard");
     } catch (error) {

@@ -15,13 +15,13 @@ import { auth, firestore } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { RegisterSchema } from "@/lib/rules";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { useFirebaseStore } from "@/lib/firebaseStore";
 import ProtectedRouteAuth from "@/layouts/ProtectedRouteAuth";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 type RegisterType = z.infer<typeof RegisterSchema>;
 
 export default function Register() {
-  const { setUser } = useFirebaseStore();
+  const { setUser } = useUserStore();
   const [pending, setPending] = useState(false);
   const router = useRouter();
 
@@ -37,7 +37,6 @@ export default function Register() {
       const res = await createUserWithEmailAndPassword(auth, values.email, values.password);
       await updateProfile(res.user, { displayName: values.name });
 
-      // 🔥 Simpan ke Firestore
       const userRef = doc(firestore, "users", res.user.uid);
       await setDoc(userRef, {
         name: values.name,
@@ -47,14 +46,13 @@ export default function Register() {
         createdAt: serverTimestamp(),
       });
 
-      // ✅ Simpan juga ke Zustand
       setUser({
         id: res.user.uid,
         name: values.name,
         email: values.email,
         photoURL: "",
         role: "user",
-        createdAt: new Date(), // sebagai placeholder (karena serverTimestamp belum dikembalikan)
+        createdAt: new Date(),
       });
 
       toast.success("Register success");

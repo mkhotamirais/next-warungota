@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { auth, firestore, googleProvider } from "@/lib/firebase";
-import { useFirebaseStore } from "@/lib/firebaseStore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 import { TUserRole } from "@/lib/types";
 import { signInWithPopup } from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
@@ -11,7 +11,7 @@ import { FaGoogle } from "react-icons/fa6";
 import { toast } from "sonner";
 
 export default function GoogleLogin() {
-  const { setUser } = useFirebaseStore();
+  const { setUser } = useUserStore();
 
   const onGoogleAuth = async () => {
     try {

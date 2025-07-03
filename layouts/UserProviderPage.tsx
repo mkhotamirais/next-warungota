@@ -1,11 +1,11 @@
 "use client";
 
 import PendingPage from "@/components/PendingPage";
-import { useFirebaseStore } from "@/lib/firebaseStore";
-import { useAuthListener } from "@/lib/useAuthListener";
+import { useAuthListener } from "@/lib/hooks/useAuthListener";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 export default function UserProviderPage({ children }: { children: React.ReactNode }) {
-  const { isMounted } = useFirebaseStore();
+  const { isMounted } = useUserStore();
   useAuthListener();
 
   if (!isMounted) return <PendingPage />;

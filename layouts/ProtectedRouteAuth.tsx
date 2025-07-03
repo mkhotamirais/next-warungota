@@ -1,13 +1,13 @@
 "use client";
 
 import PendingPage from "@/components/PendingPage";
-import { useFirebaseStore } from "@/lib/firebaseStore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function ProtectedRouteAuth({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { user, isMounted } = useFirebaseStore();
+  const { user, isMounted } = useUserStore();
 
   useEffect(() => {
     if (isMounted && user) router.replace("/");

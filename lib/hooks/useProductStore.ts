@@ -1,22 +1,22 @@
 import { create } from "zustand";
-import { IProduct } from "./types";
+import { IProduct } from "../types";
 
-interface FirebaseProductState {
+interface IProductStore {
   products: IProduct[];
   setProducts: (product: IProduct[]) => void;
-  pending: boolean;
-  setPending: (pending: boolean) => void;
+  pendingProducts: boolean;
+  setPendingProducts: (pending: boolean) => void;
   product: IProduct | null;
   setProduct: (product: IProduct | null) => void;
   pendingProduct: boolean;
   setPendingProduct: (pendingProduct: boolean) => void;
 }
 
-export const useFirebaseProductStore = create<FirebaseProductState>((set) => ({
+export const useProductStore = create<IProductStore>((set) => ({
   products: [],
   setProducts: (product) => set({ products: product }),
-  pending: true,
-  setPending: (pending) => set({ pending }),
+  pendingProducts: true,
+  setPendingProducts: (pendingProducts) => set({ pendingProducts }),
   product: null,
   setProduct: (product) => set({ product }),
   pendingProduct: false,

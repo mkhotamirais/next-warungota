@@ -6,6 +6,8 @@
     "user_menu": [
         {"label": "Dashboard", "url": "/dashboard"},
         {"label": "Profile", "url": "/profile"},
+        {"label": "Products", "url": "/dashboard/products"},
+        {"label": "Create Product", "url": "/dashboard/products/create"},
         {"label": "Users", "url": "/users"}
     ]
 }

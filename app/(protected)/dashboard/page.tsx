@@ -1,10 +1,10 @@
 "use client";
 
 import ProtectedRouteRoles from "@/layouts/ProtectedRouteRoles";
-import { useFirebaseStore } from "@/lib/firebaseStore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 export default function Dashboard() {
-  const { user } = useFirebaseStore();
+  const { user } = useUserStore();
 
   return (
     <ProtectedRouteRoles authorizedRoles={["admin", "superadmin", "editor", "user"]}>

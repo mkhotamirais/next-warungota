@@ -3,10 +3,11 @@ import UserProvider from "./UserProvider";
 import { SheetClose } from "@/components/ui/sheet";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useFirebaseStore } from "@/lib/firebaseStore";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 export default function NavMobileAuthBtn() {
-  const { user } = useFirebaseStore();
+  const { user } = useUserStore();
+
   return (
     <UserProvider>
       {!user ? (

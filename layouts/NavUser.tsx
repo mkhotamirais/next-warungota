@@ -4,7 +4,6 @@ import Sheet2 from "@/components/Sheet2";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
 import { auth } from "@/lib/firebase";
-import { useFirebaseStore } from "@/lib/firebaseStore";
 import { signOut } from "firebase/auth";
 import { User } from "lucide-react";
 import Link from "next/link";
@@ -12,9 +11,10 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import c from "@/lib/content.json";
 import UserProvider from "./UserProvider";
+import { useUserStore } from "@/lib/hooks/useUserStore";
 
 export default function NavUser() {
-  const { user, setUser } = useFirebaseStore();
+  const { user, setUser } = useUserStore();
   const router = useRouter();
 
   const onLogout = () => {

@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { auth, firestore } from "@/lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { useFirebaseStore } from "@/lib/firebaseStore";
+import { useUserStore } from "./useUserStore";
 
 export function useAuthListener() {
-  const { setUser, setIsMounted } = useFirebaseStore();
+  const { setUser, setIsMounted } = useUserStore();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
