@@ -1,5 +1,6 @@
 "use client";
 
+import PendingPage from "@/components/PendingPage";
 import { Button } from "@/components/ui/button";
 import { firestore } from "@/lib/firebase";
 import { useFirebaseProductStore } from "@/lib/firebaseProductStore";
@@ -37,7 +38,7 @@ export default function Products() {
   let content;
 
   if (pending) {
-    content = <p>Loading...</p>;
+    content = <PendingPage />;
   } else {
     if (!products || products.length === 0) {
       content = <p>No products found</p>;

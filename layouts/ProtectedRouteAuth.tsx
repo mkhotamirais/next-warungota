@@ -1,6 +1,6 @@
 "use client";
 
-import Pending from "@/components/Pending";
+import PendingPage from "@/components/PendingPage";
 import { useFirebaseStore } from "@/lib/firebaseStore";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ export default function ProtectedRouteAuth({ children }: { children: React.React
     if (isMounted && user) router.replace("/");
   }, [isMounted, user, router]);
 
-  if (!isMounted || user) return <Pending />;
+  if (!isMounted || user) return <PendingPage />;
 
   return <>{children}</>;
 }

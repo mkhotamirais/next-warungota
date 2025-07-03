@@ -3,7 +3,6 @@ import React from "react";
 import NavMobile from "./NavMobile";
 import NavDesktop from "./NavDesktop";
 import NavUser from "./NavUser";
-import UserProvider from "./UserProvider";
 
 export default function Header() {
   return (
@@ -12,10 +11,8 @@ export default function Header() {
         <Logo />
         <div className="flex items-center gap-1 sm:gap-2">
           <NavDesktop />
-          <UserProvider>
-            <NavUser />
-            <NavMobile />
-          </UserProvider>
+          <NavUser />
+          <NavMobile />
         </div>
       </div>
     </header>

@@ -1,6 +1,6 @@
 "use client";
 
-import Pending from "@/components/Pending";
+import PendingPage from "@/components/PendingPage";
 import { useFirebaseStore } from "@/lib/firebaseStore";
 import { TUserRole } from "@/lib/types";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ export default function ProtectedRouteRoles({ children, authorizedRoles }: Prote
     }
   }, [isMounted, isAuthorized, router]);
 
-  if (!isMounted || !isAuthorized) return <Pending />;
+  if (!isMounted || !isAuthorized) return <PendingPage />;
 
   return <>{children}</>;
 }

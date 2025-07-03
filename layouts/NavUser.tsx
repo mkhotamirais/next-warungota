@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import c from "@/lib/content.json";
+import UserProvider from "./UserProvider";
 
 export default function NavUser() {
   const { user, setUser } = useFirebaseStore();
@@ -23,7 +24,7 @@ export default function NavUser() {
   };
 
   return (
-    <div>
+    <UserProvider>
       {user ? (
         <Sheet2 title={user.name || "USER"} menu={c.user_menu} triggerIcon={<User />}>
           <SheetClose asChild>
@@ -39,6 +40,6 @@ export default function NavUser() {
           </Button>
         </Link>
       )}
-    </div>
+    </UserProvider>
   );
 }
