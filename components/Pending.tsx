@@ -1,11 +1,7 @@
 "use client";
 
-import { Loader } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
 export default function Pending() {
-  return (
-    <div className="min-h-screen container flex items-center justify-center py-8">
-      <Loader className="w-8 h-8 animate-spin text-primary" />
-    </div>
-  );
+  return <LoaderCircle className="w-6 h-6 animate-spin text-primary" />;
 }

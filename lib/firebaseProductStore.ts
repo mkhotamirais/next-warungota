@@ -15,7 +15,7 @@ interface FirebaseProductState {
 export const useFirebaseProductStore = create<FirebaseProductState>((set) => ({
   products: [],
   setProducts: (product) => set({ products: product }),
-  pending: false,
+  pending: true,
   setPending: (pending) => set({ pending }),
   product: null,
   setProduct: (product) => set({ product }),

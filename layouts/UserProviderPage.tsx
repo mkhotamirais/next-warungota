@@ -1,15 +1,14 @@
 "use client";
 
-import Pending from "@/components/Pending";
+import PendingPage from "@/components/PendingPage";
 import { useFirebaseStore } from "@/lib/firebaseStore";
 import { useAuthListener } from "@/lib/useAuthListener";
 
-export default function UserProvider({ children }: { children: React.ReactNode }) {
+export default function UserProviderPage({ children }: { children: React.ReactNode }) {
   const { isMounted } = useFirebaseStore();
-
   useAuthListener();
 
-  if (!isMounted) return <Pending />;
+  if (!isMounted) return <PendingPage />;
 
   return <>{children}</>;
 }

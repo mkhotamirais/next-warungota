@@ -39,7 +39,9 @@ export default function Products() {
   if (pending) {
     content = <p>Loading...</p>;
   } else {
-    if (products && products.length > 0) {
+    if (!products || products.length === 0) {
+      content = <p>No products found</p>;
+    } else {
       content = (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-1 lg:gap-2">
           {products.map((product: IProduct) => (
@@ -51,8 +53,6 @@ export default function Products() {
           ))}
         </div>
       );
-    } else {
-      content = <p>No products found</p>;
     }
   }
   return (
