@@ -8,3 +8,18 @@
   --color-primary: var(--green);
   --font-inter: var(--font-inter);
 }
+
+@layer components {
+  a,
+  button {
+    @apply cursor-pointer;
+  }
+
+  .container {
+    @apply mx-auto px-3 sm:px-12 lg:px-24 h-full;
+  }
+
+  .h1 {
+    @apply text-3xl font-bold capitalize;
+  }
+}

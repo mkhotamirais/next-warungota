@@ -1,4 +1,4 @@
-import Hero from "@/componnts/sections/Hero";
+import Hero from "@/components/sections/Hero";
 import React from "react";
 import { content as c } from "@/lib/content";
 
