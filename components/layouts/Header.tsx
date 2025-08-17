@@ -18,6 +18,7 @@ export default function Header() {
               </Link>
             ))}
             <AuthBtn />
+            <p>halo</p>
           </div>
         </div>
       </div>
