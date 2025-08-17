@@ -1,11 +1,10 @@
 import React from "react";
 import Logo from "./Logo";
-import { Session } from "next-auth";
 import Link from "next/link";
 import { menu as m } from "@/lib/content";
-import Button from "@/components/ui/Button";
+import AuthBtn from "./AuthBtn";
 
-export default function Header({ session }: { session: Session | null }) {
+export default function Header() {
   return (
     <header className="h-16 bg-white sticky top-0 z-30 border-b border-gray-200">
       <div className="container flex items-center justify-between">
@@ -18,16 +17,7 @@ export default function Header({ session }: { session: Session | null }) {
                 {item.label}
               </Link>
             ))}
-            <div>
-              {session?.user ? (
-                <Button as={Link} href="/profile">
-                  Dashboard
-                </Button>
-              ) : null}
-              <Button as={Link} href="/signin">
-                Sign In
-              </Button>
-            </div>
+            <AuthBtn />
           </div>
         </div>
       </div>

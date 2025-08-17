@@ -5,6 +5,7 @@ import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { content as c } from "@/lib/content";
 import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
 const { title, description } = c.home.hero;
 
@@ -24,9 +25,11 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased min-h-screen flex flex-col`}>
-        <Header session={session} />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <SessionProvider session={session}>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </SessionProvider>
       </body>
     </html>
   );
