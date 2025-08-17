@@ -1,11 +1,11 @@
 import React from "react";
 import { menu as m } from "@/lib/content";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import { auth } from "@/auth";
+// import Button from "@/components/ui/Button";
+// import { auth } from "@/auth";
 
 export default async function NavDesktop() {
-  const session = await auth();
+  // const session = await auth();
 
   return (
     <div className="flex gap-1">
@@ -14,7 +14,7 @@ export default async function NavDesktop() {
           {item.label}
         </Link>
       ))}
-      <div>
+      {/* <div>
         {session?.user ? (
           <Button as={Link} href="/profile">
             Dashboard
@@ -23,7 +23,7 @@ export default async function NavDesktop() {
         <Button as={Link} href="/signin">
           Sign In
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }
