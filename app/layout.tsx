@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { content as c } from "@/lib/content";
+import { auth } from "@/auth";
 
 const { title, description } = c.home.hero;
 
@@ -14,15 +15,16 @@ const geistSans = Inter({
 
 export const metadata: Metadata = { title: { default: title, template: "%s - WarungOta" }, description };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased min-h-screen flex flex-col`}>
-        <Header />
+        <Header session={session} />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
