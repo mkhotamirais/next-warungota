@@ -38,7 +38,9 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <AuthBtn />
+            <div className="ml-4">
+              <AuthBtn />
+            </div>
           </div>
         </div>
         {/* nav mobile */}

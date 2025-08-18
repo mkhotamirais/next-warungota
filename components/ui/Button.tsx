@@ -4,7 +4,7 @@ import { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 
-type Variant = "primary" | "outline" | "gray" | "danger";
+type Variant = "primary" | "secondary" | "outline" | "gray" | "danger";
 
 type ButtonProps<T extends ElementType> = {
   as?: T;
@@ -26,6 +26,7 @@ export default function Button<T extends ElementType = "button">({
 
   const variantClasses: Record<Variant, string> = {
     primary: "bg-primary text-white hover:bg-primary/90",
+    secondary: "bg-gray-500 text-white hover:bg-gray-600",
     outline: "ring-1 hover:ring-2 ring-inset ring-primary text-primary",
     gray: "bg-gray-100 ring-1 ring-inset ring-gray-200 text-gray-600 hover:bg-gray-200",
     danger: "bg-red-600 text-white hover:bg-red-700",

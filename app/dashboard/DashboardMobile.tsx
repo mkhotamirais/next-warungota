@@ -27,7 +27,7 @@ const trigger = (
   </div>
 );
 
-export default function DashboardHeader() {
+export default function DashboardMobile() {
   // Hook usePathname hanya bisa digunakan di Client Component
   const pathname = usePathname();
   const dynamicTitle = formatTitle(pathname);
@@ -45,7 +45,12 @@ export default function DashboardHeader() {
             </SidebarClose>
           ))}
           <SidebarClose asChild>
-            <Button type="button" onClick={() => signOut({ redirectTo: "/signin" })}>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => signOut({ redirectTo: "/signin" })}
+              className="w-full mt-2"
+            >
               Sign Out
             </Button>
           </SidebarClose>
