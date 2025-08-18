@@ -1,34 +1,37 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
+import { SigninSchema } from "./lib/zod";
+import { compareSync } from "bcrypt-ts";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
     Google,
     // GitHub,
-    // Credentials({
-    //   credentials: {
-    //     email: {},
-    //     password: {},
-    //   },
-    //   authorize: async (credentials) => {
-    //     const validatedFields = SigninSchema.safeParse(credentials);
+    Credentials({
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
+        const validatedFields = SigninSchema.safeParse(credentials);
 
-    //     if (!validatedFields.success) return null;
+        if (!validatedFields.success) return null;
 
-    //     const { email, password } = validatedFields.data;
-    //     const user = await prisma.user.findUnique({ where: { email } });
-    //     if (!user || !user.password) {
-    //       return null;
-    //     }
-    //     const passwordMatch = compareSync(password, user.password);
-    //     if (!passwordMatch) return null;
+        const { email, password } = validatedFields.data;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user || !user.password) {
+          return null;
+        }
+        const passwordMatch = compareSync(password, user.password);
+        if (!passwordMatch) return null;
 
-    //     return user;
-    //   },
-    // }),
+        return user;
+      },
+    }),
   ],
   session: { strategy: "jwt" },
   pages: { signIn: "/signin" },
@@ -45,41 +48,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.user.role = token.role as string;
       return session;
     },
-    // async signIn({ user, account }) {
-    //   // Kalau login bukan pakai credentials (contohnya Google/GitHub)
-    //   if (account?.provider !== "credentials") {
-    //     const existingUser = await prisma.user.findUnique({
-    //       where: { email: user.email as string },
-    //     });
+    async signIn({ user, account }) {
+      // Kalau login bukan pakai credentials (contohnya Google/GitHub)
+      if (account?.provider !== "credentials") {
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email as string },
+        });
 
-    //     if (existingUser) {
-    //       // Cek apakah account provider ini sudah ada di tabel accounts
-    //       const existingAccount = await prisma.account.findFirst({
-    //         where: {
-    //           provider: account?.provider,
-    //           providerAccountId: account?.providerAccountId,
-    //         },
-    //       });
+        if (existingUser) {
+          // Cek apakah account provider ini sudah ada di tabel accounts
+          const existingAccount = await prisma.account.findFirst({
+            where: {
+              provider: account?.provider,
+              providerAccountId: account?.providerAccountId,
+            },
+          });
 
-    //       if (!existingAccount) {
-    //         // Link akun provider baru ke user lama
-    //         await prisma.account.create({
-    //           data: {
-    //             userId: existingUser.id,
-    //             provider: account?.provider as string,
-    //             providerAccountId: account?.providerAccountId as string,
-    //             type: account?.type as string,
-    //             access_token: account?.access_token as string,
-    //             token_type: account?.token_type,
-    //             scope: account?.scope,
-    //           },
-    //         });
-    //       }
+          if (!existingAccount) {
+            // Link akun provider baru ke user lama
+            await prisma.account.create({
+              data: {
+                userId: existingUser.id,
+                provider: account?.provider as string,
+                providerAccountId: account?.providerAccountId as string,
+                type: account?.type as string,
+                access_token: account?.access_token as string,
+                token_type: account?.token_type,
+                scope: account?.scope,
+              },
+            });
+          }
 
-    //       return true; // izinkan login
-    //     }
-    //   }
-    //   return true;
-    // },
+          return true; // izinkan login
+        }
+      }
+      return true;
+    },
   },
 });

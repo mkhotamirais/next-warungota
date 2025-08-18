@@ -8,7 +8,7 @@ type Variant = "primary" | "secondary" | "outline" | "gray" | "danger";
 
 type ButtonProps<T extends ElementType> = {
   as?: T;
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   variant?: Variant;
   icon?: ReactNode; // icon di kiri

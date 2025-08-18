@@ -6,10 +6,11 @@ import { menu as m } from "@/lib/content";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import MenuDashboardFallback from "@/components/fallbacks/MenuDashboardFallback";
 
 export default function DashboardDesktop() {
   const pathname = usePathname();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   let myMenu = m.userMenu;
   if (session?.user?.role === "admin") {
@@ -17,6 +18,8 @@ export default function DashboardDesktop() {
   } else if (session?.user?.role === "editor") {
     myMenu = [...m.editorMenu];
   }
+
+  if (status === "loading") return <MenuDashboardFallback />;
 
   return (
     <>
@@ -26,7 +29,7 @@ export default function DashboardDesktop() {
           href={item.url}
           variant="gray"
           key={i}
-          className={`${pathname === item.url ? "bg-gray-200" : ""} w-full mb-1`}
+          className={`${pathname === item.url ? "bg-gray-200" : ""} justify-start w-full mb-1`}
         >
           {item.label}
         </Button>

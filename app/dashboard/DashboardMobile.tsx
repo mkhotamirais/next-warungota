@@ -49,7 +49,7 @@ export default function DashboardMobile() {
                 as={Link}
                 href={item.url}
                 variant="gray"
-                className={`${pathname === item.url ? "bg-gray-200" : ""} w-full mb-1`}
+                className={`${pathname === item.url ? "bg-gray-200" : ""} justify-start w-full mb-1`}
               >
                 {item.label}
               </Button>

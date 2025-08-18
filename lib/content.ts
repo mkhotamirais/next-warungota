@@ -10,12 +10,12 @@ export const menu = {
     { label: "Profile", url: "/dashboard/profile" },
   ],
   editorMenu: [
-    { label: "Product", url: "/admin/product" },
-    { label: "Blog", url: "/admin/blog" },
-    { label: "Blog Category", url: "/admin/blog-category" },
+    { label: "Product", url: "/dashboard/product" },
+    { label: "Blog", url: "/dashboard/blog" },
+    { label: "Blog Category", url: "/dashboard/blog-category" },
   ],
   adminMenu: [
-    { label: "Users", url: "/admin/users" },
+    { label: "Users", url: "/dashboard/users" },
     //
   ],
 };

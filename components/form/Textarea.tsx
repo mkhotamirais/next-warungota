@@ -1,24 +1,21 @@
 import React from "react";
 
-interface InputProps {
-  ref?: React.ForwardedRef<HTMLInputElement>;
+interface TextareaProps {
   id: string;
   label: string;
   type?: string;
-  placeholder?: string;
+  placeholder: string;
   error?: string[] | undefined;
   value?: string;
   defaultValue?: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   autoFocus?: boolean;
   className?: string;
 }
 
-export default function Input({
-  ref,
+export default function TextareaForm({
   id,
   label,
-  type = "text",
   placeholder,
   error,
   value,
@@ -26,15 +23,13 @@ export default function Input({
   onChange,
   autoFocus,
   className,
-}: InputProps) {
+}: TextareaProps) {
   return (
     <div className={`${className} mb-3`}>
       <label htmlFor={id} className="block mb-1 text-sm text-gray-600">
         {label}
       </label>
-      <input
-        ref={ref}
-        type={type}
+      <textarea
         id={id}
         name={id}
         className="input"
