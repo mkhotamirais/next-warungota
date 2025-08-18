@@ -1,8 +1,12 @@
 import React from "react";
 import DashboardDesktop from "./DashboardDesktop";
 import DashboardMobile from "@/app/dashboard/DashboardMobile";
+import { auth } from "@/auth";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  console.log(session);
+
   return (
     <section className="py-4">
       <div className="container">
