@@ -28,18 +28,21 @@ const trigger = (
 );
 
 export default function DashboardMobile() {
-  // Hook usePathname hanya bisa digunakan di Client Component
   const pathname = usePathname();
   const dynamicTitle = formatTitle(pathname);
 
   return (
     <div className="flex items-center gap-2">
-      {/* Sidebar adalah Client Component, ditempatkan di sini */}
       <Sidebar trigger={trigger} side="left" classSide="top-16" className="sm:hidden">
         <div className="">
           {m.dashboardMenu.map((item, i) => (
             <SidebarClose key={i} asChild>
-              <Button as={Link} href={item.url} variant="gray" className="w-full mb-1">
+              <Button
+                as={Link}
+                href={item.url}
+                variant="gray"
+                className={`${pathname === item.url ? "bg-gray-200" : ""} w-full mb-1`}
+              >
                 {item.label}
               </Button>
             </SidebarClose>
@@ -57,7 +60,6 @@ export default function DashboardMobile() {
         </div>
       </Sidebar>
 
-      {/* Judul dinamis yang dibuat dari pathname */}
       <h1 className="h1">{dynamicTitle}</h1>
     </div>
   );

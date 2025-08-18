@@ -3,9 +3,19 @@
 import Button from "@/components/ui/Button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function AuthBtn() {
+  const [isMounted, setIsMounted] = useState(false);
   const { data: session } = useSession();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return <div>Loading..</div>;
+  }
 
   return (
     <div>
