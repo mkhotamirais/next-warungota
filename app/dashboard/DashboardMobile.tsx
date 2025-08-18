@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import Button from "@/components/ui/Button";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 // Fungsi helper untuk mengolah path menjadi judul yang rapi
 const formatTitle = (path: string) => {
@@ -30,12 +30,20 @@ const trigger = (
 export default function DashboardMobile() {
   const pathname = usePathname();
   const dynamicTitle = formatTitle(pathname);
+  const { data: session } = useSession();
+
+  let myMenu = m.userMenu;
+  if (session?.user?.role === "admin") {
+    myMenu = [...m.editorMenu, ...m.adminMenu];
+  } else if (session?.user?.role === "editor") {
+    myMenu = [...m.editorMenu];
+  }
 
   return (
     <div className="flex items-center gap-2">
       <Sidebar trigger={trigger} side="left" classSide="top-16" className="sm:hidden">
         <div className="">
-          {m.dashboardMenu.map((item, i) => (
+          {myMenu.map((item, i) => (
             <SidebarClose key={i} asChild>
               <Button
                 as={Link}

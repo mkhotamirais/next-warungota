@@ -3,19 +3,17 @@
 import Button from "@/components/ui/Button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { LuLoaderCircle } from "react-icons/lu";
 
 export default function AuthBtn() {
-  const [isMounted, setIsMounted] = useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return <div>Loading..</div>;
-  }
+  if (status === "loading")
+    return (
+      <Button as={"div"} className="w-full md:w-auto" icon={<LuLoaderCircle className="animate-spin" />}>
+        Pending...
+      </Button>
+    );
 
   return (
     <div>

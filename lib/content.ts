@@ -5,10 +5,18 @@ export const menu = {
     { label: "Contact", url: "/contact" },
     { label: "Blog", url: "/blog" },
   ],
-  dashboardMenu: [
+  userMenu: [
     { label: "Dashboard", url: "/dashboard" },
-    { label: "Blog", url: "/dashboard/blog" },
-    { label: "Product", url: "/dashboard/product" },
+    { label: "Profile", url: "/dashboard/profile" },
+  ],
+  editorMenu: [
+    { label: "Product", url: "/admin/product" },
+    { label: "Blog", url: "/admin/blog" },
+    { label: "Blog Category", url: "/admin/blog-category" },
+  ],
+  adminMenu: [
+    { label: "Users", url: "/admin/users" },
+    //
   ],
 };
 

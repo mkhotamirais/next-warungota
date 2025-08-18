@@ -4,15 +4,23 @@ import Button from "@/components/ui/Button";
 import React from "react";
 import { menu as m } from "@/lib/content";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 export default function DashboardDesktop() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  let myMenu = m.userMenu;
+  if (session?.user?.role === "admin") {
+    myMenu = [...m.editorMenu, ...m.adminMenu];
+  } else if (session?.user?.role === "editor") {
+    myMenu = [...m.editorMenu];
+  }
 
   return (
     <>
-      {m.dashboardMenu.map((item, i) => (
+      {myMenu.map((item, i) => (
         <Button
           as={Link}
           href={item.url}
