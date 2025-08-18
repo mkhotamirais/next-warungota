@@ -6,16 +6,18 @@ import Link from "next/link";
 
 export default function AuthBtn() {
   const { data: session } = useSession();
+
   return (
     <div>
       {session?.user ? (
-        <Button as={Link} href="/profile">
+        <Button as={Link} href="/dashboard" className="w-full md:w-auto">
           Dashboard
         </Button>
-      ) : null}
-      <Button as={Link} href="/signin">
-        Sign In
-      </Button>
+      ) : (
+        <Button as={Link} href="/signin" className="w-full md:w-auto">
+          Sign In
+        </Button>
+      )}
     </div>
   );
 }

@@ -5,6 +5,11 @@ export const menu = {
     { label: "Contact", url: "/contact" },
     { label: "Blog", url: "/blog" },
   ],
+  dashboardMenu: [
+    { label: "Dashboard", url: "/dashboard" },
+    { label: "Blog", url: "/dashboard/blog" },
+    { label: "Product", url: "/dashboard/product" },
+  ],
 };
 
 export const content = {
