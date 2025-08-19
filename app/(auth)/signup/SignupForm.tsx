@@ -3,13 +3,9 @@
 import Input from "@/components/form/Input";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
-import { prisma } from "@/lib/prisma";
-import { SignupSchema } from "@/lib/zod";
-import { hashSync } from "bcrypt-ts";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
-import z from "zod";
 
 export default function SignupForm() {
   const [name, setName] = useState("");
@@ -45,45 +41,48 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Input
-        id="name"
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Your Name"
-        error={errors?.name?.errors}
-      />
-      <Input
-        id="email"
-        label="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="example@email.com"
-        error={errors?.email?.errors}
-      />
-      <Input
-        id="password"
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="********"
-        error={errors?.password?.errors}
-      />
-      <Input
-        id="confirmPassword"
-        label="Confirm Password"
-        type="password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        placeholder="********"
-        error={errors?.confirmPassword?.errors}
-      />
+    <>
+      {error ? <Msg msg={error} status="error" /> : null}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          id="name"
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your Name"
+          error={errors?.name?.errors}
+        />
+        <Input
+          id="email"
+          label="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="example@email.com"
+          error={errors?.email?.errors}
+        />
+        <Input
+          id="password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="********"
+          error={errors?.password?.errors}
+        />
+        <Input
+          id="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="********"
+          error={errors?.confirmPassword?.errors}
+        />
 
-      <Button type="submit" className="w-full" disabled={pending}>
-        {pending ? "Signing Up..." : "Sign Up"}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full" disabled={pending}>
+          {pending ? "Signing Up..." : "Sign Up"}
+        </Button>
+      </form>
+    </>
   );
 }
