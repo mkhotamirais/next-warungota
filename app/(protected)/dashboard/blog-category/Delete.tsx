@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useTransition } from "react";
 import Modal, { ModalClose } from "@/components/ui/Modal";
@@ -12,6 +12,8 @@ import { BlogCategory } from "@prisma/client";
 export default function Delete({ category }: { category: BlogCategory }) {
   const [pending, startTransition] = useTransition();
   const { setSuccessMsg, setErrorMsg, setErrors } = useBlogCategory();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const router = useRouter();
 
   const handleDelete = () => {
@@ -31,16 +33,16 @@ export default function Delete({ category }: { category: BlogCategory }) {
         return;
       }
       setSuccessMsg(result.message);
+      setIsModalOpen(false);
 
       router.refresh();
     });
   };
 
   return (
-    // <button type="button" onClick={handleDelete} aria-label="Delete" className="text-red-500 p-2 border rounded">
-    //   {pending ? <FaSpinner className="animate-spin" /> : <FaTrash />}
-    // </button>
     <Modal
+      modalOpen={isModalOpen}
+      onModalOpenChange={setIsModalOpen}
       trigger={
         <div aria-label="Delete" className="text-red-500 p-2 rounded border flex border-red-500">
           <FaTrash />
@@ -53,11 +55,9 @@ export default function Delete({ category }: { category: BlogCategory }) {
         Delete <b>{category.name}</b>, this action cannot be undone, are you sre?
       </p>
       <div className="flex gap-2 mt-4">
-        <ModalClose asChild>
-          <Button type="button" variant="danger" disabled={pending} onClick={handleDelete}>
-            {pending ? "Deleting..." : "Delete"}
-          </Button>
-        </ModalClose>
+        <Button type="button" variant="danger" disabled={pending} onClick={handleDelete}>
+          {pending ? "Deleting..." : "Delete"}
+        </Button>
         <ModalClose asChild>
           <Button type="button" variant="gray">
             Cancel

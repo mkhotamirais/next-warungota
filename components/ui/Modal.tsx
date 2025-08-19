@@ -1,10 +1,18 @@
 "use client";
 
-import { useState, createContext, useContext, ReactNode, isValidElement, cloneElement } from "react";
+import {
+  useState,
+  createContext,
+  useContext,
+  ReactNode,
+  isValidElement,
+  cloneElement,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import clsx from "clsx";
 import { FaXmark } from "react-icons/fa6";
 
-// Context untuk Modal
 const ModalContext = createContext<{ close: () => void } | undefined>(undefined);
 
 function useModal() {
@@ -22,6 +30,8 @@ interface ModalProps {
   className?: string;
   ariaLabel?: string;
   triggerDisabled?: boolean;
+  modalOpen?: boolean;
+  onModalOpenChange?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function Modal({
@@ -33,12 +43,17 @@ export default function Modal({
   className,
   ariaLabel = "dialog",
   triggerDisabled = false,
+  modalOpen,
+  onModalOpenChange,
 }: ModalProps) {
-  const [open, setOpen] = useState(false);
+  const [_open, _setOpen] = useState(false);
+
+  const open = modalOpen !== undefined ? modalOpen : _open;
+
+  const setOpen = onModalOpenChange || _setOpen;
 
   return (
     <div className="relative">
-      {/* Trigger Button */}
       <button
         type="button"
         onClick={() => setOpen(true)}

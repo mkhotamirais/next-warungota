@@ -40,7 +40,7 @@ export default function DashboardMobile() {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 mb-4">
       <Sidebar trigger={trigger} side="left" classSide="top-16" className="sm:hidden">
         <div className="">
           {myMenu.map((item, i) => (
@@ -68,7 +68,7 @@ export default function DashboardMobile() {
         </div>
       </Sidebar>
 
-      <h1 className="h1 mb-4">{dynamicTitle}</h1>
+      <h1 className="h1">{dynamicTitle}</h1>
     </div>
   );
 }
