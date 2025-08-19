@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogCategorySchema } from "@/lib/zod";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -14,6 +15,8 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.blogCategory.delete({ where: { id } });
+    revalidatePath("/dashboard/blog-category");
+
     return Response.json({ message: `Blog category "${result.name}" deleted successfully` });
   } catch (error) {
     console.log(error);
@@ -48,6 +51,8 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     const result = await prisma.blogCategory.update({ where: { id }, data: { name, slug } });
+    revalidatePath("/dashboard/blog-category");
+
     return Response.json({ message: `Blog category "${result.name}" updated successfully` });
   } catch (error) {
     console.log(error);

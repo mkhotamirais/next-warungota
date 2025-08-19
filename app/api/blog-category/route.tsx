@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogCategorySchema } from "@/lib/zod";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export const POST = async (req: Request) => {
@@ -23,6 +24,7 @@ export const POST = async (req: Request) => {
 
   try {
     await prisma.blogCategory.create({ data: { name, slug } });
+    revalidatePath("/dashboard/blog-category");
     return Response.json({ message: `Blog category "${name}" created successfully` });
   } catch (error) {
     console.log(error);
