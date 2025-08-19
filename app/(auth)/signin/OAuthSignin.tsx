@@ -1,6 +1,6 @@
 import { signIn } from "@/auth";
 import Button from "@/components/ui/Button";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 import React from "react";
 import { FaGoogle } from "react-icons/fa";
 import { FaGithub } from "react-icons/fa6";
@@ -10,10 +10,9 @@ export function GoogleSignin() {
     <form
       action={async () => {
         "use server";
-        const cookieStore = await cookies();
-        const lastUrl = cookieStore.get("last_visited")?.value || "/";
-
-        await signIn("google", { redirectTo: lastUrl });
+        // const cookieStore = await cookies();
+        // const lastUrl = cookieStore.get("last_visited")?.value || "/";
+        await signIn("google", { redirectTo: "/dashboard" });
       }}
     >
       <Button type="submit" icon={<FaGoogle />} className="w-full">
@@ -28,9 +27,9 @@ export function GithubSignin() {
     <form
       action={async () => {
         "use server";
-        const cookieStore = await cookies();
-        const lastUrl = cookieStore.get("last_visited")?.value || "/";
-        await signIn("github", { redirectTo: lastUrl });
+        // const cookieStore = await cookies();
+        // const lastUrl = cookieStore.get("last_visited")?.value || "/";
+        await signIn("github", { redirectTo: "/dashboard" });
       }}
     >
       <Button type="submit" className="w-full" icon={<FaGithub />}>

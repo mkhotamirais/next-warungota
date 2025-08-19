@@ -6,8 +6,8 @@ export const menu = {
     { label: "Blog", url: "/blog" },
   ],
   userMenu: [
-    { label: "Dashboard", url: "/dashboard" },
-    { label: "Profile", url: "/dashboard/profile" },
+    { label: "My Account", url: "/account" },
+    //
   ],
   editorMenu: [
     { label: "Product", url: "/dashboard/product" },

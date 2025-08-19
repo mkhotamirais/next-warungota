@@ -1,6 +1,6 @@
 import React from "react";
 import DashboardDesktop from "./DashboardDesktop";
-import DashboardMobile from "@/app/dashboard/DashboardMobile";
+import DashboardMobile from "./DashboardMobile";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (

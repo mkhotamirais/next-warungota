@@ -18,17 +18,12 @@ export default function AuthBtn() {
   return (
     <div>
       {session?.user ? (
-        <>
-          {session.user.role === "user" ? (
-            <Button as={Link} href="/account" className="w-full md:w-auto">
-              My Account
-            </Button>
-          ) : (
-            <Button as={Link} href="/dashboard" className="w-full md:w-auto">
-              Dashboard
-            </Button>
-          )}
-        </>
+        // <Button as={Link} href={session.user.role === "user" ? "/account" : "/dashboard"} className="w-full md:w-auto">
+        //   {session.user.role === "user" ? "My Account" : "Dashboard"}
+        // </Button>
+        <Button as={Link} href={"/dashboard"} className="w-full md:w-auto">
+          Dashboard
+        </Button>
       ) : (
         <Button as={Link} href="/signin" className="w-full md:w-auto">
           Sign In

@@ -7,7 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
 export const signUp = async (prevState: unknown, formData: FormData) => {
   const rawData = Object.fromEntries(formData.entries());
@@ -46,10 +46,11 @@ export const signInCredential = async (prevState: unknown, formData: FormData) =
   const { email, password } = validatedFields.data;
 
   try {
-    const cookieStore = await cookies();
-    const lastUrl = cookieStore.get("last_visited")?.value || "/";
+    // const cookieStore = await cookies();
+    // const lastUrl = cookieStore.get("last_visited")?.value || "/";
 
-    await signIn("credentials", { email, password, redirectTo: lastUrl });
+    await signIn("credentials", { email, password, redirect: false });
+    return { status: "success", redirectTo: "/dashboard" };
   } catch (error) {
     console.log(error);
     if (error instanceof AuthError) {

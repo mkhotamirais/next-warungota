@@ -1,35 +1,76 @@
 "use client";
 
-import { signInCredential } from "@/actions/auth";
 import Input from "@/components/form/Input";
+import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
-import { useActionState } from "react";
+import { SigninSchema } from "@/lib/zod";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import z from "zod";
 
 export default function SigninForm() {
-  const [state, formAction, isPending] = useActionState(signInCredential, null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [pending, startTransition] = useTransition();
+  const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  const [error, setError] = useState("");
+
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = { email, password };
+    const validatedFields = SigninSchema.safeParse(formData);
+
+    if (!validatedFields.success) {
+      const errors = z.treeifyError(validatedFields.error).properties;
+      setErrors(errors);
+      return;
+    }
+
+    startTransition(async () => {
+      const res = await signIn("credentials", { email, password, redirect: false });
+      if (res?.error) {
+        if (res.error === "CredentialsSignin") {
+          setError("Email atau password salah.");
+        } else {
+          setError("Terjadi kesalahan yang tidak diketahui.");
+        }
+      } else {
+        router.push("/dashboard");
+      }
+    });
+  };
 
   return (
-    <form action={formAction} className="space-y-4">
-      {state?.message ? <p className="text-sm text-red-500 bg-red-50 py-2 px-3 rounded">{state.message}</p> : null}
-      <Input
-        id="email"
-        label="Email"
-        type="email"
-        placeholder="example@email.com"
-        defaultValue={state?.values?.email as string}
-        error={state?.error?.properties?.email?.errors}
-      />
-      <Input
-        id="password"
-        label="Password"
-        type="password"
-        placeholder="********"
-        error={state?.error?.properties?.password?.errors}
-      />
+    <>
+      {error && <Msg msg={error} status="error" />}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
+          id="email"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="example@email.com"
+          error={errors?.email?.errors}
+        />
+        <Input
+          id="password"
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="********"
+          error={errors?.password?.errors}
+        />
 
-      <Button type="submit" disabled={isPending} className="w-full">
-        {isPending ? "Signing In..." : "Sign In"}
-      </Button>
-    </form>
+        <Button type="submit" disabled={pending} className="w-full">
+          {pending ? "Signing In..." : "Sign In"}
+        </Button>
+      </form>
+    </>
   );
 }

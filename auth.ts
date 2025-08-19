@@ -12,10 +12,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google,
     // GitHub,
     Credentials({
-      credentials: {
-        email: {},
-        password: {},
-      },
+      credentials: { email: {}, password: {} },
       authorize: async (credentials) => {
         const validatedFields = SigninSchema.safeParse(credentials);
 

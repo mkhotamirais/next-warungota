@@ -16,11 +16,17 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
 
   const res = NextResponse.next();
-
-  // 1. Simpan route terakhir
-  if (!isAuthRoute && !pathname.startsWith("/api") && !pathname.startsWith("/_next")) {
-    res.cookies.set("last_visited", pathname, { path: "/" });
-  }
+  // console.log(pathname);
+  // // 1. Simpan route terakhir
+  // if (
+  //   !isAuthRoute &&
+  //   !pathname.startsWith("/api") &&
+  //   !pathname.startsWith("/_next") &&
+  //   !pathname.startsWith("/.well-known") &&
+  //   !pathname.startsWith("/favicon.ico")
+  // ) {
+  //   res.cookies.set("last_visited", pathname, { path: "/" });
+  // }
 
   // 2. Redirect dari protectedRoute jika belum login
   if (!isLoggedIn && isProtectedRoute) {
@@ -37,7 +43,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  if (isLoggedIn && role !== "admin" && role !== "editor" && pathname.startsWith("/dashboard")) {
+  if (isLoggedIn && role !== "user" && pathname.startsWith("/account")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (isLoggedIn && pathname.startsWith("/dashboard") && role === "user") {
     return NextResponse.redirect(new URL("/account", request.url));
   }
 

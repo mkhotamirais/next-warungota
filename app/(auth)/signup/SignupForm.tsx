@@ -1,45 +1,84 @@
 "use client";
 
-import { signUp } from "@/actions/auth";
 import Input from "@/components/form/Input";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
-import { useActionState } from "react";
+import { prisma } from "@/lib/prisma";
+import { SignupSchema } from "@/lib/zod";
+import { hashSync } from "bcrypt-ts";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useTransition, useState } from "react";
+import z from "zod";
 
 export default function SignupForm() {
-  const [state, formAction, pending] = useActionState(signUp, null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  const [error, setError] = useState("");
+
+  const [pending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    startTransition(async () => {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        body: JSON.stringify({ name, email, password, confirmPassword }),
+      });
+      const data = await res.json();
+
+      if (data?.error || data?.errors) {
+        setError(data?.error);
+        setErrors(data?.errors);
+        return;
+      }
+
+      await signIn("credentials", { email, password, redirect: false });
+
+      router.push("/dashboard");
+    });
+  };
 
   return (
-    <form action={formAction} className="space-y-4">
-      {state?.message ? <Msg msg={state.message} status={state?.status} /> : null}
+    <form onSubmit={handleSubmit} className="space-y-4">
       <Input
         id="name"
         label="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         placeholder="Your Name"
-        defaultValue={state?.values?.name as string}
-        error={state?.errors?.name?.errors}
+        error={errors?.name?.errors}
       />
       <Input
         id="email"
         label="Email"
-        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         placeholder="example@email.com"
-        defaultValue={state?.values?.email as string}
-        error={state?.errors?.email?.errors}
+        error={errors?.email?.errors}
       />
       <Input
         id="password"
         label="Password"
         type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         placeholder="********"
-        error={state?.errors?.password?.errors}
+        error={errors?.password?.errors}
       />
       <Input
         id="confirmPassword"
         label="Confirm Password"
         type="password"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
         placeholder="********"
-        error={state?.errors?.confirmPassword?.errors}
+        error={errors?.confirmPassword?.errors}
       />
 
       <Button type="submit" className="w-full" disabled={pending}>
