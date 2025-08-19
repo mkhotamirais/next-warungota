@@ -6,7 +6,7 @@ import { FaTrash } from "react-icons/fa6";
 import { useTransition } from "react";
 import Modal, { ModalClose } from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
-import { useBlogCategory } from "@/lib/useBlogCategory";
+import { useBlogCategory } from "@/hooks/useBlogCategory";
 import { BlogCategory } from "@prisma/client";
 
 export default function Delete({ category }: { category: BlogCategory }) {

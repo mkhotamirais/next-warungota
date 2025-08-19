@@ -7,7 +7,7 @@ import Create from "./Create";
 import Delete from "./Delete";
 import { BlogCategory } from "@prisma/client";
 import Msg from "@/components/form/Msg";
-import { useBlogCategory } from "@/lib/useBlogCategory";
+import { useBlogCategory } from "@/hooks/useBlogCategory";
 
 export default function List({ blogCategories }: { blogCategories: BlogCategory[] | undefined }) {
   const [isEdit, setIsEdit] = useState<string | null>(null);

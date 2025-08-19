@@ -2,7 +2,7 @@
 
 import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
-import { useBlogCategory } from "../../../../lib/useBlogCategory";
+import { useBlogCategory } from "../../../../hooks/useBlogCategory";
 import { useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 

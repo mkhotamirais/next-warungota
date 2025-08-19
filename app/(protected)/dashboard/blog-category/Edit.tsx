@@ -2,7 +2,7 @@ import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
 import { FaCheck, FaSpinner, FaXmark } from "react-icons/fa6";
-import { useBlogCategory } from "../../../../lib/useBlogCategory";
+import { useBlogCategory } from "../../../../hooks/useBlogCategory";
 import { BlogCategory } from "@prisma/client";
 
 interface EditProps {

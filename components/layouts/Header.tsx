@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Logo from "./Logo";
 import Link from "next/link";
 import { menu as m } from "@/lib/content";
 import AuthBtn from "./AuthBtn";
@@ -10,6 +9,7 @@ import { FaBars } from "react-icons/fa6";
 import Button from "../ui/Button";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import Logo from "../Logo";
 
 const trigger = (
   <div className="p-2 border border-gray-300 rounded">

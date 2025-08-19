@@ -14,11 +14,27 @@ const formatTitle = (path: string) => {
   const pathSegments = path.split("/").filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1];
 
+  // Kasus: '/dashboard'
   if (!lastSegment || lastSegment === "dashboard") {
     return "Dashboard";
   }
 
-  return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1);
+  // Jika ada dua atau lebih segmen dan segmen kedua dari belakang diawali 'edit'
+  if (pathSegments.length >= 2 && pathSegments[pathSegments.length - 2].startsWith("edit")) {
+    const titleSegment = pathSegments[pathSegments.length - 2];
+    const formattedTitle = titleSegment
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    return formattedTitle;
+  }
+
+  // Kasus lainnya (page statis atau page dinamis non-edit)
+  const formattedTitle = lastSegment
+    .split("-")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+  return formattedTitle;
 };
 
 const trigger = (
