@@ -28,7 +28,9 @@ export default function BlogCard1({ blog, content = true }: { blog: BlogProps; c
           <span>•</span>
           <span>{diffForHumans(blog.createdAt)}</span>
         </div>
-        {content ? <p>{smartTrim(blog.content, 210)}</p> : null}
+        {content ? (
+          <div className="tiptap" dangerouslySetInnerHTML={{ __html: smartTrim(blog.content, 210) }}></div>
+        ) : null}
       </div>
     </div>
   );

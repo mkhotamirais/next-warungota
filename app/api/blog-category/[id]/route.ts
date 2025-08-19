@@ -10,14 +10,42 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
   const session = await auth();
   if (!session) return Response.json({ message: "Unauthorized" }, { status: 401 });
 
-  const category = await prisma.blogCategory.findUnique({ where: { id }, select: { isDefault: true } });
-  if (category?.isDefault) return Response.json({ error: "Default blog category cannot be deleted" });
+  const categoryToDelete = await prisma.blogCategory.findUnique({ where: { id } });
+  if (!categoryToDelete) {
+    return Response.json({ error: "Blog category not found" }, { status: 404 });
+  }
+
+  if (categoryToDelete.isDefault) {
+    return Response.json({ error: "Default blog category cannot be deleted" }, { status: 400 });
+  }
 
   try {
-    const result = await prisma.blogCategory.delete({ where: { id } });
-    revalidatePath("/dashboard/blog-category");
+    const postCount = await prisma.blog.count({
+      where: { categoryId: id },
+    });
 
-    return Response.json({ message: `Blog category "${result.name}" deleted successfully` });
+    if (postCount > 0) {
+      const defaultCategory = await prisma.blogCategory.findFirst({ where: { isDefault: true } });
+
+      if (!defaultCategory) {
+        return Response.json({ error: "Default category not found" }, { status: 500 });
+      }
+
+      await prisma.$transaction(async (tx) => {
+        await tx.blog.updateMany({ where: { categoryId: id }, data: { categoryId: defaultCategory.id } });
+        await tx.blogCategory.delete({ where: { id } });
+      });
+
+      revalidatePath("/dashboard/blog-category");
+
+      return Response.json({
+        message: `Blog category "${categoryToDelete.name}" deleted successfully. ${postCount} associated posts have been moved to "${defaultCategory.name}".`,
+      });
+    } else {
+      await prisma.blogCategory.delete({ where: { id } });
+      revalidatePath("/dashboard/blog-category");
+      return Response.json({ message: `Blog category "${categoryToDelete.name}" deleted successfully.` });
+    }
   } catch (error) {
     console.log(error);
   }

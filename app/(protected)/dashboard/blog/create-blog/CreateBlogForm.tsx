@@ -2,7 +2,7 @@
 
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
-import Textarea from "@/components/form/Textarea";
+// import Textarea from "@/components/form/Textarea";
 import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { FaTrash } from "react-icons/fa6";
@@ -11,6 +11,8 @@ import { BlogCategory } from "@prisma/client";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
 import { useBlog } from "@/hooks/useBlog";
+import TiptapEditor from "@/components/form/tiptap/TiptapEditor";
+// import Tiptap from "@/components/form/tiptap/Tiptap";
 
 interface CreateBlogFormProps {
   blogCategories: BlogCategory[];
@@ -29,10 +31,7 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const blogCategoriesOptions = blogCategories.map((category) => ({
-    label: category.name,
-    value: category.id,
-  }));
+  const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
 
   const defaultCategory = blogCategories.find((category) => category.isDefault)!;
   useEffect(() => {
@@ -151,7 +150,8 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
           onChange={(e) => setTitle(e.target.value)}
           error={errors?.title?.errors}
         />
-        <Textarea
+        <TiptapEditor label="Content" value={content} onChange={setContent} error={errors?.content?.errors} />
+        {/* <Textarea
           id="content"
           label="Content"
           type="text"
@@ -159,7 +159,7 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
           value={content}
           onChange={(e) => setContent(e.target.value)}
           error={errors?.content?.errors}
-        />
+        /> */}
         <Select
           id="blogCategory"
           label="Category"

@@ -12,6 +12,7 @@ import { BlogProps } from "@/types/types";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
 import { useBlog } from "@/hooks/useBlog";
+import TiptapEditor from "@/components/form/tiptap/TiptapEditor";
 
 interface UpdateBlogFormProps {
   blogCategories: BlogCategory[];
@@ -158,7 +159,8 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           onChange={(e) => setTitle(e.target.value)}
           error={errors?.title?.errors}
         />
-        <Textarea
+        <TiptapEditor label="Content" value={content} onChange={setContent} error={errors?.content?.errors} />
+        {/* <Textarea
           id="content"
           label="Content"
           type="text"
@@ -166,7 +168,7 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           value={content}
           onChange={(e) => setContent(e.target.value)}
           error={errors?.content?.errors}
-        />
+        /> */}
         <Select
           id="blogCategory"
           label="Category"
