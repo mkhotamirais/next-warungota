@@ -9,7 +9,6 @@ import { useGlobal } from "@/hooks/useGlobal";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
 import { useBlog } from "@/hooks/useBlog";
-import Tiptap from "@/components/form/tiptap/Tiptap";
 
 export default function List({ blogs }: { blogs: BlogProps[] | undefined | null }) {
   const { setOpenLayer, openMoreBlogOption, setOpenMoreBlogOption } = useGlobal();
