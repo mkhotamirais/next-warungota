@@ -42,7 +42,7 @@ export default function SignupForm() {
 
   return (
     <>
-      {error ? <Msg msg={error} status="error" /> : null}
+      {error ? <Msg msg={error} error /> : null}
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           id="name"

@@ -68,7 +68,7 @@ export default function DashboardMobile() {
         </div>
       </Sidebar>
 
-      <h1 className="h1">{dynamicTitle}</h1>
+      <h1 className="h1 mb-4">{dynamicTitle}</h1>
     </div>
   );
 }

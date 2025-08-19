@@ -46,7 +46,7 @@ export default function SigninForm() {
 
   return (
     <>
-      {error && <Msg msg={error} status="error" />}
+      {error && <Msg msg={error} error />}
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           id="email"

@@ -6,8 +6,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <section className="py-4">
       <div className="container">
-        <div className="flex gap-8">
-          <div className="w-[250px] hidden sm:block">
+        <div className="flex gap-8 items-start">
+          <div className="w-[250px] hidden sm:block sticky top-20">
             <DashboardDesktop />
           </div>
 

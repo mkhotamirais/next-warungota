@@ -10,6 +10,7 @@ export const menu = {
     //
   ],
   editorMenu: [
+    { label: "Dashboard", url: "/dashboard" },
     { label: "Product", url: "/dashboard/product" },
     { label: "Blog", url: "/dashboard/blog" },
     { label: "Blog Category", url: "/dashboard/blog-category" },
