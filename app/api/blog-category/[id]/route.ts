@@ -44,6 +44,8 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
     } else {
       await prisma.blogCategory.delete({ where: { id } });
       revalidatePath("/dashboard/blog-category");
+      revalidatePath("/dashboard/blog", "page");
+
       return Response.json({ message: `Blog category "${categoryToDelete.name}" deleted successfully.` });
     }
   } catch (error) {
@@ -78,6 +80,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
 
     const result = await prisma.blogCategory.update({ where: { id }, data: { name, slug } });
     revalidatePath("/dashboard/blog-category");
+    revalidatePath("/dashboard/blog", "page");
 
     return Response.json({ message: `Blog category "${result.name}" updated successfully` });
   } catch (error) {
