@@ -13,6 +13,7 @@ export const menu = {
     { label: "Dashboard", url: "/dashboard" },
     { label: "Product", url: "/dashboard/product" },
     { label: "Blog", url: "/dashboard/blog" },
+    { label: "Create Blog", url: "/dashboard/blog/create-blog" },
     { label: "Blog Category", url: "/dashboard/blog-category" },
   ],
   adminMenu: [

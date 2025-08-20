@@ -29,7 +29,9 @@ export default function List({ blogCategories }: { blogCategories: BlogCategory[
             ) : (
               <div
                 className="border py-2 px-3 rounded border-gray-200 w-full cursor-text"
-                onClick={() => setIsEdit(category.id)}
+                onClick={() => {
+                  if (!category.isDefault) setIsEdit(category.id);
+                }}
               >
                 {category.name}
               </div>
@@ -40,8 +42,9 @@ export default function List({ blogCategories }: { blogCategories: BlogCategory[
               <button
                 type="button"
                 aria-label="Edit"
-                className="text-blue-500 p-2 border rounded"
+                className="text-blue-500 p-2 border rounded disabled:opacity-50"
                 onClick={() => setIsEdit(category?.id)}
+                disabled={category.isDefault}
               >
                 <FaPenToSquare />
               </button>

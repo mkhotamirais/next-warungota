@@ -57,23 +57,32 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     return Response.json({ errors: z.treeifyError(validatedFields.error) });
   }
 
-  const { title, slug, content, categoryId } = validatedFields.data;
-  const existingBlog = await prisma.blog.findFirst({ where: { title } });
-
-  if (existingBlog && existingBlog.id !== id) {
-    return Response.json({ error: "Blog title already exists" }, { status: 409 });
-  }
-
-  let imageUrl = currentBlog?.imageUrl || "";
-  if (file && file.size > 0) {
-    if (currentBlog?.imageUrl) {
-      await del(currentBlog.imageUrl);
-    }
-    const blob = await put(Date.now() + "-" + file?.name, file, { access: "public", multipart: true });
-    imageUrl = blob.url;
-  }
-
+  const { title, slug, content } = validatedFields.data;
+  let categoryId = validatedFields.data.categoryId;
   try {
+    const existingCategory = await prisma.blogCategory.findUnique({ where: { id: categoryId } });
+
+    if (!existingCategory) {
+      const defaultCategory = await prisma.blogCategory.findFirst({ where: { isDefault: true } });
+      if (!defaultCategory)
+        return Response.json({ error: "Selected category was deleted and no default category found" }, { status: 404 });
+      categoryId = defaultCategory.id;
+    }
+    const existingBlog = await prisma.blog.findFirst({ where: { title } });
+
+    if (existingBlog && existingBlog.id !== id) {
+      return Response.json({ error: "Blog title already exists" }, { status: 409 });
+    }
+
+    let imageUrl = currentBlog?.imageUrl || "";
+    if (file && file.size > 0) {
+      if (currentBlog?.imageUrl) {
+        await del(currentBlog.imageUrl);
+      }
+      const blob = await put(Date.now() + "-" + file?.name, file, { access: "public", multipart: true });
+      imageUrl = blob.url;
+    }
+
     await prisma.blog.update({ data: { title, slug, content, imageUrl, categoryId }, where: { id } });
     return Response.json({ message: "Blog updated successfully" });
   } catch (error) {

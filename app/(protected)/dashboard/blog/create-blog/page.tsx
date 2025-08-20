@@ -9,9 +9,6 @@ export default async function CreateBlog() {
 
   return (
     <div>
-      {blogCategories?.map((category) => (
-        <div key={category.id}>{category.name}</div>
-      ))}
       <Suspense fallback={<div>Loading...</div>}>
         <CreateBlogForm blogCategories={blogCategories} />
       </Suspense>

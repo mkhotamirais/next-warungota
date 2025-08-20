@@ -29,14 +29,24 @@ export const POST = async (req: Request) => {
     imageUrl = blob.url;
   }
 
-  const { title, slug, content, categoryId } = validatedFields.data;
-  const existingBlog = await prisma.blog.findFirst({ where: { title } });
-
-  if (existingBlog) {
-    return Response.json({ error: "Blog title already exists" }, { status: 409 });
-  }
-
+  const { title, slug, content } = validatedFields.data;
+  let categoryId = validatedFields.data.categoryId;
   try {
+    const existingCategory = await prisma.blogCategory.findUnique({ where: { id: categoryId } });
+
+    if (!existingCategory) {
+      const defaultCategory = await prisma.blogCategory.findFirst({ where: { isDefault: true } });
+      if (!defaultCategory)
+        return Response.json({ error: "Selected category was deleted and no default category found" }, { status: 404 });
+      categoryId = defaultCategory.id;
+    }
+
+    const existingBlog = await prisma.blog.findFirst({ where: { title } });
+
+    if (existingBlog) {
+      return Response.json({ error: "Blog title already exists" }, { status: 409 });
+    }
+
     await prisma.blog.create({ data: { title, slug, content, imageUrl, categoryId, userId } });
     return Response.json({ message: "Blog created successfully" });
   } catch (error) {
