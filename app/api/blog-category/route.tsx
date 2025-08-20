@@ -24,7 +24,7 @@ export const POST = async (req: Request) => {
   try {
     await prisma.blogCategory.create({ data: { name, slug } });
     revalidatePath("/dashboard/blog-category");
-    revalidatePath("/dashboard/blog", "page");
+    revalidatePath("/dashboard/blog/create-blog");
     return Response.json({ message: `Blog category "${name}" created successfully` });
   } catch (error) {
     console.log(error);

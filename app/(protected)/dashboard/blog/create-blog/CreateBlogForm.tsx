@@ -12,7 +12,6 @@ import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
 import { useBlog } from "@/hooks/useBlog";
 import TiptapEditor from "@/components/form/tiptap/TiptapEditor";
-// import Tiptap from "@/components/form/tiptap/Tiptap";
 
 interface CreateBlogFormProps {
   blogCategories: BlogCategory[];
