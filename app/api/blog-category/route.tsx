@@ -15,8 +15,7 @@ export const POST = async (req: Request) => {
     return Response.json({ errors: z.treeifyError(validatedFields.error) });
   }
 
-  const { name } = validatedFields.data;
-  const slug = name.toLowerCase().replace(/\s+/g, "-");
+  const { name, slug } = validatedFields.data;
 
   if (await prisma.blogCategory.findUnique({ where: { slug } })) {
     return Response.json({ error: `Blog category "${name}" already exists` }, { status: 409 });

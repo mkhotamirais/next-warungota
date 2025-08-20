@@ -46,7 +46,9 @@ export default function List({ blogs }: { blogs: BlogProps[] | undefined | null 
                   className="size-14"
                 />
                 <div>
-                  <h3 className="h3 mb-0.5">{blog.title}</h3>
+                  <Link href={`/blog/${blog.slug}`} className="hover:underline">
+                    <h3 className="h3 mb-0.5">{blog.title}</h3>
+                  </Link>
                   <div className="flex text-sm gap-2">
                     <span>{blog.BlogCategory.name}</span>
                     <span>|</span>

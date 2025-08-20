@@ -17,12 +17,21 @@ export const SigninSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
-export const BlogCategorySchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "Blog category name is required" })
-    .transform((val) => val.trim()),
-});
+export const BlogCategorySchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: "Blog category name is required" })
+      .transform((val) => val.trim()),
+  })
+  .transform((data) => ({
+    ...data,
+    slug: data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, "-")
+      .trim(),
+  }));
 
 export const BlogSchema = z
   .object({
@@ -39,5 +48,9 @@ export const BlogSchema = z
   })
   .transform((data) => ({
     ...data,
-    slug: data.title.toLowerCase().replace(/\s+/g, "-"), // auto slug
+    slug: data.title
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, "-")
+      .trim(),
   }));

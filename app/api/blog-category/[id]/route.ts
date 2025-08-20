@@ -64,10 +64,8 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     return Response.json({ errors: z.treeifyError(validatedFields.error) });
   }
 
-  const { name } = validatedFields.data;
+  const { name, slug } = validatedFields.data;
   try {
-    const slug = name.toLowerCase().replace(/\s+/g, "-");
-
     const existingCategory = await prisma.blogCategory.findUnique({
       where: { id },
       select: { isDefault: true, name: true },
