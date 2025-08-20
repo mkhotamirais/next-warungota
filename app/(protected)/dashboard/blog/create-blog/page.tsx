@@ -6,11 +6,15 @@ import { Suspense } from "react";
 export default async function CreateBlog() {
   const blogCategories = await getBlogCategories();
   if (!blogCategories?.length) redirect("/dashboard/blog-category");
-  console.log(blogCategories);
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CreateBlogForm blogCategories={blogCategories} />
-    </Suspense>
+    <div>
+      {blogCategories?.map((category) => (
+        <div key={category.id}>{category.name}</div>
+      ))}
+      <Suspense fallback={<div>Loading...</div>}>
+        <CreateBlogForm blogCategories={blogCategories} />
+      </Suspense>
+    </div>
   );
 }
