@@ -54,3 +54,35 @@ export const BlogSchema = z
       .replace(/\s+/g, "-")
       .trim(),
   }));
+
+export const ProductCategorySchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: "Product category name is required" })
+      .transform((val) => val.trim()),
+  })
+  .transform((data) => ({
+    ...data,
+    slug: data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, "-")
+      .trim(),
+  }));
+
+export const ProductTagSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { message: "Product tag name is required" })
+      .transform((val) => val.trim()),
+  })
+  .transform((data) => ({
+    ...data,
+    slug: data.name
+      .toLowerCase()
+      .replace(/[^a-z0-9 ]/g, "")
+      .replace(/\s+/g, "-")
+      .trim(),
+  }));

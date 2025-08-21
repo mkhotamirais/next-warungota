@@ -68,3 +68,40 @@ model Blog {
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 }
+
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  price       Int
+  stock       Int      @default(0)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId      String
+  ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+  ProductTags     ProductTag[]    @relation(name: "ProductToTag")
+}
+
+model ProductCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String   @db.VarChar(255)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Products Product[]
+}
+
+model ProductTag {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Products Product[] @relation(name: "ProductToTag")
+}

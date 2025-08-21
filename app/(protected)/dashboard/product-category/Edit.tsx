@@ -2,18 +2,18 @@ import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
 import { FaCheck, FaSpinner, FaXmark } from "react-icons/fa6";
-import { BlogCategory } from "@prisma/client";
-import { useBlogCategory } from "@/hooks/useBlogCategory";
+import { ProductCategory } from "@prisma/client";
+import { useProductCategory } from "@/hooks/useProductCategory";
 
 interface EditProps {
-  category: BlogCategory;
+  category: ProductCategory;
   setIsEdit: Dispatch<SetStateAction<string | null>>;
 }
 
 export default function Edit({ category, setIsEdit }: EditProps) {
   const [name, setName] = useState(category.name);
   const [pending, startTransition] = useTransition();
-  const { setErrorMsg, setSuccessMsg, errors, setErrors } = useBlogCategory();
+  const { setErrorMsg, setSuccessMsg, errors, setErrors } = useProductCategory();
   const router = useRouter();
 
   const cancelEdit = () => {
@@ -25,7 +25,10 @@ export default function Edit({ category, setIsEdit }: EditProps) {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch(`/api/blog-category/${category.id}`, { method: "PATCH", body: JSON.stringify({ name }) });
+      const res = await fetch(`/api/product-category/${category.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ name }),
+      });
       const result = await res.json();
 
       if (result?.errors || result?.error || result?.message) {
@@ -57,7 +60,7 @@ export default function Edit({ category, setIsEdit }: EditProps) {
       <Input
         id="name"
         label=""
-        placeholder="Blog Category Name"
+        placeholder="Product Category Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         autoFocus={true}

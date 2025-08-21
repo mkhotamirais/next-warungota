@@ -4,10 +4,10 @@ import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
-import { useBlogCategory } from "@/hooks/useBlogCategory";
+import { useProductCategory } from "@/hooks/useProductCategory";
 
 export default function Create() {
-  const { setSuccessMsg, setErrorMsg, errors, setErrors } = useBlogCategory();
+  const { setSuccessMsg, setErrorMsg, errors, setErrors } = useProductCategory();
   const [pending, startTransition] = useTransition();
   const [name, setName] = useState("");
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function Create() {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch("/api/blog-category", { method: "POST", body: JSON.stringify({ name }) });
+      const res = await fetch("/api/product-category", { method: "POST", body: JSON.stringify({ name }) });
 
       const result = await res.json();
 
@@ -47,8 +47,8 @@ export default function Create() {
       <form onSubmit={handleCreate} className="space-y-4 p-3 border border-gray-200 mb-4">
         <Input
           id="name"
-          label="Create Blog Category"
-          placeholder="Blog Category Name"
+          label="Create Product Category"
+          placeholder="Product Category Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           error={errors?.name?.errors}

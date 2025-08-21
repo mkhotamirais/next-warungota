@@ -64,6 +64,23 @@ export const getBlogByUserId = async () => {
   return blog;
 };
 
+// Product Category
+export const getProductCategories = async () => {
+  const categories = await prisma.productCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
+  return categories;
+};
+
+export const getProductCategoryBySlug = async (slug: string) => {
+  const category = await prisma.productCategory.findUnique({ where: { slug } });
+  return category;
+};
+
+// Product Category
+export const getProductTags = async () => {
+  const tags = await prisma.productTag.findMany({ orderBy: { createdAt: "desc" } });
+  return tags;
+};
+
 // Users
 export const getUsers = async () => {
   await adminOnly();

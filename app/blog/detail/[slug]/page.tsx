@@ -16,7 +16,7 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
 };
 
 export const generateStaticParams = async () => {
-  const blogs = await getBlogs(10, undefined, undefined);
+  const blogs = await getBlogs(undefined, undefined, undefined);
   return blogs.map((blog) => ({ slug: blog.slug }));
 };
 

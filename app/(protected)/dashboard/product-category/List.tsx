@@ -4,24 +4,24 @@ import { useState } from "react";
 import { FaPenToSquare } from "react-icons/fa6";
 import Edit from "./Edit";
 import Delete from "./Delete";
-import { BlogCategory } from "@prisma/client";
+import { ProductCategory } from "@prisma/client";
 import Msg from "@/components/form/Msg";
-import { useBlogCategory } from "@/hooks/useBlogCategory";
+import { useProductCategory } from "@/hooks/useProductCategory";
 
-export default function List({ blogCategories }: { blogCategories: BlogCategory[] | undefined }) {
+export default function List({ productCategories }: { productCategories: ProductCategory[] | undefined }) {
   const [isEdit, setIsEdit] = useState<string | null>(null);
 
-  const { successMsg, errorMsg } = useBlogCategory();
+  const { successMsg, errorMsg } = useProductCategory();
 
-  if (!blogCategories?.length) return <h2 className="h2">No Blog Category</h2>;
+  if (!productCategories?.length) return <h2 className="h2">No Product Category</h2>;
 
   return (
     <div>
       {successMsg ? <Msg msg={successMsg} /> : null}
       {errorMsg ? <Msg msg={errorMsg} error /> : null}
 
-      <h2 className="h2 mb-4">Blog Category List</h2>
-      {blogCategories?.map((category) => (
+      <h2 className="h2 mb-4">Product Category List</h2>
+      {productCategories?.map((category) => (
         <div key={category.id} className="flex items-center gap-2 mb-1">
           <div className="w-full">
             {isEdit === category.id ? (

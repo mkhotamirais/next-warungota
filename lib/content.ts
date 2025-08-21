@@ -12,6 +12,9 @@ export const menu = {
   editorMenu: [
     { label: "Dashboard", url: "/dashboard" },
     { label: "Product", url: "/dashboard/product" },
+    { label: "Create Product", url: "/dashboard/product/create-product" },
+    { label: "Product Category", url: "/dashboard/product-category" },
+    { label: "Product Tag", url: "/dashboard/product-tag" },
     { label: "Blog", url: "/dashboard/blog" },
     { label: "Create Blog", url: "/dashboard/blog/create-blog" },
     { label: "Blog Category", url: "/dashboard/blog-category" },

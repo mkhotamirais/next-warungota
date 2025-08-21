@@ -2,30 +2,33 @@ import Input from "@/components/form/Input";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState, useTransition } from "react";
 import { FaCheck, FaSpinner, FaXmark } from "react-icons/fa6";
-import { BlogCategory } from "@prisma/client";
-import { useBlogCategory } from "@/hooks/useBlogCategory";
+import { ProductTag } from "@prisma/client";
+import { useProductTag } from "@/hooks/useProductTag";
 
 interface EditProps {
-  category: BlogCategory;
+  tag: ProductTag;
   setIsEdit: Dispatch<SetStateAction<string | null>>;
 }
 
-export default function Edit({ category, setIsEdit }: EditProps) {
-  const [name, setName] = useState(category.name);
+export default function Edit({ tag, setIsEdit }: EditProps) {
+  const [name, setName] = useState(tag.name);
   const [pending, startTransition] = useTransition();
-  const { setErrorMsg, setSuccessMsg, errors, setErrors } = useBlogCategory();
+  const { setErrorMsg, setSuccessMsg, errors, setErrors } = useProductTag();
   const router = useRouter();
 
   const cancelEdit = () => {
     setIsEdit(null);
-    setName(category.name);
+    setName(tag.name);
   };
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch(`/api/blog-category/${category.id}`, { method: "PATCH", body: JSON.stringify({ name }) });
+      const res = await fetch(`/api/product-tag/${tag.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ name }),
+      });
       const result = await res.json();
 
       if (result?.errors || result?.error || result?.message) {
@@ -53,11 +56,11 @@ export default function Edit({ category, setIsEdit }: EditProps) {
 
   return (
     <form onSubmit={handleUpdate} className="flex gap-2 items-center w-full">
-      <input type="hidden" name="id" value={category.id} />
+      <input type="hidden" name="id" value={tag.id} />
       <Input
         id="name"
         label=""
-        placeholder="Blog Category Name"
+        placeholder="Product Tag Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
         autoFocus={true}
