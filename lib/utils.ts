@@ -70,8 +70,13 @@ export const diffForHumans = (date: string | number | Date) => {
   return `${diffInYears} tahun yang lalu`;
 };
 
+// export const stripHtml = (html: string) => {
+//   const div = document.createElement("div");
+//   div.innerHTML = html;
+//   return div.textContent || div.innerText || "";
+// };
+
 export const stripHtml = (html: string) => {
-  const div = document.createElement("div");
-  div.innerHTML = html;
-  return div.textContent || div.innerText || "";
+  // Regex yang cocok dengan semua tag HTML
+  return html.replace(/<[^>]+>/g, "");
 };
