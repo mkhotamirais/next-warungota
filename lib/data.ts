@@ -20,19 +20,29 @@ export const getBlogCategories = async () => {
   return categories;
 };
 
-export const getBlogs = async (limit?: number) => {
+export const getBlogs = async (limit?: number, excludeSlug?: string, categorySlug?: string) => {
+  const whereClause: { slug?: { not: string }; BlogCategory?: { slug: string } } = {};
+
+  if (excludeSlug) whereClause.slug = { not: excludeSlug };
+  if (categorySlug) whereClause.BlogCategory = { slug: categorySlug };
+
   const blogs = await prisma.blog.findMany({
-    ...(limit ? { take: limit } : {}),
-    include: { BlogCategory: { select: { name: true } }, User: { select: { name: true } } },
+    where: whereClause,
     orderBy: { createdAt: "desc" },
+    ...(limit ? { take: limit } : {}),
+    include: {
+      BlogCategory: { select: { name: true, slug: true } },
+      User: { select: { name: true } },
+    },
   });
+
   return blogs;
 };
 
 export const getBlogBySlug = async (slug: string) => {
   const blog = await prisma.blog.findUnique({
     where: { slug },
-    include: { BlogCategory: { select: { name: true } }, User: { select: { name: true } } },
+    include: { BlogCategory: { select: { name: true, slug: true } }, User: { select: { name: true } } },
   });
   return blog;
 };

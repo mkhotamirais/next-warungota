@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 
 export type BlogProps = Prisma.BlogGetPayload<{
-  include: { BlogCategory: { select: { name: true } }; User: { select: { name: true } } };
+  include: { BlogCategory: { select: { name: true; slug: true } }; User: { select: { name: true } } };
 }>;
 
 export type UserProps = Prisma.UserGetPayload<{

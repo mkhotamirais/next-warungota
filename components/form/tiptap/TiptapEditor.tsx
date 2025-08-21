@@ -26,7 +26,7 @@ export default function TiptapEditor({ label = "label", value, onChange, error }
         HTMLAttributes: { class: "my-custom-class" },
       }),
     ],
-    content: value || "",
+    content: value,
     immediatelyRender: false,
     editorProps: { attributes: { class: "min-h-32 border rounded border-gray-500 py-2 px-3" } },
     onUpdate: ({ editor }) => {

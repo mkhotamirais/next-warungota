@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import EditBlogForm from "./EditBlogForm";
 import { getBlogBySlug, getBlogCategories } from "@/lib/data";
+import Load from "@/components/fallbacks/Load";
 
 export default async function EditBlog({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
@@ -10,10 +11,8 @@ export default async function EditBlog({ params }: { params: Promise<{ slug: str
   if (!blogCategories?.length || !blog) redirect("/dashboard/blog-category");
 
   return (
-    <>
-      <Suspense fallback={<div>Loading...</div>}>
-        <EditBlogForm blogCategories={blogCategories} blog={blog} />
-      </Suspense>
-    </>
+    <Suspense fallback={<Load />}>
+      <EditBlogForm blogCategories={blogCategories} blog={blog} />
+    </Suspense>
   );
 }

@@ -6,6 +6,7 @@ import Footer from "@/components/layouts/Footer";
 import { content as c } from "@/lib/content";
 import { NextAuthProviders } from "@/components/NextAuthProvider";
 import Layer from "@/components/layouts/layer";
+import Loading from "./loading";
 
 const { title, description } = c.home.hero;
 

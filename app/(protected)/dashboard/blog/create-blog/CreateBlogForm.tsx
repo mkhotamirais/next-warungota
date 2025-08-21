@@ -24,7 +24,7 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const { errors, setErrors, successMsg, setSuccessMsg, errorMsg, setErrorMsg } = useBlog();
+  const { errors, setErrors, setSuccessMsg, errorMsg, setErrorMsg } = useBlog();
 
   const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -107,7 +107,7 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
 
   return (
     <>
-      {successMsg ? <Msg msg={successMsg} /> : null}
+      {/* {successMsg ? <Msg msg={successMsg} /> : null} */}
       {errorMsg ? <Msg msg={errorMsg} error /> : null}
       <form onSubmit={handleCreate}>
         {/* image */}

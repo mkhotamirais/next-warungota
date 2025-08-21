@@ -2,7 +2,7 @@
 
 import Input from "@/components/form/Input";
 import Select from "@/components/form/Select";
-import Textarea from "@/components/form/Textarea";
+// import Textarea from "@/components/form/Textarea";
 import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { FaTrash } from "react-icons/fa6";
@@ -26,16 +26,13 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const { errors, setErrors, successMsg, setSuccessMsg, errorMsg, setErrorMsg } = useBlog();
+  const { errors, setErrors, setSuccessMsg, errorMsg, setErrorMsg } = useBlog();
 
   const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const blogCategoriesOptions = blogCategories.map((category) => ({
-    label: category.name,
-    value: category.id,
-  }));
+  const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
 
   useEffect(() => {
     if (blog) {
@@ -116,7 +113,7 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
 
   return (
     <>
-      {successMsg ? <Msg msg={successMsg} /> : null}
+      {/* {successMsg ? <Msg msg={successMsg} /> : null} */}
       {errorMsg ? <Msg msg={errorMsg} error /> : null}
 
       <form onSubmit={handleUpdate}>
@@ -129,7 +126,6 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           onChange={handleFileChange}
           error={errors?.image?.errors}
         />
-
         {imagePreview && (
           <div className="relative">
             <Image
@@ -149,7 +145,6 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
             </button>
           </div>
         )}
-
         <Input
           id="title"
           label="Title"
@@ -159,7 +154,12 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           onChange={(e) => setTitle(e.target.value)}
           error={errors?.title?.errors}
         />
-        <TiptapEditor label="Content" value={content} onChange={setContent} error={errors?.content?.errors} />
+        <TiptapEditor
+          label="Content"
+          value={`${content}`}
+          onChange={(value) => setContent(value)}
+          error={errors?.content?.errors}
+        />
         {/* <Textarea
           id="content"
           label="Content"
@@ -177,7 +177,6 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           onChange={(e) => setCategoryId(e.target.value)}
           error={errors?.categoryId?.errors}
         />
-
         <Button type="submit" disabled={pending}>
           {pending ? "Updating..." : "Update"}
         </Button>
