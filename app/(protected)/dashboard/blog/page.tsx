@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { getBlogByUserId, getBlogs } from "@/lib/data";
+import Load from "@/components/fallbacks/Load";
 
 export default async function AdminBlog() {
   const session = await auth();
@@ -25,7 +26,7 @@ export default async function AdminBlog() {
       <Button as={Link} href="/dashboard/blog/create-blog">
         Create Blog
       </Button>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Load />}>
         <List blogs={blogs} />
       </Suspense>
     </>

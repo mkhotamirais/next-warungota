@@ -51,7 +51,7 @@ export const getBlogByUserId = async () => {
   const session = await auth();
   const id = session?.user?.id;
   const blog = await prisma.blog.findMany({
-    include: { BlogCategory: { select: { name: true } }, User: { select: { name: true } } },
+    include: { BlogCategory: { select: { name: true, slug: true } }, User: { select: { name: true } } },
     where: { userId: id },
     orderBy: { createdAt: "desc" },
   });
