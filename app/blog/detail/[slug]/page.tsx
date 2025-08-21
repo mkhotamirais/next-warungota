@@ -1,10 +1,19 @@
 import BlogExcerpt from "@/components/sections/BlogExcerpt";
 import { getBlogBySlug, getBlogs } from "@/lib/data";
-import { diffForHumans, smartTrim } from "@/lib/utils";
+import { diffForHumans, smartTrim, stripHtml } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
+
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const slug = (await params).slug;
+  const blog = await getBlogBySlug(slug);
+  return {
+    title: blog?.title,
+    description: smartTrim(stripHtml(blog?.content || ""), 160),
+  };
+};
 
 export const generateStaticParams = async () => {
   const blogs = await getBlogs(10, undefined, undefined);
