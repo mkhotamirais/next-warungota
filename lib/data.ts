@@ -14,12 +14,18 @@ export const adminOrEditor = async () => {
     redirect("/dashboard");
 };
 
-// Blog
+// Blog Category
 export const getBlogCategories = async () => {
   const categories = await prisma.blogCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
   return categories;
 };
 
+export const getBlogCategoryBySlug = async (slug: string) => {
+  const category = await prisma.blogCategory.findUnique({ where: { slug } });
+  return category;
+};
+
+// Blog
 export const getBlogs = async (limit?: number, excludeSlug?: string, categorySlug?: string) => {
   const whereClause: { slug?: { not: string }; BlogCategory?: { slug: string } } = {};
 

@@ -1,7 +1,13 @@
 import Hero from "@/components/sections/Hero";
-import { getBlogCategories, getBlogs } from "@/lib/data";
+import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/lib/data";
 import React from "react";
 import List from "../../List";
+
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const slug = (await params).slug;
+  const category = await getBlogCategoryBySlug(slug);
+  return { title: category?.name };
+};
 
 export const generateStaticParams = async () => {
   const categories = await getBlogCategories();
