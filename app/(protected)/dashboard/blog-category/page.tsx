@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import BlogCategoryList from "./List";
-import { getBlogCategories } from "@/lib/data";
 import Load from "@/components/fallbacks/Load";
 import Create from "./Create";
+import { getBlogCategories } from "@/actions/blog";
 
 export default async function BlogCategory() {
   const blogCategories = await getBlogCategories();

@@ -1,7 +1,10 @@
 import Hero from "@/components/sections/Hero";
-import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/lib/data";
-import React from "react";
-import List from "../../List";
+import React, { Suspense } from "react";
+import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/actions/blog";
+import Load from "@/components/fallbacks/Load";
+import BlogList from "../../BlogList";
+import Pagination from "@/components/ui/Pagination";
+import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
@@ -18,14 +21,28 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
   const categorySlug = (await params).slug;
   const categoryName = categorySlug.replace(/-/g, " ");
 
-  const blogs = await getBlogs(undefined, undefined, categorySlug);
+  const { blogs, totalPages } = await getBlogs({ categorySlug });
 
   return (
     <>
       <Hero title={`Blog - ${categoryName}`} />
       <section className="py-12">
-        <div className="container">
-          <List blogs={blogs} />
+        <div className="container flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-3/4">
+            {blogs?.length ? (
+              <>
+                <Suspense fallback={<Load />}>
+                  <BlogList blogs={blogs} />
+                </Suspense>
+                <Pagination totalPages={totalPages} />
+              </>
+            ) : (
+              <h2 className="h2">No Blog Found</h2>
+            )}
+          </div>
+          <div className="w-full md:w-1/4">
+            <AsideBlogCategory />
+          </div>
         </div>
       </section>
     </>

@@ -16,7 +16,7 @@
   }
 
   .container {
-    @apply mx-auto px-3 sm:px-12 lg:px-24 h-full;
+    @apply mx-auto px-3 lg:px-16 h-full;
   }
 
   .link {

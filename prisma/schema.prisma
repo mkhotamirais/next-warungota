@@ -21,7 +21,9 @@ model User {
   accounts      Account[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  Blog          Blog[]
+
+  Blog    Blog[]
+  Product Product[]
 }
 
 model Account {
@@ -77,12 +79,14 @@ model Product {
   price       Int
   stock       Int      @default(0)
   imageUrl    String?
+  tags        String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  userId          String
+  User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId      String
   ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
-  ProductTags     ProductTag[]    @relation(name: "ProductToTag")
 }
 
 model ProductCategory {
@@ -94,14 +98,4 @@ model ProductCategory {
   updatedAt DateTime @updatedAt
 
   Products Product[]
-}
-
-model ProductTag {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  name      String   @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Products Product[] @relation(name: "ProductToTag")
 }

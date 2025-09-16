@@ -1,8 +1,8 @@
 import React, { Suspense } from "react";
 import ProductCategoryList from "./List";
-import { getProductCategories } from "@/lib/data";
 import Load from "@/components/fallbacks/Load";
 import Create from "./Create";
+import { getProductCategories } from "@/actions/product";
 
 export default async function ProductCategory() {
   const productCategories = await getProductCategories();

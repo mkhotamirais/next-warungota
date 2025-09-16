@@ -1,8 +1,8 @@
-import { getBlogCategories } from "@/lib/data";
 import CreateBlogForm from "./CreateBlogForm";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Load from "@/components/fallbacks/Load";
+import { getBlogCategories } from "@/actions/blog";
 
 export default async function CreateBlog() {
   const blogCategories = await getBlogCategories();

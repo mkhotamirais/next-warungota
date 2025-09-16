@@ -9,7 +9,7 @@ const { title, description } = c.blog;
 
 export default async function HomeBlog({ blogs }: { blogs: BlogProps[] | undefined | null }) {
   return (
-    <section className="py-12">
+    <section className="py-12 bg-gray-100">
       <div className="container">
         <div className="mb-12 text-center">
           <h2 className="h2 mb-2">{title}</h2>

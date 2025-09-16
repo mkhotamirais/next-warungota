@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface productTagState {
+interface ProductState {
   successMsg: string | null;
   setSuccessMsg: (successMsg: string | null) => void;
   errorMsg: string | null;
@@ -9,7 +9,7 @@ interface productTagState {
   setErrors: (errors: Record<string, { errors: string[] }> | undefined) => void;
 }
 
-export const useProductTag = create<productTagState>((set) => ({
+export const useProduct = create<ProductState>((set) => ({
   successMsg: null,
   setSuccessMsg: (successMsg) => set({ successMsg }),
   errorMsg: null,

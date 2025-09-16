@@ -1,5 +1,5 @@
+import { getBlogBySlug, getBlogs } from "@/actions/blog";
 import BlogExcerpt from "@/components/sections/BlogExcerpt";
-import { getBlogBySlug, getBlogs } from "@/lib/data";
 import { diffForHumans, smartTrim, stripHtml } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -16,13 +16,14 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
 };
 
 export const generateStaticParams = async () => {
-  const blogs = await getBlogs(undefined, undefined, undefined);
+  const { blogs } = await getBlogs();
   return blogs.map((blog) => ({ slug: blog.slug }));
 };
 
 export default async function BlogSlug({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;
-  const [blog, latestBlogs] = await Promise.all([getBlogBySlug(slug), getBlogs(8, slug)]);
+  const blog = await getBlogBySlug(slug);
+  const { blogs: latestBlogs } = await getBlogs({ limit: 3, excludeSlug: slug });
 
   if (!blog || !latestBlogs?.length) return notFound();
 
@@ -31,9 +32,7 @@ export default async function BlogSlug({ params }: { params: Promise<{ slug: str
       <div className="container flex flex-col lg:flex-row items-start gap-8">
         <div className="w-full lg:w-2/3">
           <h1 className="h1 mb-4 text-center">{blog.title}</h1>
-          <div className="mb-8 text-center flex gap-2 justify-center text-gray-500">
-            <BlogExcerpt blog={blog} />
-          </div>
+          <BlogExcerpt blog={blog} className="mb-8 justify-center" />
           <Image
             src={blog.imageUrl || "/logo-warungota.png"}
             alt={blog.title}

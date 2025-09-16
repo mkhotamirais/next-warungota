@@ -7,41 +7,41 @@ import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { BlogCategory } from "@prisma/client";
-import { BlogProps } from "@/types/types";
+import { ProductCategory } from "@prisma/client";
 import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
-import { useBlog } from "@/hooks/useBlog";
+import { useProduct } from "@/hooks/useProduct";
 import TiptapEditor from "@/components/form/tiptap/TiptapEditor";
+import InputMultiple from "@/components/form/InputMultiple";
 
-interface UpdateBlogFormProps {
-  blogCategories: BlogCategory[];
-  blog: BlogProps;
+interface CreateProductFormProps {
+  productCategories: ProductCategory[];
 }
 
-export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormProps) {
-  const [title, setTitle] = useState(blog.title);
-  const [content, setContent] = useState(blog.content);
+export default function CreateProductForm({ productCategories }: CreateProductFormProps) {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [stock, setStock] = useState("");
+  const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const { errors, setErrors, setSuccessMsg, errorMsg, setErrorMsg } = useBlog();
+  const { errors, setErrors, setSuccessMsg, errorMsg, setErrorMsg } = useProduct();
 
   const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
+  const productCategoriesOptions = productCategories.map((category) => ({ label: category.name, value: category.id }));
 
+  const defaultCategory = productCategories.find((category) => category.isDefault)!;
   useEffect(() => {
-    if (blog) {
-      setCategoryId(blog.categoryId!);
-      setImagePreview(blog.imageUrl!);
+    if (defaultCategory && !categoryId) {
+      setCategoryId(defaultCategory.id);
     }
-  }, [blog]);
-
-  const defaultCategory = blogCategories.find((category) => category.isDefault)!;
+  }, [defaultCategory, categoryId]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -67,19 +67,25 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
     }
   };
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    formData.append("title", title);
-    formData.append("content", content);
+    formData.append("name", name);
+    formData.append("price", price);
+    formData.append("stock", stock);
+    formData.append("description", description);
+    formData.delete("tags");
     formData.append("categoryId", categoryId);
     if (image) {
       formData.append("image", image as Blob);
     }
+    tags.map((tag) => {
+      formData.append("tags", tag);
+    });
 
     startTransition(async () => {
-      const res = await fetch(`/api/blog/${blog.id}`, { method: "PATCH", body: formData });
+      const res = await fetch("/api/product", { method: "POST", body: formData });
       const result = await res.json();
 
       if (result?.errors || result?.error || result?.message) {
@@ -98,14 +104,17 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
         return;
       }
       setSuccessMsg(result.message);
-      setTitle("");
-      setContent("");
+      setName("");
+      setPrice("");
+      setStock("");
+      setDescription("");
+      setTags([]);
       setCategoryId(defaultCategory.id);
       setImage(null);
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      router.push("/dashboard/blog");
+      router.push("/dashboard/product");
     });
   };
 
@@ -113,9 +122,7 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
     <>
       {/* {successMsg ? <Msg msg={successMsg} /> : null} */}
       {errorMsg ? <Msg msg={errorMsg} error /> : null}
-
-      <form onSubmit={handleUpdate}>
-        {/* image */}
+      <form onSubmit={handleCreate}>
         <Input
           ref={fileInputRef}
           id="image"
@@ -144,19 +151,53 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           </div>
         )}
         <Input
-          id="title"
-          label="Title"
+          id="name"
+          label="Name"
           type="text"
-          placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          error={errors?.title?.errors}
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          error={errors?.name?.errors}
         />
+        <div className="flex gap-2">
+          <Input
+            id="price"
+            label="Price"
+            placeholder="Price"
+            value={price}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (!/^\d*$/.test(value)) {
+                alert("Input hanya boleh angka");
+                return;
+              }
+              setPrice(value);
+            }}
+            error={errors?.price?.errors}
+            className="w-3/4"
+          />
+          <Input
+            id="stock"
+            label="Stock"
+            placeholder="Stock"
+            value={stock.toString()}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (!/^\d*$/.test(value)) {
+                alert("Input hanya boleh angka");
+                return;
+              }
+              setStock(value);
+            }}
+            error={errors?.stock?.errors}
+            className="w-1/4"
+          />
+        </div>
         <TiptapEditor
-          label="Content"
-          value={content}
-          onChange={(value) => setContent(value)}
-          error={errors?.content?.errors}
+          label="Description"
+          value={description}
+          onChange={setDescription}
+          error={errors?.description?.errors}
         />
         {/* <Textarea
           id="content"
@@ -168,15 +209,17 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
           error={errors?.content?.errors}
         /> */}
         <Select
-          id="blogCategory"
+          id="productCategory"
           label="Category"
-          options={blogCategoriesOptions}
+          options={productCategoriesOptions}
           value={categoryId || defaultCategory.id}
           onChange={(e) => setCategoryId(e.target.value)}
           error={errors?.categoryId?.errors}
         />
+        <InputMultiple label="Tags" id="tags" value={tags} onChange={setTags} />
+
         <Button type="submit" disabled={pending}>
-          {pending ? "Updating..." : "Update"}
+          {pending ? "Creating..." : "Create"}
         </Button>
       </form>
     </>

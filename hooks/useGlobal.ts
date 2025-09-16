@@ -5,6 +5,8 @@ interface GlobalState {
   setOpenLayer: (openLayer: boolean) => void;
   openMoreBlogOption: string | null;
   setOpenMoreBlogOption: (openMoreBlogOption: string | null) => void;
+  openMoreProductOption: string | null;
+  setOpenMoreProductOption: (openMoreProductOption: string | null) => void;
 }
 
 export const useGlobal = create<GlobalState>((set) => ({
@@ -12,4 +14,6 @@ export const useGlobal = create<GlobalState>((set) => ({
   setOpenLayer: (openLayer) => set(() => ({ openLayer })),
   openMoreBlogOption: null,
   setOpenMoreBlogOption: (openMoreBlogOption) => set(() => ({ openMoreBlogOption })),
+  openMoreProductOption: null,
+  setOpenMoreProductOption: (openMoreProductOption) => set(() => ({ openMoreProductOption })),
 }));

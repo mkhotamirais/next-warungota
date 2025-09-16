@@ -3,6 +3,7 @@ export const menu = {
     { label: "Home", url: "/" },
     { label: "About", url: "/about" },
     { label: "Contact", url: "/contact" },
+    { label: "Product", url: "/product" },
     { label: "Blog", url: "/blog" },
   ],
   userMenu: [
@@ -14,7 +15,6 @@ export const menu = {
     { label: "Product", url: "/dashboard/product" },
     { label: "Create Product", url: "/dashboard/product/create-product" },
     { label: "Product Category", url: "/dashboard/product-category" },
-    { label: "Product Tag", url: "/dashboard/product-tag" },
     { label: "Blog", url: "/dashboard/blog" },
     { label: "Create Blog", url: "/dashboard/blog/create-blog" },
     { label: "Blog Category", url: "/dashboard/blog-category" },
@@ -44,5 +44,9 @@ export const content = {
   blog: {
     title: "Blog",
     description: "Blog description",
+  },
+  product: {
+    title: "Product",
+    description: "Product description",
   },
 };
