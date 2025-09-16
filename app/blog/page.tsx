@@ -3,16 +3,16 @@ import React, { Suspense } from "react";
 import { content as c } from "@/lib/content";
 import { getBlogs } from "@/actions/blog";
 import Load from "@/components/fallbacks/Load";
-import BlogList from "./BlogList";
 import Pagination from "@/components/ui/Pagination";
 import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
+import List from "./List";
 
 const { title, description } = c.blog;
 
 export default async function Blog({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const page = Number((await searchParams).page || 1);
 
-  const { blogs, totalPages } = await getBlogs({ page, limit: 2 });
+  const { blogs, totalPages } = await getBlogs({ page, limit: 3 });
 
   return (
     <>
@@ -23,7 +23,7 @@ export default async function Blog({ searchParams }: { searchParams: Promise<{ p
             {blogs?.length ? (
               <>
                 <Suspense fallback={<Load />}>
-                  <BlogList blogs={blogs} />
+                  <List blogs={blogs} />
                 </Suspense>
                 <Pagination totalPages={totalPages} />
               </>

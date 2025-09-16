@@ -5,20 +5,30 @@ import Load from "@/components/fallbacks/Load";
 import List from "./List";
 import { getProducts } from "@/actions/product";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
+import Pagination from "@/components/ui/Pagination";
 
 const { title, description } = c.product;
 
-export default async function Product() {
-  const products = await getProducts();
+export default async function Product({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+  const page = Number((await searchParams).page || 1);
+
+  const { products, totalPages } = await getProducts({ page, limit: 2 });
 
   return (
     <>
       <Hero title={title} description={description} />
       <section className="py-12">
         <div className="container">
-          <Suspense fallback={<Load />}>
-            <List products={products} />
-          </Suspense>
+          {products?.length ? (
+            <>
+              <Suspense fallback={<Load />}>
+                <List products={products} />
+              </Suspense>
+              <Pagination totalPages={totalPages} />
+            </>
+          ) : (
+            <h2 className="h2">No Products Found</h2>
+          )}
           <div className="mt-8">
             <AsideProdutCategory />
           </div>

@@ -20,7 +20,7 @@ interface GetProductParams {
 
 export const getProducts = async ({
   limit = 8,
-  // page = 1, // Default ke halaman 1
+  page = 1, // Default ke halaman 1
   excludeSlug,
   categorySlug,
   userId,
@@ -35,17 +35,26 @@ export const getProducts = async ({
   if (categorySlug) whereClause.ProductCategory = { slug: categorySlug };
   if (userId) whereClause.userId = userId;
 
+  const totalProductsCount = await prisma.product.count({
+    where: whereClause,
+  });
+
+  const skip = (page - 1) * limit;
+
   const products = await prisma.product.findMany({
     where: whereClause,
     orderBy: { createdAt: "desc" },
-    ...(limit ? { take: limit } : {}),
+    take: limit,
+    skip: skip,
     include: {
       ProductCategory: { select: { name: true, slug: true } },
       User: { select: { name: true } },
     },
   });
 
-  return products;
+  const totalPages = Math.ceil(totalProductsCount / limit);
+
+  return { products, totalProductsCount, totalPages };
 };
 
 export const getProductBySlug = async (slug: string) => {

@@ -2,11 +2,11 @@ import BlogCard from "@/components/sections/BlogCard";
 import { BlogProps } from "@/types/types";
 import React from "react";
 
-interface BlogListProps {
+interface ListProps {
   blogs: BlogProps[] | undefined | null;
 }
 
-export default function BlogList({ blogs }: BlogListProps) {
+export default function List({ blogs }: ListProps) {
   return (
     <div className="">
       {blogs?.map((blog) => (

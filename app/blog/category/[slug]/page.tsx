@@ -2,7 +2,7 @@ import Hero from "@/components/sections/Hero";
 import React, { Suspense } from "react";
 import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/actions/blog";
 import Load from "@/components/fallbacks/Load";
-import BlogList from "../../BlogList";
+import BlogList from "../../List";
 import Pagination from "@/components/ui/Pagination";
 import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 

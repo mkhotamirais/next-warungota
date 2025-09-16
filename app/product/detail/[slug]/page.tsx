@@ -5,11 +5,22 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
-export default async function ProductDetailSlug({ params }: { params: Promise<{ slug: string }> }) {
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
-
   const product = await getProductBySlug(slug);
-  const otherProducts = await getProducts({ limit: 4, excludeSlug: slug });
+  return { title: product?.name };
+};
+
+export const generateStaticParams = async () => {
+  const { products } = await getProducts();
+  return products.map((product) => ({ slug: product.slug }));
+};
+
+export default async function ProductSlug({ params }: { params: Promise<{ slug: string }> }) {
+  const slug = (await params).slug;
+  const product = await getProductBySlug(slug);
+  const { products: otherProducts } = await getProducts({ limit: 3, excludeSlug: slug });
+
   if (!slug || !product || !otherProducts.length) return notFound();
 
   return (
