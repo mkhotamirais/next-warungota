@@ -3,7 +3,7 @@ export const revalidate = 60;
 import { content as c } from "@/lib/content";
 // import BlogCard1 from "@/components/BlogCard1";
 import { BlogProps } from "@/types/types";
-import BlogCard1 from "./BlogCard1";
+import BlogCard from "./BlogCard";
 
 const { title, description } = c.blog;
 
@@ -17,7 +17,7 @@ export default async function HomeBlog({ blogs }: { blogs: BlogProps[] | undefin
         </div>
         <div className="grid sm:grid-cols-3 gap-2 lg:gap-8">
           {blogs?.map((blog) => (
-            <BlogCard1 key={blog.id} blog={blog} content={false} />
+            <BlogCard key={blog.id} blog={blog} content={false} />
           ))}
         </div>
       </div>
