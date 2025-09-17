@@ -2,7 +2,6 @@ import Hero from "@/components/sections/Hero";
 import React, { Suspense } from "react";
 import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/actions/blog";
 import Load from "@/components/fallbacks/Load";
-import BlogList from "../../List";
 import Pagination from "@/components/ui/Pagination";
 import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 
@@ -31,9 +30,7 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
           <div className="w-full md:w-3/4">
             {blogs?.length ? (
               <>
-                <Suspense fallback={<Load />}>
-                  <BlogList blogs={blogs} />
-                </Suspense>
+                <Suspense fallback={<Load />}>{/* <BlogList blogs={blogs} /> */}</Suspense>
                 <Pagination totalPages={totalPages} />
               </>
             ) : (
