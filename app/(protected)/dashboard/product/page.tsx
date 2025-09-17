@@ -1,7 +1,6 @@
 import { auth } from "@/auth";
-import Load from "@/components/fallbacks/Load";
 import { redirect } from "next/navigation";
-import React, { Suspense } from "react";
+import React from "react";
 import List from "./List";
 import { getProducts } from "@/actions/product";
 // import Pagination from "@/components/ui/Pagination";
@@ -19,9 +18,7 @@ export default async function Product({ params }: { params: Promise<{ page?: str
 
   return (
     <>
-      <Suspense fallback={<Load />}>
-        <List products={products} />
-      </Suspense>
+      <List products={products} />
       {/* <Pagination totalPages={totalPages} currentPage={page} /> */}
     </>
   );
