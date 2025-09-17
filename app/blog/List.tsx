@@ -1,19 +1,19 @@
-"use client";
-
+import { getBlogs } from "@/actions/blog";
 import BlogCard from "@/components/sections/BlogCard";
-import { BlogProps } from "@/types/types";
+import Pagination from "@/components/ui/Pagination";
 import React from "react";
 
-interface ListProps {
-  blogs: BlogProps[] | undefined | null;
-}
+export default async function List({ page }: { page: number }) {
+  const { blogs, totalPages } = await getBlogs({ page, limit: 3 });
 
-export default function List({ blogs }: ListProps) {
   return (
-    <div className="">
-      {blogs?.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
-      ))}
-    </div>
+    <>
+      <div className="">
+        {blogs?.map((blog) => (
+          <BlogCard key={blog.id} blog={blog} />
+        ))}
+      </div>
+      <Pagination totalPages={totalPages} />
+    </>
   );
 }
