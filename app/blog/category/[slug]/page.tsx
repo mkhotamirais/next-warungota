@@ -31,7 +31,7 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
             {blogs?.length ? (
               <>
                 <Suspense fallback={<Load />}>{/* <BlogList blogs={blogs} /> */}</Suspense>
-                <Pagination totalPages={totalPages} />
+                {/* <Pagination totalPages={totalPages} /> */}
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>

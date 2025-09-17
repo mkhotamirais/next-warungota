@@ -8,10 +8,8 @@ import List from "./List";
 
 const { title, description } = c.blog;
 
-export default async function Blog({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
-  const page = Number((await searchParams).page || 1);
-
-  const { blogs, totalPages } = await getBlogs({ page: page || 1, limit: 3 });
+export default async function Blog() {
+  const { blogs, totalPages } = await getBlogs({ limit: 2 });
 
   return (
     <>
@@ -22,7 +20,7 @@ export default async function Blog({ searchParams }: { searchParams: Promise<{ p
             {blogs?.length ? (
               <>
                 <List blogs={blogs} />
-                <Pagination totalPages={totalPages} />
+                <Pagination totalPages={totalPages} currentPage={1} />
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>

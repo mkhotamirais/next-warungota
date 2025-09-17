@@ -1,19 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 interface PaginationProps {
   totalPages: number;
+  currentPage: number;
 }
 
-export default function Pagination({ totalPages }: PaginationProps) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const currentPage = Number(searchParams.get("page")) || 1;
+export default function Pagination({ totalPages, currentPage }: PaginationProps) {
   const [inputPage, setInputPage] = useState(String(currentPage));
 
   // Sinkronkan state input dengan currentPage dari URL
@@ -21,26 +16,25 @@ export default function Pagination({ totalPages }: PaginationProps) {
     setInputPage(String(currentPage));
   }, [currentPage]);
 
-  const createPageURL = (pageNumber: number | string) => {
-    const params = new URLSearchParams(searchParams);
-    params.set("page", String(pageNumber));
-    return `${pathname}?${params.toString()}`;
-  };
-
   const handleInputJump = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const pageNum = parseInt(inputPage);
       if (!isNaN(pageNum) && pageNum > 0 && pageNum <= totalPages) {
-        router.push(createPageURL(pageNum));
+        // Navigasi menggunakan Next.js Link
+        window.location.href = `/blog/page/${pageNum}`;
       } else {
+        // Reset input jika tidak valid
         setInputPage(String(currentPage));
       }
     }
   };
 
+  const prevPage = currentPage > 1 ? currentPage - 1 : 1;
+  const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
+
   return (
     <div className="flex items-center gap-2">
-      <Link href={createPageURL(currentPage - 1)}>
+      <Link href={`/blog/page/${prevPage}`}>
         <button
           type="button"
           disabled={currentPage <= 1}
@@ -67,7 +61,7 @@ export default function Pagination({ totalPages }: PaginationProps) {
       />
       <span>/ {totalPages}</span>
 
-      <Link href={createPageURL(currentPage + 1)}>
+      <Link href={`/blog/page/${nextPage}`}>
         <button
           type="button"
           disabled={currentPage >= totalPages}
