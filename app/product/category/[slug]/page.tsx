@@ -3,7 +3,7 @@ import React, { Suspense } from "react";
 import List from "../../List";
 import { getProductCategoryBySlug, getProducts } from "@/actions/product";
 import Load from "@/components/fallbacks/Load";
-import Pagination from "@/components/ui/Pagination";
+// import Pagination from "@/components/ui/Pagination";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
@@ -16,7 +16,7 @@ export default async function ProductCategory({ params }: { params: Promise<{ sl
   const categorySlug = (await params).slug;
   const categoryName = categorySlug.replace(/-/g, " ");
 
-  const { products, totalPages } = await getProducts({ categorySlug });
+  const { products } = await getProducts({ categorySlug });
 
   return (
     <>

@@ -5,14 +5,14 @@ import Load from "@/components/fallbacks/Load";
 import List from "./List";
 import { getProducts } from "@/actions/product";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
-import Pagination from "@/components/ui/Pagination";
+// import Pagination from "@/components/ui/Pagination";
 
 const { title, description } = c.product;
 
 export default async function Product({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const page = Number((await searchParams).page || 1);
 
-  const { products, totalPages } = await getProducts({ page, limit: 2 });
+  const { products } = await getProducts({ page, limit: 2 });
 
   return (
     <>
@@ -24,7 +24,7 @@ export default async function Product({ searchParams }: { searchParams: Promise<
               <Suspense fallback={<Load />}>
                 <List products={products} />
               </Suspense>
-              <Pagination totalPages={totalPages} />
+              {/* <Pagination totalPages={totalPages} /> */}
             </>
           ) : (
             <h2 className="h2">No Products Found</h2>

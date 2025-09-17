@@ -6,11 +6,11 @@ import List from "./List";
 import { getProducts } from "@/actions/product";
 import Pagination from "@/components/ui/Pagination";
 
-export default async function Product({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
+export default async function Product({ params }: { params: Promise<{ page?: string }> }) {
   const session = await auth();
   if (!session || !session.user) redirect("/profile");
 
-  const page = Number((await searchParams).page || 1);
+  const page = Number((await params).page || 1);
 
   let { products, totalPages } = await getProducts({ page, limit: 2 });
   if (session?.user?.role === "editor") {
@@ -22,7 +22,7 @@ export default async function Product({ searchParams }: { searchParams: Promise<
       <Suspense fallback={<Load />}>
         <List products={products} />
       </Suspense>
-      {/* <Pagination totalPages={totalPages} /> */}
+      <Pagination totalPages={totalPages} currentPage={page} />
     </>
   );
 }
