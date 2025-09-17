@@ -9,19 +9,10 @@ import List from "./List";
 
 const { title, description } = c.blog;
 
-const LIMIT = 3;
-
-export async function generateStaticParams() {
-  const { totalBlogsCount } = await getBlogs({ limit: 1 });
-  const totalPages = Math.ceil(totalBlogsCount / LIMIT);
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  return [{ page: "1" }, ...pages];
-}
-
 export default async function Blog({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const page = Number((await searchParams).page || 1);
 
-  const { blogs, totalPages } = await getBlogs({ page, limit: LIMIT });
+  const { blogs, totalPages } = await getBlogs({ page, limit: 3 });
 
   return (
     <>
@@ -31,9 +22,9 @@ export default async function Blog({ searchParams }: { searchParams: Promise<{ p
           <div className="w-full md:w-3/4">
             {blogs?.length ? (
               <>
-                <Suspense fallback={<Load />}>
-                  <List blogs={blogs} />
-                </Suspense>
+                {/* <Suspense fallback={<Load />}> */}
+                <List blogs={blogs} />
+                {/* </Suspense> */}
                 <Pagination totalPages={totalPages} />
               </>
             ) : (
