@@ -22,7 +22,7 @@ export default async function Product({ searchParams }: { searchParams: Promise<
       <Suspense fallback={<Load />}>
         <List products={products} />
       </Suspense>
-      <Pagination totalPages={totalPages} />
+      {/* <Pagination totalPages={totalPages} /> */}
     </>
   );
 }
