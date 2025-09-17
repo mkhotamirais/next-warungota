@@ -14,14 +14,13 @@ export default async function Blog() {
   return (
     <>
       <Hero title={title} description={description} />
-      <p>up</p>
       <section className="py-12">
         <div className="container flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-3/4">
             {blogs?.length ? (
               <>
                 <List blogs={blogs} />
-                <Pagination totalPages={totalPages} currentPage={1} />
+                <Pagination totalPages={totalPages} currentPage={1} path="/blog/page" />
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>

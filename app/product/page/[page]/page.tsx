@@ -1,22 +1,31 @@
 import Hero from "@/components/sections/Hero";
 import React from "react";
 import { content as c } from "@/lib/content";
-import List from "./List";
 import { getProducts } from "@/actions/product";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
 import Pagination from "@/components/ui/Pagination";
+import List from "../../List";
 
-const { title, description } = c.product;
+const { description } = c.product;
 const limit = 2;
 
-export default async function Product({ params }: { params: Promise<{ page?: string }> }) {
-  const page = Number((await params).page || 1);
+export const generateMetadata = async ({ params }: { params: Promise<{ page: string }> }) => {
+  const page = Number((await params).page);
+  return { title: `Product Page ${page}` };
+};
 
+export const generateStaticParams = async () => {
+  const { totalPages } = await getProducts({ limit });
+  return Array.from({ length: totalPages }, (_, i) => ({ page: String(i + 1) }));
+};
+
+export default async function ProductPaginate({ params }: { params: Promise<{ page?: string }> }) {
+  const page = Number((await params).page || 1);
   const { products, totalPages } = await getProducts({ page, limit });
 
   return (
     <>
-      <Hero title={title} description={description} />
+      <Hero title={`Product Page ${page}`} description={description} />
       <section className="py-12">
         <div className="container">
           {products?.length ? (

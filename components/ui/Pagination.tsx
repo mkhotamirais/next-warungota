@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 interface PaginationProps {
   totalPages: number;
   currentPage: number;
+  path: string;
 }
 
-export default function Pagination({ totalPages, currentPage }: PaginationProps) {
+export default function Pagination({ totalPages, currentPage, path }: PaginationProps) {
   const [inputPage, setInputPage] = useState(String(currentPage));
 
   // Sinkronkan state input dengan currentPage dari URL
@@ -21,7 +22,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
       const pageNum = parseInt(inputPage);
       if (!isNaN(pageNum) && pageNum > 0 && pageNum <= totalPages) {
         // Navigasi menggunakan Next.js Link
-        window.location.href = `/blog/page/${pageNum}`;
+        window.location.href = `${path}/${pageNum}`;
       } else {
         // Reset input jika tidak valid
         setInputPage(String(currentPage));
@@ -34,7 +35,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
 
   return (
     <div className="flex items-center gap-2">
-      <Link href={`/blog/page/${prevPage}`}>
+      <Link href={`${path}/${prevPage}`}>
         <button
           type="button"
           disabled={currentPage <= 1}
@@ -61,7 +62,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
       />
       <span>/ {totalPages}</span>
 
-      <Link href={`/blog/page/${nextPage}`}>
+      <Link href={`${path}/${nextPage}`}>
         <button
           type="button"
           disabled={currentPage >= totalPages}

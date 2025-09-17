@@ -1,10 +1,10 @@
 import Hero from "@/components/sections/Hero";
 import React, { Suspense } from "react";
-import { getBlogCategories, getBlogCategoryBySlug, getBlogs } from "@/actions/blog";
+import { getBlogCategoryBySlug, getBlogs } from "@/actions/blog";
 import Load from "@/components/fallbacks/Load";
 import Pagination from "@/components/ui/Pagination";
 import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
-import List from "../../List";
+import List from "@/app/blog/List";
 
 const limit = 1;
 
@@ -14,16 +14,18 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
   return { title: category?.name };
 };
 
-export const generateStaticParams = async () => {
-  const categories = await getBlogCategories();
-  return categories.map((category) => ({ slug: category.slug }));
+export const generateStaticParams = async ({ params }: { params: Promise<{ slug: string }> }) => {
+  const categorySlug = (await params).slug;
+  const { totalPages } = await getBlogs({ limit, categorySlug });
+  return Array.from({ length: totalPages }, (_, i) => ({ page: String(i + 1) }));
 };
 
-export default async function BlogCategory({ params }: { params: Promise<{ slug: string }> }) {
+export default async function BlogCategory({ params }: { params: Promise<{ slug: string; page: string }> }) {
   const categorySlug = (await params).slug;
+  const page = Number((await params).page || 1);
   const categoryName = categorySlug.replace(/-/g, " ");
 
-  const { blogs, totalPages } = await getBlogs({ limit, categorySlug });
+  const { blogs, totalPages } = await getBlogs({ page, limit, categorySlug });
 
   return (
     <>
@@ -35,7 +37,7 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
               <>
                 <Suspense fallback={<Load />}>
                   <List blogs={blogs} />
-                  <Pagination totalPages={totalPages} currentPage={1} path="/blog/page" />
+                  <Pagination totalPages={totalPages} currentPage={1} path={`/blog/category/${categorySlug}`} />
                 </Suspense>
               </>
             ) : (

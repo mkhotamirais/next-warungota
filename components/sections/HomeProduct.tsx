@@ -13,7 +13,7 @@ export default function HomeProduct({ products }: { products: ProductProps[] | u
           <h2 className="h2 mb-2">{title}</h2>
           <p>{description}</p>
         </div>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-4 gap-4">
           {products?.map((item) => (
             <ProductCard key={item.id} item={item} />
           ))}

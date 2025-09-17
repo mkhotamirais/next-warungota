@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
 import List from "./List";
 import { getProducts } from "@/actions/product";
-import Pagination from "@/components/ui/Pagination";
+// import Pagination from "@/components/ui/Pagination";
 
 export default async function Product({ params }: { params: Promise<{ page?: string }> }) {
   const session = await auth();
@@ -12,9 +12,9 @@ export default async function Product({ params }: { params: Promise<{ page?: str
 
   const page = Number((await params).page || 1);
 
-  let { products, totalPages } = await getProducts({ page, limit: 2 });
+  let { products } = await getProducts({ page, limit: 2 });
   if (session?.user?.role === "editor") {
-    ({ products, totalPages } = await getProducts({ userId: session.user.id }));
+    ({ products } = await getProducts({ userId: session.user.id }));
   }
 
   return (
@@ -22,7 +22,7 @@ export default async function Product({ params }: { params: Promise<{ page?: str
       <Suspense fallback={<Load />}>
         <List products={products} />
       </Suspense>
-      <Pagination totalPages={totalPages} currentPage={page} />
+      {/* <Pagination totalPages={totalPages} currentPage={page} /> */}
     </>
   );
 }

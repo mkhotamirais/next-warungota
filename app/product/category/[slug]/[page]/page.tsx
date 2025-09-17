@@ -1,10 +1,10 @@
 import Hero from "@/components/sections/Hero";
 import React, { Suspense } from "react";
-import List from "../../List";
 import { getProductCategoryBySlug, getProducts } from "@/actions/product";
 import Load from "@/components/fallbacks/Load";
 import Pagination from "@/components/ui/Pagination";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
+import List from "@/app/product/List";
 
 const limit = 1;
 
@@ -14,11 +14,18 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
   return { title: category?.name };
 };
 
-export default async function ProductCategory({ params }: { params: Promise<{ slug: string }> }) {
+export const generateStaticParams = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const categorySlug = (await params).slug;
+  const { totalPages } = await getProducts({ limit, categorySlug });
+  return Array.from({ length: totalPages }, (_, i) => ({ page: String(i + 1) }));
+};
+
+export default async function ProductCategoryPaginate({ params }: { params: Promise<{ slug: string; page: string }> }) {
+  const categorySlug = (await params).slug;
+  const page = Number((await params).page || 1);
   const categoryName = categorySlug.replace(/-/g, " ");
 
-  const { products, totalPages } = await getProducts({ limit, categorySlug });
+  const { products, totalPages } = await getProducts({ page, limit, categorySlug });
 
   return (
     <>
@@ -30,7 +37,7 @@ export default async function ProductCategory({ params }: { params: Promise<{ sl
               <Suspense fallback={<Load />}>
                 <List products={products} />
               </Suspense>
-              <Pagination totalPages={totalPages} currentPage={1} path={`/product/category/${categorySlug}`} />
+              <Pagination totalPages={totalPages} currentPage={page} path={`/product/category/${categorySlug}`} />
             </>
           ) : (
             <h2 className="h2">No Products Found</h2>

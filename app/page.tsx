@@ -1,24 +1,19 @@
-// import Load from "@/components/fallbacks/Load";
-// import HomeBlog from "@/components/sections/HomeBlog";
+import { getBlogs } from "@/actions/blog";
+import { getProducts } from "@/actions/product";
+import HomeBlog from "@/components/sections/HomeBlog";
 import HomeHero from "@/components/sections/HomeHero";
-// import HomeProduct from "@/components/sections/HomeProduct";
+import HomeProduct from "@/components/sections/HomeProduct";
 import React from "react";
 
 export default async function Home() {
-  // const [products, blogs] = await Promise.all([getProducts(4), getBlogs(3)]);
-  // const products = await getProducts(4);
-
-  // if (!products?.length) return null;
+  const { products } = await getProducts({ limit: 4 });
+  const { blogs } = await getBlogs({ limit: 4 });
 
   return (
     <>
       <HomeHero />
-      {/* <Suspense fallback={<Load />}>
-        <HomeProduct products={products} />
-      </Suspense> */}
-      {/* <Suspense fallback={<Load />}>
-        <HomeBlog blogs={blogs} />
-      </Suspense> */}
+      <HomeProduct products={products} />
+      <HomeBlog blogs={blogs} />
     </>
   );
 }
