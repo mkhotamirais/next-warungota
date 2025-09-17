@@ -28,7 +28,7 @@ export default async function ProductCategory({ params }: { params: Promise<{ sl
               <Suspense fallback={<Load />}>
                 <List products={products} />
               </Suspense>
-              <Pagination totalPages={totalPages} />
+              {/* <Pagination totalPages={totalPages} /> */}
             </>
           ) : (
             <h2 className="h2">No Products Found</h2>
