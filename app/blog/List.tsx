@@ -1,3 +1,5 @@
+"use client";
+
 import BlogCard from "@/components/sections/BlogCard";
 import { BlogProps } from "@/types/types";
 import React from "react";

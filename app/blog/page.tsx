@@ -22,10 +22,10 @@ export default async function Blog({ searchParams }: { searchParams: Promise<{ p
           <div className="w-full md:w-3/4">
             {blogs?.length ? (
               <>
-                {/* <Suspense fallback={<Load />}> */}
-                <List blogs={blogs} />
-                {/* </Suspense> */}
-                <Pagination totalPages={totalPages} />
+                <Suspense fallback={<Load />}>
+                  <List blogs={blogs} />
+                  <Pagination totalPages={totalPages} />
+                </Suspense>
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>
