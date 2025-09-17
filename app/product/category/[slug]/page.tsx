@@ -1,7 +1,7 @@
 import Hero from "@/components/sections/Hero";
 import React, { Suspense } from "react";
 import List from "../../List";
-import { getProductCategoryBySlug, getProducts } from "@/actions/product";
+import { getProductCategories, getProductCategoryBySlug, getProducts } from "@/actions/product";
 import Load from "@/components/fallbacks/Load";
 import Pagination from "@/components/ui/Pagination";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
@@ -12,6 +12,11 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
   const slug = (await params).slug;
   const category = await getProductCategoryBySlug(slug);
   return { title: category?.name };
+};
+
+export const generateStaticParams = async () => {
+  const categories = await getProductCategories();
+  return categories.map((category) => ({ slug: category.slug }));
 };
 
 export default async function ProductCategory({ params }: { params: Promise<{ slug: string }> }) {

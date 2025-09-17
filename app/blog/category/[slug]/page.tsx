@@ -35,7 +35,7 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
               <>
                 <Suspense fallback={<Load />}>
                   <List blogs={blogs} />
-                  <Pagination totalPages={totalPages} currentPage={1} path="/blog/page" />
+                  <Pagination totalPages={totalPages} currentPage={1} path={`/blog/category/${categorySlug}`} />
                 </Suspense>
               </>
             ) : (
