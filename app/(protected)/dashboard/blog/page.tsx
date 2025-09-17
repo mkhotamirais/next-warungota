@@ -1,29 +1,25 @@
-import { Suspense } from "react";
 import List from "./List";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
-import Load from "@/components/fallbacks/Load";
+// import { auth } from "@/auth";
+// import { redirect } from "next/navigation";
 import { getBlogs } from "@/actions/blog";
 import Pagination from "@/components/ui/Pagination";
+import { Suspense } from "react";
 
 const limit = 1;
-export default async function AdminBlog({ params }: { params: Promise<{ page?: string }> }) {
-  const session = await auth();
-  if (!session || !session.user) redirect("/profile");
 
-  const page = Number((await params).page || 1);
+export default async function AdminBlog() {
+  // const session = await auth();
+  // if (!session || !session.user) redirect("/profile");
 
-  let { blogs, totalPages } = await getBlogs({ page, limit });
-  if (session?.user?.role === "editor") {
-    ({ blogs, totalPages } = await getBlogs({ userId: session.user.id }));
-  }
+  const { blogs, totalPages } = await getBlogs({ page: 1, limit });
+  // if (session?.user?.role === "editor") {
+  //   ({ blogs, totalPages } = await getBlogs({ userId: session.user.id }));
+  // }
 
   return (
-    <>
-      <Suspense fallback={<Load />}>
-        <List blogs={blogs} />
-      </Suspense>
-      <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/blog/page" />
-    </>
+    <Suspense fallback={<div>Loading...</div>}>
+      <List blogs={blogs} />
+      <Pagination totalPages={totalPages} currentPage={1} path="/dashboard/blog/page" />
+    </Suspense>
   );
 }
