@@ -9,11 +9,12 @@ import List from "./List";
 const { title, description } = c.blog;
 
 export default async function Blog() {
-  const { blogs, totalPages } = await getBlogs({ limit: 2 });
+  const { blogs, totalPages } = await getBlogs({ page: 1, limit: 2 });
 
   return (
     <>
       <Hero title={title} description={description} />
+      <p>up</p>
       <section className="py-12">
         <div className="container flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-3/4">
