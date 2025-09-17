@@ -1,19 +1,17 @@
-import { getBlogs } from "@/actions/blog";
 import BlogCard from "@/components/sections/BlogCard";
-import Pagination from "@/components/ui/Pagination";
+import { BlogProps } from "@/types/types";
 import React from "react";
 
-export default async function List({ page }: { page: number }) {
-  const { blogs, totalPages } = await getBlogs({ page, limit: 3 });
+interface ListProps {
+  blogs: BlogProps[] | undefined | null;
+}
 
+export default function List({ blogs }: ListProps) {
   return (
-    <>
-      <div className="">
-        {blogs?.map((blog) => (
-          <BlogCard key={blog.id} blog={blog} />
-        ))}
-      </div>
-      <Pagination totalPages={totalPages} />
-    </>
+    <div className="">
+      {blogs?.map((blog) => (
+        <BlogCard key={blog.id} blog={blog} />
+      ))}
+    </div>
   );
 }
