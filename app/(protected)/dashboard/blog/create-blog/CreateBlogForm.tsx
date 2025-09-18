@@ -101,6 +101,7 @@ export default function CreateBlogForm({ blogCategories }: CreateBlogFormProps) 
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
 
+      router.refresh();
       router.push("/dashboard/blog");
     });
   };
