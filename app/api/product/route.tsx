@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { ProductSchema } from "@/lib/zod";
 import { put } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export const POST = async (req: Request) => {
@@ -53,6 +54,8 @@ export const POST = async (req: Request) => {
     await prisma.product.create({
       data: { name, slug, price, stock, description, imageUrl, userId, categoryId },
     });
+    revalidatePath("/product");
+    revalidatePath("/product/page/[page]", "page");
     return Response.json({ message: "Product created successfully" });
   } catch (error) {
     console.log(error);

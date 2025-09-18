@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogSchema } from "@/lib/zod";
 import { del, put } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -25,6 +26,8 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.blog.delete({ where: { id } });
+    revalidatePath("/blog");
+    revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: `Blog "${result.title}" deleted successfully` });
   } catch (error) {
     console.log(error);
@@ -84,6 +87,8 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     await prisma.blog.update({ data: { title, slug, content, imageUrl, categoryId }, where: { id } });
+    revalidatePath("/blog");
+    revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: "Blog updated successfully" });
   } catch (error) {
     console.log(error);

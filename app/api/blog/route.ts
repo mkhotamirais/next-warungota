@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { BlogSchema } from "@/lib/zod";
 import { put } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 
 export const POST = async (req: Request) => {
@@ -48,6 +49,8 @@ export const POST = async (req: Request) => {
     }
 
     await prisma.blog.create({ data: { title, slug, content, imageUrl, categoryId, userId } });
+    revalidatePath("/blog");
+    revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: "Blog created successfully" });
   } catch (error) {
     console.log(error);
