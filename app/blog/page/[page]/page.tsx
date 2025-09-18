@@ -7,7 +7,7 @@ import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 import List from "../../List";
 
 const { description } = c.blog;
-const limit = 2;
+const limit = 8;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ page: string }> }) => {
   const page = Number((await params).page);
@@ -21,7 +21,7 @@ export const generateStaticParams = async () => {
 
 export default async function BlogPaginate({ params }: { params: Promise<{ page: string }> }) {
   const page = Number((await params).page);
-  const { blogs, totalPages } = await getBlogs({ page, limit });
+  const { blogs, totalPages, totalBlogsCount } = await getBlogs({ page, limit });
 
   return (
     <>
@@ -32,7 +32,9 @@ export default async function BlogPaginate({ params }: { params: Promise<{ page:
             {blogs?.length ? (
               <>
                 <List blogs={blogs} />
-                <Pagination totalPages={totalPages} currentPage={page} path="/blog/page" />
+                {totalBlogsCount > limit
+                  ? page < totalPages && <Pagination totalPages={totalPages} currentPage={page} path="/blog/page" />
+                  : null}
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>

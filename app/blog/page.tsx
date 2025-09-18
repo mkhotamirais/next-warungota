@@ -7,9 +7,10 @@ import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 import List from "./List";
 
 const { title, description } = c.blog;
+const limit = 8;
 
 export default async function Blog() {
-  const { blogs, totalPages } = await getBlogs({ page: 1, limit: 2 });
+  const { blogs, totalPages, totalBlogsCount } = await getBlogs({ page: 1, limit });
 
   return (
     <>
@@ -20,7 +21,9 @@ export default async function Blog() {
             {blogs?.length ? (
               <>
                 <List blogs={blogs} />
-                <Pagination totalPages={totalPages} currentPage={1} path="/blog/page" />
+                {totalBlogsCount > limit ? (
+                  <Pagination totalPages={totalPages} currentPage={1} path="/blog/page" />
+                ) : null}
               </>
             ) : (
               <h2 className="h2">No Blog Found</h2>

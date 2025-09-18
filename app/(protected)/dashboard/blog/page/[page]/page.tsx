@@ -6,7 +6,7 @@ import Load from "@/components/fallbacks/Load";
 import { getBlogs } from "@/actions/blog";
 import Pagination from "@/components/ui/Pagination";
 
-const limit = 2;
+const limit = 8;
 
 export const generateStaticParams = async ({ params }: { params: Promise<{ page: string }> }) => {
   const page = Number((await params).page || 1);
@@ -19,15 +19,17 @@ export default async function AdminBlogPaginate({ params }: { params: Promise<{ 
 
   const page = Number((await params).page || 1);
 
-  let { blogs, totalPages } = await getBlogs({ page, limit });
+  let { blogs, totalPages, totalBlogsCount } = await getBlogs({ page, limit });
   if (session?.user?.role === "editor") {
-    ({ blogs, totalPages } = await getBlogs({ userId: session.user.id }));
+    ({ blogs, totalPages, totalBlogsCount } = await getBlogs({ userId: session.user.id }));
   }
 
   return (
     <Suspense fallback={<Load />}>
       <List blogs={blogs} />
-      <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/blog/page" />
+      {totalBlogsCount > limit ? (
+        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/blog/page" />
+      ) : null}
     </Suspense>
   );
 }

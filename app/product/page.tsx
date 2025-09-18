@@ -7,12 +7,12 @@ import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
 import Pagination from "@/components/ui/Pagination";
 
 const { title, description } = c.product;
-const limit = 2;
+const limit = 8;
 
 export default async function Product({ params }: { params: Promise<{ page?: string }> }) {
   const page = Number((await params).page || 1);
 
-  const { products, totalPages } = await getProducts({ page, limit });
+  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit });
 
   return (
     <>
@@ -22,7 +22,9 @@ export default async function Product({ params }: { params: Promise<{ page?: str
           {products?.length ? (
             <>
               <List products={products} />
-              <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+              {totalProductsCount > limit ? (
+                <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+              ) : null}
             </>
           ) : (
             <h2 className="h2">No Products Found</h2>

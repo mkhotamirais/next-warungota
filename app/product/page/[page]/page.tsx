@@ -7,7 +7,7 @@ import Pagination from "@/components/ui/Pagination";
 import List from "../../List";
 
 const { description } = c.product;
-const limit = 2;
+const limit = 8;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ page: string }> }) => {
   const page = Number((await params).page);
@@ -21,7 +21,7 @@ export const generateStaticParams = async () => {
 
 export default async function ProductPaginate({ params }: { params: Promise<{ page?: string }> }) {
   const page = Number((await params).page || 1);
-  const { products, totalPages } = await getProducts({ page, limit });
+  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit });
 
   return (
     <>
@@ -31,7 +31,9 @@ export default async function ProductPaginate({ params }: { params: Promise<{ pa
           {products?.length ? (
             <>
               <List products={products} />
-              <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+              {totalProductsCount > limit ? (
+                <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+              ) : null}
             </>
           ) : (
             <h2 className="h2">No Products Found</h2>
