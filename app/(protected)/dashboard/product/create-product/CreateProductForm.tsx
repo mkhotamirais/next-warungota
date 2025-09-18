@@ -115,6 +115,7 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       router.push("/dashboard/product");
+      router.refresh();
     });
   };
 

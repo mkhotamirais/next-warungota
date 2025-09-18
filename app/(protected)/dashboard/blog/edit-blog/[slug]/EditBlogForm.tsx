@@ -106,6 +106,7 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       router.push("/dashboard/blog");
+      router.refresh();
     });
   };
 

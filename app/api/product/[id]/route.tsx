@@ -26,6 +26,7 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.product.delete({ where: { id } });
+    revalidatePath("/");
     revalidatePath("/product");
     revalidatePath("/product/page/[page]", "page");
     return Response.json({ message: `Product "${result.name}" deleted successfully` });
@@ -92,6 +93,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
       data: { name, price, stock, description, slug, imageUrl, categoryId },
       where: { id },
     });
+    revalidatePath("/");
     revalidatePath("/product");
     revalidatePath("/product/page/[page]", "page");
 

@@ -54,6 +54,7 @@ export const POST = async (req: Request) => {
     await prisma.product.create({
       data: { name, slug, price, stock, description, imageUrl, userId, categoryId },
     });
+    revalidatePath("/");
     revalidatePath("/product");
     revalidatePath("/product/page/[page]", "page");
     return Response.json({ message: "Product created successfully" });

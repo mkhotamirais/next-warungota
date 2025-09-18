@@ -111,6 +111,7 @@ export default function EditProductForm({ productCategories, product }: UpdatePr
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       router.push("/dashboard/product");
+      router.refresh();
     });
   };
 

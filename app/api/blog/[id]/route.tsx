@@ -26,6 +26,7 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.blog.delete({ where: { id } });
+    revalidatePath("/");
     revalidatePath("/blog");
     revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: `Blog "${result.title}" deleted successfully` });
@@ -87,6 +88,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     await prisma.blog.update({ data: { title, slug, content, imageUrl, categoryId }, where: { id } });
+    revalidatePath("/");
     revalidatePath("/blog");
     revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: "Blog updated successfully" });

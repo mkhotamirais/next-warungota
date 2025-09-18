@@ -49,6 +49,7 @@ export const POST = async (req: Request) => {
     }
 
     await prisma.blog.create({ data: { title, slug, content, imageUrl, categoryId, userId } });
+    revalidatePath("/");
     revalidatePath("/blog");
     revalidatePath("/blog/page/[page]", "page");
     return Response.json({ message: "Blog created successfully" });
