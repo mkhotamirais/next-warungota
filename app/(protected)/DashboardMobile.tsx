@@ -29,6 +29,14 @@ const formatTitle = (path: string) => {
     return formattedTitle;
   }
 
+  // Jika ada dua atau lebih segmen dan segmen kedua darik belakan diawali 'page'
+  if (pathSegments.length >= 2 && pathSegments[pathSegments.length - 2].startsWith("page")) {
+    const titleSegment = pathSegments[pathSegments.length - 3];
+    const page = pathSegments[pathSegments.length - 1];
+    const formattedTitle = `${titleSegment} Page ${page}`;
+    return formattedTitle;
+  }
+
   // Kasus lainnya (page statis atau page dinamis non-edit)
   const formattedTitle = lastSegment
     .split("-")

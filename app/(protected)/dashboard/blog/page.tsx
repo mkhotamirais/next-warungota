@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getBlogs } from "@/actions/blog";
 import Pagination from "@/components/ui/Pagination";
 import { Suspense } from "react";
+import Load from "@/components/fallbacks/Load";
 
 const limit = 1;
 
@@ -17,9 +18,9 @@ export default async function AdminBlog() {
   }
 
   return (
-    <>
+    <Suspense fallback={<Load />}>
       <List blogs={blogs} />
       <Pagination totalPages={totalPages} currentPage={1} path="/dashboard/blog/page" />
-    </>
+    </Suspense>
   );
 }

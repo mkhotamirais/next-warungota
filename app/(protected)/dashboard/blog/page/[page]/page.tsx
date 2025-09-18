@@ -25,11 +25,9 @@ export default async function AdminBlogPaginate({ params }: { params: Promise<{ 
   }
 
   return (
-    <>
-      <Suspense fallback={<Load />}>
-        <List blogs={blogs} />
-      </Suspense>
+    <Suspense fallback={<Load />}>
+      <List blogs={blogs} />
       <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/blog/page" />
-    </>
+    </Suspense>
   );
 }
