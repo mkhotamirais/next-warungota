@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import Button from "@/components/ui/Button";
 import { signOut, useSession } from "next-auth/react";
+import RefreshData from "./RefreshData";
 
 // Fungsi helper untuk mengolah path menjadi judul yang rapi
 const formatTitle = (path: string) => {
@@ -56,11 +57,11 @@ export default function DashboardMobile() {
   const dynamicTitle = formatTitle(pathname);
   const { data: session } = useSession();
 
-  let myMenu = m.userMenu;
-  if (session?.user?.role === "admin") {
-    myMenu = [...m.editorMenu, ...m.adminMenu];
-  } else if (session?.user?.role === "editor") {
-    myMenu = [...m.editorMenu];
+  let myMenu = m.allRoleMenu;
+  if (session?.user?.role === "USER") {
+    myMenu = [...m.allRoleMenu, ...m.userMenu];
+  } else if (session?.user?.role === "ADMIN") {
+    myMenu = [...m.allRoleMenu, ...m.adminMenu];
   }
 
   return (
@@ -92,7 +93,10 @@ export default function DashboardMobile() {
         </div>
       </Sidebar>
 
-      <h1 className="h1">{dynamicTitle}</h1>
+      <div className="flex justify-between items-center w-full">
+        <h1 className="h1">{dynamicTitle}</h1>
+        <RefreshData />
+      </div>
     </div>
   );
 }

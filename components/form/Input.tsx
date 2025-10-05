@@ -11,6 +11,7 @@ interface InputProps {
   defaultValue?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   autoFocus?: boolean;
+  disabled?: boolean;
   className?: string;
 }
 
@@ -25,6 +26,7 @@ export default function Input({
   defaultValue,
   onChange,
   autoFocus,
+  disabled,
   className,
 }: InputProps) {
   return (
@@ -37,6 +39,7 @@ export default function Input({
         type={type}
         id={id}
         name={id}
+        disabled={disabled}
         className="input"
         placeholder={placeholder}
         value={value}

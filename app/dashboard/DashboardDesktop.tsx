@@ -12,11 +12,11 @@ export default function DashboardDesktop() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
 
-  let myMenu = m.userMenu;
-  if (session?.user?.role === "admin") {
-    myMenu = [...m.editorMenu, ...m.adminMenu];
-  } else if (session?.user?.role === "editor") {
-    myMenu = [...m.editorMenu];
+  let myMenu = m.allRoleMenu;
+  if (session?.user?.role === "USER") {
+    myMenu = [...m.allRoleMenu, ...m.userMenu];
+  } else if (session?.user?.role === "ADMIN") {
+    myMenu = [...m.allRoleMenu, ...m.adminMenu];
   }
 
   if (status === "loading") return <MenuDashboardFallback />;

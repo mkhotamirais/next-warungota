@@ -3,7 +3,7 @@
 import Button from "@/components/ui/Button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { LuLoaderCircle } from "react-icons/lu";
+import { LuLoaderCircle, LuUser } from "react-icons/lu";
 
 export default function AuthBtn() {
   const { data: session, status } = useSession();
@@ -18,11 +18,8 @@ export default function AuthBtn() {
   return (
     <div>
       {session?.user ? (
-        // <Button as={Link} href={session.user.role === "user" ? "/account" : "/dashboard"} className="w-full md:w-auto">
-        //   {session.user.role === "user" ? "My Account" : "Dashboard"}
-        // </Button>
-        <Button as={Link} href={"/dashboard"} className="w-full md:w-auto">
-          Dashboard
+        <Button as={Link} href={"/dashboard"} icon={<LuUser />}>
+          {session.user.role === "ADMIN" ? "Dashboard" : `Hi ${session.user.name}`}
         </Button>
       ) : (
         <Button as={Link} href="/signin" className="w-full md:w-auto">

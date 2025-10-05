@@ -6,22 +6,21 @@ export const menu = {
     { label: "Product", url: "/product" },
     { label: "Blog", url: "/blog" },
   ],
-  userMenu: [
-    { label: "My Account", url: "/account" },
-    //
-  ],
-  editorMenu: [
+  allRoleMenu: [
     { label: "Dashboard", url: "/dashboard" },
-    { label: "Product", url: "/dashboard/product" },
-    { label: "Create Product", url: "/dashboard/product/create-product" },
-    { label: "Product Category", url: "/dashboard/product-category" },
-    { label: "Blog", url: "/dashboard/blog" },
-    { label: "Create Blog", url: "/dashboard/blog/create-blog" },
-    { label: "Blog Category", url: "/dashboard/blog-category" },
+    { label: "Profile", url: "/dashboard/account" },
+  ],
+  userMenu: [
+    { label: "Address", url: "/dashboard/account/address" },
+    //
   ],
   adminMenu: [
-    { label: "Users", url: "/dashboard/users" },
-    //
+    { label: "Product", url: "/dashboard/admin/product" },
+    { label: "Create Product", url: "/dashboard/admin/product/create-product" },
+    { label: "Product Category", url: "/dashboard/admin/product-category" },
+    { label: "Blog", url: "/dashboard/admin/blog" },
+    { label: "Create Blog", url: "/dashboard/admin/blog/create-blog" },
+    { label: "Blog Category", url: "/dashboard/admin/blog-category" },
   ],
 };
 

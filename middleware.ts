@@ -1,57 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+// const publicRoutes = ["/", "/about", "/contact", "/blog", "/product"];
 const authRoutes = ["/signin", "/signup"];
-const adminOnlyRoutes = ["/dashboard/users"];
-const protectedRoutes = ["/dashboard", "/account"];
+const adminRoutes = ["/dashboard/admin"];
+const userRoutes = ["/product/cart", "/product/checkout", "/dashboard/account/address"];
+const verifyRoutes = ["/verify"];
+const verifyPendingRotes = ["/verification-pending"];
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith("/api/account/verify-email")) {
+    return NextResponse.next();
+  }
   const session = await auth();
   const isLoggedIn = !!session?.user;
   const role = session?.user.role;
-  const { pathname } = request.nextUrl;
+  const isVerifiedEmail = !!session?.user.emailVerified;
 
+  // const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-  const isAdminOnlyRoute = adminOnlyRoutes.some((route) => pathname.startsWith(route));
-  const isProtectedRoute = protectedRoutes.some((route) => pathname.startsWith(route));
+  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+  const isUserRoute = userRoutes.some((route) => pathname.startsWith(route));
+  const isVerifyRoute = verifyRoutes.some((route) => pathname.startsWith(route));
+  const isVerifyPendingRoute = verifyPendingRotes.some((route) => pathname.startsWith(route));
 
-  const res = NextResponse.next();
-  // console.log(pathname);
-  // // 1. Simpan route terakhir
-  // if (
-  //   !isAuthRoute &&
-  //   !pathname.startsWith("/api") &&
-  //   !pathname.startsWith("/_next") &&
-  //   !pathname.startsWith("/.well-known") &&
-  //   !pathname.startsWith("/favicon.ico")
-  // ) {
-  //   res.cookies.set("last_visited", pathname, { path: "/" });
-  // }
-
-  // 2. Redirect dari protectedRoute jika belum login
-  if (!isLoggedIn && isProtectedRoute) {
+  if (!isLoggedIn && (isUserRoute || isAdminRoute || isVerifyPendingRoute || isVerifyRoute)) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
-  // 3. Redirect dari authRoute jika sudah login
   if (isLoggedIn && isAuthRoute) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  // 4. Periksa otorisasi
-  if (isLoggedIn && isAdminOnlyRoute && role !== "admin") {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
-  if (isLoggedIn && role !== "user" && pathname.startsWith("/account")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (isLoggedIn && pathname.startsWith("/dashboard") && role === "user") {
-    return NextResponse.redirect(new URL("/account", request.url));
+  if (isLoggedIn && role === "USER" && isAdminRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return res;
+  if (isLoggedIn && role === "ADMIN" && isUserRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (isLoggedIn && isVerifiedEmail && (isVerifyRoute || isVerifyPendingRoute)) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (isLoggedIn && !isVerifiedEmail && (isUserRoute || isAdminRoute)) {
+    return NextResponse.redirect(new URL("/verification-pending", request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

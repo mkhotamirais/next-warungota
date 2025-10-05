@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
+import AddToCart from "./AddToCart";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
@@ -39,6 +40,9 @@ export default async function ProductSlug({ params }: { params: Promise<{ slug: 
           <div>
             <h1 className="h1">{product.name}</h1>
             <p className="text-2xl font-medium">{formatRupiah(product.price)}</p>
+            <div>
+              <AddToCart productId={product.id} />
+            </div>
           </div>
         </div>
         <div className="py-8">

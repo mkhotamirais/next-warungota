@@ -15,9 +15,9 @@ export default function Signin() {
         <div className="flex-1">
           <GoogleSignin />
         </div>
-        <div className="flex-1">
+        {/* <div className="flex-1">
           <GithubSignin />
-        </div>
+        </div> */}
       </div>
       <div className="relative text-center mb-4">
         <hr />

@@ -1,9 +1,9 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+// import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
-import { SigninSchema } from "./lib/zod";
 import { compareSync } from "bcrypt-ts";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -14,17 +14,32 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} },
       authorize: async (credentials) => {
-        const validatedFields = SigninSchema.safeParse(credentials);
+        const email = credentials?.email as string | undefined;
+        const password = credentials?.password as string | undefined;
 
-        if (!validatedFields.success) return null;
+        if (!email) {
+          return null; // Email wajib ada
+        }
 
-        const { email, password } = validatedFields.data;
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.password) {
+        const normalizedEmail = email.toLowerCase();
+        const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+
+        if (!user) {
+          return null; // Pengguna tidak ditemukan
+        }
+
+        if (!password || password.length === 0) {
+          return user;
+        }
+        if (!user.password) {
           return null;
         }
+
         const passwordMatch = compareSync(password, user.password);
-        if (!passwordMatch) return null;
+
+        if (!passwordMatch) {
+          return null;
+        }
 
         return user;
       },
@@ -33,27 +48,53 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/signin" },
   callbacks: {
-    jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
         token.role = user.role;
+        token.phone = user.phone;
+        token.emailVerified = user.emailVerified;
+        return token;
       }
+
+      if (trigger === "update") {
+        const latestUser = await prisma.user.findUnique({ where: { id: token.id as string } });
+        token.id = latestUser?.id as string;
+        token.name = latestUser?.name as string;
+        token.role = latestUser?.role as string;
+        token.phone = latestUser?.phone as string;
+        token.emailVerified = latestUser?.emailVerified;
+        return token;
+      }
+
       return token;
     },
     session({ session, token }) {
-      session.user.id = token.sub as string;
-      session.user.role = token.role as string;
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      if (token.name) {
+        session.user.name = token.name;
+      }
+      if (token.role) {
+        session.user.role = token.role;
+      }
+      if (token.phone) {
+        session.user.phone = token.phone;
+      }
+      if (token.emailVerified) {
+        session.user.emailVerified = token.emailVerified;
+      }
       return session;
     },
     async signIn({ user, account }) {
-      // Kalau login bukan pakai credentials (contohnya Google/GitHub)
       if (account?.provider !== "credentials") {
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email as string },
         });
 
         if (existingUser) {
-          // Cek apakah account provider ini sudah ada di tabel accounts
           const existingAccount = await prisma.account.findFirst({
             where: {
               provider: account?.provider,
@@ -62,7 +103,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           });
 
           if (!existingAccount) {
-            // Link akun provider baru ke user lama
             await prisma.account.create({
               data: {
                 userId: existingUser.id,
@@ -75,10 +115,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               },
             });
           }
-
-          return true; // izinkan login
+          return true;
         }
       }
+
       return true;
     },
   },

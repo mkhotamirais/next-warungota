@@ -9,6 +9,11 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -16,7 +21,7 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("user")
+  role          Role      @default(USER)
   phone         String?
   accounts      Account[]
   createdAt     DateTime  @default(now())
@@ -24,6 +29,8 @@ model User {
 
   Blog    Blog[]
   Product Product[]
+  Cart    Cart?
+  Order   Order[]
 }
 
 model Account {
@@ -45,6 +52,14 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
 }
 
 model BlogCategory {
@@ -87,6 +102,8 @@ model Product {
   User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId      String
   ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+  CartItem        CartItem[]
+  OrderItem       OrderItem[]
 }
 
 model ProductCategory {
@@ -98,4 +115,56 @@ model ProductCategory {
   updatedAt DateTime @updatedAt
 
   Products Product[]
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  CartItem CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  Cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  Product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalAmount Int
+  status      OrderStatus @default(PENDING)
+  OrderItem   OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  Order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  Product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Int
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
 }

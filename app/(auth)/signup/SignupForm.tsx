@@ -31,6 +31,8 @@ export default function SignupForm() {
       if (data?.error || data?.errors) {
         setError(data?.error);
         setErrors(data?.errors);
+        setPassword("");
+        setConfirmPassword("");
         return;
       }
 

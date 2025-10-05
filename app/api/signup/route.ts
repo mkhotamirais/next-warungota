@@ -1,3 +1,4 @@
+import { sendVerificationEmail } from "@/actions/send-verification";
 import { prisma } from "@/lib/prisma";
 import { SignupSchema } from "@/lib/zod";
 import { hashSync } from "bcrypt-ts";
@@ -20,8 +21,11 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = hashSync(password, 10);
+    const newUser = { name, email, password: hashedPassword, emailVerified: null };
 
-    await prisma.user.create({ data: { name, email, password: hashedPassword } });
+    await prisma.user.create({ data: newUser });
+    await sendVerificationEmail(newUser.email);
+
     return NextResponse.json({ message: "Pendaftaran berhasil." }, { status: 201 });
   } catch (error) {
     console.error(error);
