@@ -60,7 +60,7 @@ export default function VerifyPage() {
     setTimeout(async () => {
       await update({});
       router.push("/dashboard");
-    }, 500);
+    }, 1000);
 
     return () => {
       isMounted = false;
@@ -74,16 +74,16 @@ export default function VerifyPage() {
           status === "success"
             ? "bg-green-100 border border-green-300"
             : status === "error"
-            ? "bg-red-100 border border-red-300"
-            : "bg-white border border-gray-200"
+              ? "bg-red-100 border border-red-300"
+              : "bg-white border border-gray-200"
         }`}
       >
         <h1 className="text-xl font-bold mb-4">
           {status === "success"
             ? "Verifikasi Berhasil! ✅"
             : status === "error"
-            ? "Verifikasi Gagal ❌"
-            : "Memproses... 🔄"}
+              ? "Verifikasi Gagal ❌"
+              : "Memproses... 🔄"}
         </h1>
         <p className={status === "success" ? "text-green-800" : status === "error" ? "text-red-800" : "text-gray-700"}>
           {message}

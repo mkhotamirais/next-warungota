@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
   const isVerifyRoute = verifyRoutes.some((route) => pathname.startsWith(route));
   const isVerifyPendingRoute = verifyPendingRotes.some((route) => pathname.startsWith(route));
 
-  if (!isLoggedIn && (isUserRoute || isAdminRoute || isVerifyPendingRoute || isVerifyRoute)) {
+  if (!isLoggedIn && (isUserRoute || isVerifyPendingRoute || isVerifyRoute || pathname.startsWith("/dashboard"))) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
