@@ -1,4 +1,3 @@
-// useCart.tsx
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
@@ -25,8 +24,8 @@ interface CartState {
   setCartQty: (cartQty: number) => void;
   pending: boolean;
   setPending: (pending: boolean) => void;
-  pendingCheckout: boolean;
-  setPendingCheckout: (pendingCheckout: boolean) => void;
+  pendingCheckout: string | null;
+  setPendingCheckout: (pendingCheckout: string | null) => void;
   selectedItems: string[];
   setSelectedItems: (selectedItems: string[]) => void;
   toggleItem: (itemId: string) => void;
@@ -40,8 +39,8 @@ export const useCart = create<CartState>()(
       setCartQty: (cartQty: number) => set({ cartQty }),
       pending: false,
       setPending: (pending: boolean) => set({ pending }),
-      pendingCheckout: false,
-      setPendingCheckout: (pendingCheckout: boolean) => set({ pendingCheckout }),
+      pendingCheckout: null,
+      setPendingCheckout: (pendingCheckout: string | null) => set({ pendingCheckout }),
       selectedItems: getInitialSelectedItems(),
       setSelectedItems: (selectedItems: string[]) => set({ selectedItems }),
       toggleItem: (

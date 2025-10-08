@@ -44,7 +44,7 @@ const revalidateCart = () => {
 
 export const POST = async (req: Request) => {
   const session = await auth();
-  if (!session || !session.user || session.user.role !== "user") {
+  if (!session || !session.user || session.user.role !== "USER") {
     return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -88,7 +88,7 @@ export const POST = async (req: Request) => {
 
 export const PUT = async (req: Request) => {
   const session = await auth();
-  if (!session || !session.user || session.user.role !== "user") {
+  if (!session || !session.user || session.user.role !== "USER") {
     return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 

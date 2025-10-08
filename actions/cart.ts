@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export const getCarts = async () => {
   const session = await auth();
-  if (!session || !session.user || session.user.role !== "user") {
+  if (!session || !session.user || session.user.role !== "USER") {
     return { cartItems: [], cartQty: 0, totalPrice: 0 };
   }
 

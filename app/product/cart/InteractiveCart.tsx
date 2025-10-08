@@ -1,4 +1,3 @@
-// components/InteractiveCart.tsx
 "use client";
 
 import { useMemo, useEffect } from "react";
@@ -10,36 +9,25 @@ import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import { FaTrashAlt } from "react-icons/fa";
 
-export default function InteractiveCart({ cartItems }: { cartItems: CartItemProps[] }) {
+export default function InteractiveCart({ cartItems, cartQty }: { cartItems: CartItemProps[]; cartQty: number }) {
   const router = useRouter();
-  const { pendingCheckout, setPendingCheckout, selectedItems, toggleItem, setSelectedItems } = useCart();
+  const { setCartQty, pendingCheckout, setPendingCheckout, selectedItems, toggleItem, setSelectedItems } = useCart();
 
-  // --- START PERUBAHAN UTAMA DI SINI ---
   useEffect(() => {
-    // 1. Dapatkan ID PRODUK dari semua item yang ada di keranjang.
     const currentProductIds = cartItems.map((item) => item.Product.id);
-
-    // 2. Filter selectedItems (yang berisi ID produk) untuk menghapus ID yang tidak lagi ada di keranjang.
     const newSelectedItems = selectedItems.filter((id) => currentProductIds.includes(id));
 
-    // 3. Perbarui state jika ada item yang dihapus (agar checkbox terhapus dari state).
     if (newSelectedItems.length !== selectedItems.length) {
       setSelectedItems(newSelectedItems);
     }
-
-    // CATATAN: Item yang baru ditambahkan (dari AddToCart) sudah masuk ke selectedItems melalui useCart.
-    // Kita hanya perlu membersihkan item yang dihapus.
   }, [cartItems, selectedItems, setSelectedItems]);
-  // --- END PERUBAHAN UTAMA DI SINI ---
 
-  // Perubahan: Gunakan item.Product.id untuk seleksi dan pengurutan
   const sortedCartItems = useMemo(() => {
     const selected = cartItems.filter((item) => selectedItems.includes(item.Product.id));
     const unselected = cartItems.filter((item) => !selectedItems.includes(item.Product.id));
     return [...selected, ...unselected];
   }, [cartItems, selectedItems]);
 
-  // Perubahan: Gunakan item.Product.id untuk perhitungan harga
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item.Product.id)) {
@@ -50,9 +38,8 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
   }, [cartItems, selectedItems]);
 
   const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number) => {
-    setPendingCheckout(true);
-
     if (newQty < 1) {
+      setPendingCheckout(itemToUpdate.productId);
       if (confirm("Apakah kamu yakin ingin menghapus item ini?")) {
         await fetch("/api/cart", {
           method: "DELETE",
@@ -61,10 +48,11 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
         });
         router.refresh();
       }
-      setPendingCheckout(false);
+      setPendingCheckout(null);
       return;
     }
 
+    setPendingCheckout(itemToUpdate.productId);
     const res = await fetch("/api/cart", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
@@ -72,11 +60,12 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
     });
 
     if (res.ok) {
+      setCartQty(cartQty);
       router.refresh();
     } else {
       alert("Gagal memperbarui keranjang.");
     }
-    setPendingCheckout(false);
+    setPendingCheckout(null);
   };
 
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement>, itemToUpdate: CartItemProps) => {
@@ -87,9 +76,11 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
       return;
     }
     handleUpdate(itemToUpdate, newQty);
+    setPendingCheckout(null);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, itemToUpdate: CartItemProps) => {
+    if (pendingCheckout === "checkout" || pendingCheckout === itemToUpdate.productId) return;
     if (e.key === "Enter") {
       e.preventDefault();
       const newQty = parseInt(e.currentTarget.value);
@@ -100,6 +91,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
       }
       handleUpdate(itemToUpdate, newQty);
       e.currentTarget.blur();
+      setPendingCheckout(null);
     }
   };
 
@@ -109,7 +101,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
       return;
     }
 
-    setPendingCheckout(true);
+    setPendingCheckout("checkout");
 
     try {
       const res = await fetch("/api/checkout", {
@@ -129,11 +121,8 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
       const data = await res.json();
 
       if (res.ok) {
-        // 1. Bersihkan selectedItems di Zustand dan localStorage
         setSelectedItems([]);
 
-        // 2. Navigasi ke halaman konfirmasi atau pembayaran
-        // Sesuaikan URL ini dengan rute konfirmasi/pembayaran Anda
         router.push(`/order/confirmation?orderId=${data.orderId}`);
       } else {
         alert(`Checkout gagal: ${data.message || "Terjadi kesalahan server."}`);
@@ -142,7 +131,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
       console.error("Error during checkout:", error);
       alert("Terjadi kesalahan jaringan.");
     } finally {
-      setPendingCheckout(false);
+      setPendingCheckout(null);
     }
   };
 
@@ -156,9 +145,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
                 <input
                   aria-label="Checkbox"
                   type="checkbox"
-                  // Perubahan: Menggunakan item.Product.id
                   checked={selectedItems.includes(item.Product.id)}
-                  // Perubahan: Menggunakan item.Product.id
                   onChange={() => toggleItem(item.Product.id)}
                   className="size-5"
                 />
@@ -194,7 +181,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
                       onKeyDown={(e) => handleKeyDown(e, item)}
                       onFocus={(e) => {
                         e.target.select();
-                        setPendingCheckout(true);
+                        setPendingCheckout("checkout");
                       }}
                       className="w-12 text-center border rounded"
                     />
@@ -211,7 +198,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
                   aria-label="Delete"
                   className="text-red-500 ml-4"
                 >
-                  {pendingCheckout ? <FaSpinner className="animate-spin" /> : <FaTrashAlt />}
+                  {pendingCheckout === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrashAlt />}
                 </button>
               </div>
             </div>
@@ -236,7 +223,7 @@ export default function InteractiveCart({ cartItems }: { cartItems: CartItemProp
               type="button"
               onClick={handleCheckout}
               className="py-2 px-3 bg-primary text-white rounded disabled:bg-gray-400"
-              disabled={pendingCheckout || totalPrice === 0 || selectedItems.length === 0}
+              disabled={pendingCheckout === "checkout" || totalPrice === 0 || selectedItems.length === 0}
             >
               Checkout
             </button>
