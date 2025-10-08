@@ -1,45 +1,41 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
-export const GET = async () => {
-  const session = await auth();
-  if (!session || !session.user || session.user.role !== "user") {
-    return Response.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  const userId = session.user.id as string;
-
+export async function GET() {
   try {
+    const session = await auth();
+
+    if (!session || !session.user || session.user.role !== "USER") {
+      return Response.json({ cartItems: [], cartQty: 0, totalPrice: 0 }, { status: 200 });
+    }
+
+    const userId = session.user.id as string;
+
     const cart = await prisma.cart.findUnique({
       where: { userId },
       include: {
         CartItem: {
-          include: {
-            Product: {
-              include: {
-                ProductCategory: {
-                  select: {
-                    name: true,
-                    slug: true,
-                  },
-                },
-              },
-            },
-          },
+          include: { Product: true },
+          orderBy: { updatedAt: "desc" },
         },
       },
     });
-    const sumQty = await prisma.cartItem.aggregate({
-      where: { Cart: { userId } },
-      _sum: { quantity: true },
-    });
-    const cartQty = sumQty._sum.quantity || 0;
-    return Response.json({ cart, cartQty });
+
+    if (!cart) {
+      return Response.json({ cartItems: [], cartQty: 0, totalPrice: 0 }, { status: 200 });
+    }
+
+    const cartQty = cart.CartItem.reduce((total, item) => total + item.quantity, 0);
+
+    const totalPrice = cart.CartItem.reduce((total, item) => total + item.quantity * item.Product.price, 0);
+
+    return Response.json({ cartItems: cart.CartItem, cartQty, totalPrice }, { status: 200 });
   } catch (error) {
-    console.log(error);
+    console.error("API Cart Error:", error);
+    return Response.json({ message: "Failed to fetch cart data." }, { status: 500 });
   }
-};
+}
 
 const revalidateCart = () => {
   revalidatePath("/product/cart");

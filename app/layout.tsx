@@ -6,6 +6,7 @@ import Footer from "@/components/layouts/Footer";
 import { content as c } from "@/lib/content";
 import { NextAuthProviders } from "@/components/NextAuthProvider";
 import Layer from "@/components/layouts/layer";
+import ClientProvider from "@/components/ClientProvider";
 
 const { title, description } = c.home.hero;
 
@@ -25,10 +26,12 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} antialiased min-h-screen flex flex-col`}>
         <NextAuthProviders>
-          <Layer />
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <ClientProvider>
+            <Layer />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </ClientProvider>
         </NextAuthProviders>
       </body>
     </html>
