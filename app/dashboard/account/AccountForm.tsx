@@ -33,6 +33,7 @@ export default function AccountForm() {
         body: JSON.stringify({ name, email, phone }),
       });
       const data = await res.json();
+      console.log(data);
     });
   };
 

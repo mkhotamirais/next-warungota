@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { signIn } from "@/auth";
 
 export async function POST(req: Request) {
   let token: string;
