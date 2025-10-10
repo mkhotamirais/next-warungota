@@ -26,10 +26,14 @@ export const getCarts = async () => {
     return { carts: [], cartQty: 0, totalPrice: 0 };
   }
 
-  // Lakukan semua perhitungan di Node.js setelah data diambil
   const cartQty = cart.CartItem.reduce((total, item) => total + item.quantity, 0);
 
-  const totalPrice = cart.CartItem.reduce((total, item) => total + item.quantity * item.Product.price, 0);
+  const totalPrice = cart.CartItem.reduce((total, item) => {
+    if (item.isChecked) {
+      return total + item.quantity * item.Product.price;
+    }
+    return total;
+  }, 0);
 
   return { cartItems: cart.CartItem, cartQty, totalPrice };
 };

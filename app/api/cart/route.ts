@@ -67,14 +67,16 @@ export const POST = async (req: Request) => {
     if (existingCartItem) {
       const updatedItem = await prisma.cartItem.update({
         where: { id: existingCartItem.id },
-        data: { quantity: existingCartItem.quantity + quantity },
+        data: { quantity: existingCartItem.quantity + quantity, isChecked: true },
       });
       const sumQty = await prisma.cartItem.aggregate({ where: { Cart: { userId } }, _sum: { quantity: true } });
       const cartQty = sumQty._sum.quantity || 0;
       revalidateCart();
       return Response.json({ message: "Item quantity updated", item: updatedItem, cartQty });
     } else {
-      const newCartItem = await prisma.cartItem.create({ data: { cartId: cart.id, productId, quantity } });
+      const newCartItem = await prisma.cartItem.create({
+        data: { cartId: cart.id, productId, quantity, isChecked: true },
+      });
       const sumQty = await prisma.cartItem.aggregate({ where: { Cart: { userId } }, _sum: { quantity: true } });
       const cartQty = sumQty._sum.quantity || 0;
       revalidateCart();
@@ -116,7 +118,7 @@ export const PUT = async (req: Request) => {
       data: { quantity: quantity },
     });
 
-    revalidatePath("/product/cart");
+    revalidateCart();
     return Response.json({ message: "Item updated", item: updatedItem });
   } catch (error) {
     console.error(error);
@@ -124,9 +126,48 @@ export const PUT = async (req: Request) => {
   }
 };
 
+export const PATCH = async (req: Request) => {
+  const session = await auth();
+  if (!session || !session.user || session.user.role !== "USER") {
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  const userId = session.user.id as string;
+  const body = await req.json();
+
+  const { productId, isChecked } = body;
+
+  if (!productId || typeof isChecked !== "boolean") {
+    return Response.json({ message: "Invalid product ID or isChecked status" }, { status: 400 });
+  }
+
+  try {
+    const cart = await prisma.cart.findUnique({ where: { userId } });
+    if (!cart) {
+      return Response.json({ message: "Cart not found" }, { status: 404 });
+    }
+
+    const updatedItem = await prisma.cartItem.update({
+      where: {
+        cartId_productId: {
+          cartId: cart.id,
+          productId: productId,
+        },
+      },
+      data: { isChecked: isChecked },
+    });
+
+    revalidateCart();
+    return Response.json({ message: "Check status updated", item: updatedItem });
+  } catch (error) {
+    console.error("Error updating isChecked status:", error);
+    return Response.json({ message: "Internal server error" }, { status: 500 });
+  }
+};
+
 export const DELETE = async (req: Request) => {
   const session = await auth();
-  if (!session || !session.user || session.user.role !== "user") {
+  if (!session || !session.user || session.user.role !== "USER") {
     return Response.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -152,7 +193,7 @@ export const DELETE = async (req: Request) => {
       },
     });
 
-    revalidatePath("/product/cart");
+    revalidateCart();
     return Response.json({ message: "Item deleted successfully" });
   } catch (error) {
     console.error(error);
