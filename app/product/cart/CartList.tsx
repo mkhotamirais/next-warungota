@@ -1,10 +1,11 @@
 "use client";
 
+import { useCart } from "@/hooks/useCart";
 import { CartItemProps } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa6";
+import { FaCheck, FaChevronLeft, FaChevronRight, FaSpinner, FaTrash, FaXmark } from "react-icons/fa6";
 
 interface CartListProps {
   item: CartItemProps;
@@ -15,6 +16,8 @@ interface CartListProps {
 
 export default function CartList({ item, handleUpdate, handleToggleSelect, handleDeleteItem }: CartListProps) {
   const [qty, setQty] = useState(item.quantity.toString());
+  const { pendingSave, setPendingCheckout, pendingCheck } = useCart();
+
   const saveRef = useRef<HTMLButtonElement>(null);
 
   const hasUnsavedChanges = Number(qty) !== item.quantity;
@@ -46,6 +49,7 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
     if (qty === "" || parseInt(qty) < 1) {
       setQty(item.quantity.toString());
     }
+    setPendingCheckout(null);
   };
 
   const handleCancel = () => {
@@ -64,13 +68,19 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
   return (
     <div key={item.id} className="flex justify-between mb-4 border-b pb-4">
       <div className="flex gap-4 items-center">
-        <input
-          aria-label="Checkbox"
-          type="checkbox"
-          checked={item.isChecked}
-          onChange={() => handleToggleSelect(item.Product.id, item.isChecked)}
-          className="size-5"
-        />
+        <div>
+          {pendingCheck === item.Product.id ? (
+            <FaSpinner className="animate-spin" />
+          ) : (
+            <input
+              aria-label="Checkbox"
+              type="checkbox"
+              checked={item.isChecked}
+              onChange={() => handleToggleSelect(item.Product.id, item.isChecked)}
+              className="size-5"
+            />
+          )}
+        </div>
         <Image
           src={item.Product.imageUrl || "/logo-warungota.png"}
           alt={item.Product.name}
@@ -78,7 +88,7 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
           height={100}
           className="size-20 object-cover object-center"
         />
-        <div className="space-y-2">
+        <div className="space-y-2 text-sm">
           <Link href={`/product/detail/${item.Product.slug}`} className="hover:underline">
             <h3 className="capitalize font-semibold">{item.Product.name}</h3>
           </Link>
@@ -100,10 +110,9 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
                 }
               }}
               onBlur={handleBlur}
-              //   onKeyDown={(e) => handleKeyDown(e, item)}
               onFocus={(e) => {
                 e.target.select();
-                //   setPendingCheckout("checkout");
+                setPendingCheckout(item.Product.id);
               }}
               className="w-12 text-center border rounded"
             />
@@ -115,12 +124,22 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
       </div>
       <div>
         {Number(qty) !== item.quantity ? (
-          <div>
-            <button type="button" ref={saveRef} onClick={handleSave}>
-              Save
+          <div className="space-y-1">
+            <button
+              type="button"
+              ref={saveRef}
+              onClick={handleSave}
+              className="bg-primary p-2 text-sm rounded text-white flex items-center justify-center"
+            >
+              {pendingSave === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaCheck />}
             </button>
-            <button type="button" onClick={handleCancel}>
-              Cancel
+            <button
+              type="button"
+              onClick={handleCancel}
+              aria-label="cancel save"
+              className="p-2 text-sm bg-gray-500 rounded text-white"
+            >
+              <FaXmark />
             </button>
           </div>
         ) : (
@@ -129,10 +148,9 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
               type="button"
               onClick={() => handleDeleteItem(item.Product.id)}
               aria-label="Delete"
-              className="text-red-500 ml-4"
+              className="text-red-500 p-2 border rounded border-red-500"
             >
-              <FaTrash />
-              {/* {pendingCheckout === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrashAlt />} */}
+              {pendingSave === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
             </button>
           </div>
         )}

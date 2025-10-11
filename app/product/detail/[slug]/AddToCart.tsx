@@ -8,7 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 export default function AddToCart({ productId }: { productId: string }) {
   const [qty, setQty] = useState("1");
   const [pending, startTransition] = useTransition();
-  const { setPending, selectItem } = useCart();
+  const { setPending } = useCart();
   const router = useRouter();
 
   const handleIncrement = () => {
@@ -39,7 +39,6 @@ export default function AddToCart({ productId }: { productId: string }) {
         router.push("/signin");
         return;
       } else if (res.ok) {
-        selectItem(productId);
         router.push("/product/cart");
         // router.refresh();
       } else {

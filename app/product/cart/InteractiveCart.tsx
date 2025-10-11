@@ -5,6 +5,7 @@ import { CartItemProps } from "@/types/types";
 import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import CartList from "./CartList";
+import { useEffect } from "react";
 
 interface InteractiveCartProps {
   cartItems: CartItemProps[];
@@ -14,47 +15,76 @@ interface InteractiveCartProps {
 
 export default function InteractiveCart({ cartItems, cartQty, totalPrice }: InteractiveCartProps) {
   const router = useRouter();
-  const { setCartQty, setPendingCheckout } = useCart();
+  const { setCartQty, setPendingSave, pendingCheckout, setPendingCheckout, setPendingCheck } = useCart();
+
+  useEffect(() => {
+    setCartQty(cartQty);
+  }, [setCartQty, cartQty]);
 
   const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number) => {
     setPendingCheckout(itemToUpdate.productId);
-    const res = await fetch("/api/cart", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty }),
-    });
-
-    if (res.ok) {
-      setCartQty(cartQty);
+    setPendingSave(itemToUpdate.productId);
+    try {
+      const res = await fetch("/api/cart", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to update cart item");
+      }
       router.refresh();
-    } else {
+    } catch (error) {
+      console.log(error);
       alert("Gagal memperbarui keranjang.");
+    } finally {
+      setPendingSave(null);
+      setPendingCheckout(null);
     }
-    setPendingCheckout(null);
   };
 
   const handleToggleSelect = async (productId: string, currentStatus: boolean) => {
-    const res = await fetch("/api/cart", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: productId, isChecked: !currentStatus }),
-    });
+    setPendingCheckout(productId);
+    setPendingCheck(productId);
+    try {
+      const res = await fetch("/api/cart", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId: productId, isChecked: !currentStatus }),
+      });
 
-    if (res.ok) {
-      router.refresh();
-    } else {
+      if (res.ok) {
+        router.refresh();
+      } else {
+        alert("Gagal memperbarui status checklist.");
+      }
+    } catch (error) {
+      console.log(error);
       alert("Gagal memperbarui status checklist.");
+    } finally {
+      setPendingCheck(null);
+      setPendingCheckout(null);
     }
   };
 
   const handleDeleteItem = async (productId: string) => {
     if (confirm("Apakah kamu yakin ingin menghapus item ini?")) {
-      await fetch("/api/cart", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId }),
-      });
-      router.refresh();
+      setPendingCheckout(productId);
+      setPendingSave(productId);
+      try {
+        await fetch("/api/cart", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId }),
+        });
+        router.refresh();
+      } catch (error) {
+        console.log(error);
+        alert("Gagal menghapus item dari keranjang.");
+      } finally {
+        setPendingCheckout(null);
+        setPendingSave(null);
+      }
     }
     return;
   };
@@ -92,7 +122,7 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
               type="button"
               // onClick={handleCheckout}
               className="py-2 px-3 bg-primary text-white rounded disabled:bg-gray-400"
-              // disabled={pendingCheckout === "checkout" || totalPrice === 0 || selectedItems.length === 0}
+              disabled={!!pendingCheckout || totalPrice === 0 || cartItems.length === 0}
             >
               Checkout
             </button>
