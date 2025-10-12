@@ -46,13 +46,6 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    // // SERVER-SIDE UPDATE: Memaksa penerbitan cookie sesi baru
-    // // Ganti "credentials" jika Anda menggunakan provider lain
-    // await signIn("credentials", {
-    //   email: updatedUser.email,
-    //   redirect: false,
-    // });
-
     return Response.json(
       { message: "Email successfully verified", email: updatedUser.email },
       { status: 200, headers: { "Content-Type": "application/json" } }

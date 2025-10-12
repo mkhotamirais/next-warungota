@@ -4,72 +4,71 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
-export default function VerifyPage() {
+export default function VerifyNewEmailPage() {
   const searchParams = useSearchParams();
-  const { update } = useSession();
 
-  const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
-  const [message, setMessage] = useState("Memverifikasi token...");
+  const [status, setStatus] = useState("loading");
+  const [message, setMessage] = useState("Memverifikasi permintaan perubahan email...");
+  const [verificationStarted, setVerificationStarted] = useState(false);
 
   const router = useRouter();
 
   const token = searchParams.get("token");
-  const email = searchParams.get("email");
-  const normalizedEmail = email ? email.toLowerCase() : null;
+  const userId = searchParams.get("userId");
 
   useEffect(() => {
-    if (!token || !normalizedEmail) {
-      setStatus("error");
-      setMessage("Tautan verifikasi tidak lengkap atau tidak valid.");
+    if (verificationStarted || !token || !userId) {
+      if (!token || !userId) {
+        setStatus("error");
+        setMessage("Tautan konfirmasi tidak lengkap atau tidak valid.");
+      }
       return;
     }
+
+    setVerificationStarted(true);
 
     let isMounted = true;
 
     const runVerification = async () => {
       try {
-        setMessage("Memperbarui status verifikasi...");
-        const res = await fetch("/api/account/verify-email", {
+        setMessage("Memperbarui alamat email Anda...");
+
+        const res = await fetch("/api/account/verify-email-change", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: token, email: normalizedEmail }),
+          body: JSON.stringify({ token: token, userId: userId }),
         });
-
-        if (!isMounted) return;
 
         const data = await res.json();
 
-        if (!res.ok) {
+        if (!res.ok && verificationStarted) {
           setStatus("error");
-          setMessage(data.message || "Verifikasi gagal.");
+          setMessage(data.message || "Konfirmasi perubahan email gagal.");
           return;
         }
+
         setStatus("success");
-        setMessage("Verifikasi berhasil. Mengalihkan Anda...");
+        setMessage("Alamat email berhasil diperbarui. Mengalihkan Anda...");
+
+        router.push("/dashboard/account?redirected=update-email");
       } catch (err) {
         if (!isMounted) return;
-        console.error("Kesalahan dalam proses verifikasi:", err);
+        console.error("Kesalahan dalam proses konfirmasi:", err);
         setStatus("error");
         setMessage("Terjadi kesalahan jaringan atau server.");
       }
     };
 
     runVerification();
-    const timer = setTimeout(async () => {
-      await update({});
-      router.push("/dashboard");
-    }, 1500);
 
     return () => {
       isMounted = false;
-      clearTimeout(timer);
     };
-  }, [token, normalizedEmail, update, router]);
+  }, [token, userId, router, verificationStarted]);
 
   return (
-    <>
+    <div className="flex justify-center items-center min-h-screen">
       <div
         className={`p-8 rounded-lg shadow-lg text-center transition-colors duration-300 ${
           status === "success"
@@ -81,20 +80,20 @@ export default function VerifyPage() {
       >
         <h1 className="text-xl font-bold mb-4">
           {status === "success"
-            ? "Verifikasi Berhasil! ✅"
+            ? "Perubahan Email Berhasil! ✅"
             : status === "error"
-              ? "Verifikasi Gagal ❌"
+              ? "Konfirmasi Gagal ❌"
               : "Memproses... 🔄"}
         </h1>
         <p className={status === "success" ? "text-green-800" : status === "error" ? "text-red-800" : "text-gray-700"}>
           {message}
         </p>
         {status === "error" && (
-          <Button as={Link} href="/signin" className="mt-4">
-            Coba Masuk Kembali
+          <Button as={Link} href="/account" className="mt-4">
+            Kembali ke Pengaturan Akun
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 }

@@ -5,6 +5,7 @@ import Msg from "@/components/form/Msg";
 import Button from "@/components/ui/Button";
 import { SigninSchema } from "@/lib/zod";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import z from "zod";
@@ -66,6 +67,12 @@ export default function SigninForm() {
           placeholder="********"
           error={errors?.password?.errors}
         />
+
+        <div className="mb-4">
+          <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+            Lupa Password?
+          </Link>
+        </div>
 
         <Button type="submit" disabled={pending} className="w-full">
           {pending ? "Signing In..." : "Sign In"}

@@ -52,9 +52,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.name = user.name;
+        token.email = user.email;
         token.role = user.role;
         token.phone = user.phone;
         token.emailVerified = user.emailVerified;
+        token.pendingEmail = user.pendingEmail;
         return token;
       }
 
@@ -62,9 +64,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const latestUser = await prisma.user.findUnique({ where: { id: token.id as string } });
         token.id = latestUser?.id as string;
         token.name = latestUser?.name as string;
+        token.email = latestUser?.email as string;
         token.role = latestUser?.role as string;
         token.phone = latestUser?.phone as string;
         token.emailVerified = latestUser?.emailVerified;
+        token.pendingEmail = latestUser?.pendingEmail;
         return token;
       }
 
@@ -77,6 +81,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token.name) {
         session.user.name = token.name;
       }
+      if (token.email) {
+        session.user.email = token.email;
+      }
       if (token.role) {
         session.user.role = token.role;
       }
@@ -85,6 +92,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       if (token.emailVerified) {
         session.user.emailVerified = token.emailVerified;
+      }
+      if (token.pendingEmail) {
+        session.user.pendingEmail = token.pendingEmail;
       }
       return session;
     },

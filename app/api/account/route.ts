@@ -1,61 +1,102 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { AccountDataSchema } from "@/lib/zod";
+import z from "zod";
+import { Prisma } from "@prisma/client";
+import { sendEmailChangeVerification } from "@/actions/send-verification";
 
-export async function PATCH(req: Request) {
+export async function PUT(req: Request) {
   const session = await auth();
   if (!session || !session.user || !session.user.id) {
-    return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const userId = session.user.id;
+  const body = await req.json();
+  const validatedFields = AccountDataSchema.safeParse(body);
+
+  if (!validatedFields.success) {
+    return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
+  }
+
+  const { name, email: newEmail, phone: inputPhone } = validatedFields.data;
+
+  const normalizeValue = (value: string | null | undefined): string | null | undefined => {
+    if (typeof value === "string" && value.trim() === "") {
+      return null;
+    }
+    return value;
+  };
 
   try {
-    const body = await req.json();
-    const { name, phone } = body;
-
-    // 2. Validasi Data
-    const updateData: { name?: string; phone?: string | null } = {};
-
-    // Validasi dan tambahkan name jika disediakan
-    if (typeof name === "string" && name.trim().length > 0) {
-      updateData.name = name.trim();
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      return Response.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Validasi dan tambahkan phone jika disediakan (juga izinkan string kosong untuk menghapus)
-    if (typeof phone === "string") {
-      updateData.phone = phone.trim().length > 0 ? phone.trim() : null;
-    } else if (phone === null) {
-      updateData.phone = null;
+    const updates: Prisma.UserUpdateInput = {};
+    let emailChangePending = false;
+
+    const normalizedInputPhone = normalizeValue(inputPhone);
+    const normalizedUserPhone = normalizeValue(user.phone);
+
+    if (name !== user.name) {
+      updates.name = name;
     }
 
-    // Jika tidak ada data yang valid untuk diperbarui
-    if (Object.keys(updateData).length === 0) {
-      return new Response(JSON.stringify({ message: "No valid fields provided for update." }), { status: 400 });
+    if (normalizedInputPhone !== normalizedUserPhone) {
+      if (normalizedInputPhone !== null) {
+        const duplicatePhoneNumber = await prisma.user.findFirst({
+          where: {
+            phone: normalizedInputPhone,
+            id: { not: userId },
+          },
+        });
+
+        if (duplicatePhoneNumber) {
+          return Response.json({ error: "Phone number is already in use" }, { status: 400 });
+        }
+      }
+
+      updates.phone = normalizedInputPhone;
     }
 
-    // 3. Perbarui Data Pengguna di Database
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: updateData,
-      select: { name: true, phone: true, email: true }, // Hanya kembalikan field yang aman
-    });
+    if (newEmail && newEmail !== user.email) {
+      const existingUserWithEmail = await prisma.user.findFirst({
+        where: { OR: [{ email: newEmail }, { pendingEmail: newEmail }] },
+      });
 
-    // 4. Respon Sukses
-    return new Response(
-      JSON.stringify({
-        message: "Account updated successfully",
-        user: updatedUser,
-      }),
-      { status: 200 }
-    );
+      if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
+        return Response.json({ error: "Email is already in use or pending verification" }, { status: 400 });
+      }
+
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          pendingEmail: newEmail,
+          emailVerified: null,
+        },
+      });
+
+      emailChangePending = true;
+
+      await sendEmailChangeVerification(newEmail, userId);
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await prisma.user.update({ where: { id: userId }, data: updates });
+    }
+
+    if (emailChangePending) {
+      return Response.json(
+        { message: "Verification email sent to new address. Please check your inbox." },
+        { status: 200 }
+      );
+    }
+
+    return Response.json({ message: "Account updated successfully" }, { status: 200 });
   } catch (error) {
-    console.error("API Account PATCH error:", error);
-    return new Response(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+    console.error("API Account PUT error:", error);
+    return Response.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
-
-// // Untuk memastikan metode lain (GET, POST, dll.) dikembalikan dengan 405 Method Not Allowed
-// export async function GET() {
-//   return new Response(null, { status: 405 });
-// }
-// // Tambahkan handler untuk metode HTTP lain yang tidak diizinkan di sini jika diperlukan.

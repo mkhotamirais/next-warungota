@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { sendVerificationEmail } from "@/actions/send-verification";
+import { sendEmailChangeVerification, sendVerificationEmail } from "@/actions/send-verification";
 
 export async function POST() {
   const session = await auth();
@@ -8,8 +8,13 @@ export async function POST() {
   }
 
   const userEmail = session.user.email;
+
   try {
-    await sendVerificationEmail(userEmail);
+    if (session.user.pendingEmail) {
+      await sendEmailChangeVerification(session.user.pendingEmail, session.user.id);
+    } else {
+      await sendVerificationEmail(userEmail, session.user.id);
+    }
 
     return Response.json({ message: "Verification email sent successfully" }, { status: 200 });
   } catch (error) {

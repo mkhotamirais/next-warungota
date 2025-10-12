@@ -15,22 +15,26 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          Role      @default(USER)
-  phone         String?
-  accounts      Account[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                           String    @id @default(cuid())
+  name                         String?
+  email                        String    @unique
+  pendingEmail                 String?   @unique
+  emailVerified                DateTime?
+  image                        String?
+  password                     String?
+  role                         Role      @default(USER)
+  phone                        String?
+  emailChangeVerificationToken String?   @unique
 
-  Blog    Blog[]
-  Product Product[]
-  Cart    Cart?
-  Order   Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts           Account[]
+  Blog               Blog[]
+  Product            Product[]
+  Cart               Cart?
+  Order              Order[]
+  PasswordResetToken PasswordResetToken?
 }
 
 model Account {
@@ -60,6 +64,15 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  userId  String   @unique // Kunci unik ke model User
+  token   String   @unique // Token unik yang dikirim via email
+  expires DateTime // Kapan token akan kedaluwarsa
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BlogCategory {
