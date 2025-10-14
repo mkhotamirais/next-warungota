@@ -35,6 +35,7 @@ model User {
   Cart               Cart?
   Order              Order[]
   PasswordResetToken PasswordResetToken?
+  Address            Address[]
 }
 
 model Account {
@@ -130,6 +131,30 @@ model ProductCategory {
   Products Product[]
 }
 
+model Address {
+  id         String  @id @default(cuid())
+  label      String? // Misal: "Rumah", "Kantor"
+  recipient  String // Nama penerima
+  phone      String
+  street     String
+  province   String // Province = Provinsi
+  regency    String // City | Kota = Regency | Kabupaten
+  district   String // District = Kecamatan
+  village    String // Village | Kampung = Urbah Village = Kelurahan
+  postalCode String
+  isDefault  Boolean @default(false)
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  Order Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, label])
+}
+
 model Cart {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -165,6 +190,8 @@ model Order {
   OrderItem   OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  Address     Address?    @relation(fields: [addressId], references: [id])
+  addressId   String?
 }
 
 model OrderItem {

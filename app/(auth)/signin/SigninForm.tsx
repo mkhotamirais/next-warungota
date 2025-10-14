@@ -69,7 +69,7 @@ export default function SigninForm() {
         />
 
         <div className="mb-4">
-          <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+          <Link href="/forgot-password" tabIndex={-1} className="text-sm text-primary hover:underline">
             Lupa Password?
           </Link>
         </div>

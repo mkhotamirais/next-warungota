@@ -75,7 +75,7 @@ export default function List({ blogs }: { blogs: BlogProps[] | undefined | null 
                     openMoreBlogOption === blog.id ? "visible opacity-100" : "invisible opacity-0"
                   } absolute flex flex-col gap-1 top-full right-0 bg-white border border-gray-300 rounded p-2 z-50`}
                 >
-                  <Button as={Link} onClick={closeMoreOptions} href={`/dashboard/blog/edit-blog/${blog.slug}`}>
+                  <Button as={Link} onClick={closeMoreOptions} href={`/dashboard/admin/blog/edit-blog/${blog.slug}`}>
                     Edit
                   </Button>
                   <Delete blog={blog} closeMoreOptions={closeMoreOptions} />

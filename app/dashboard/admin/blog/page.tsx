@@ -10,7 +10,7 @@ const limit = 8;
 
 export default async function AdminBlog() {
   const session = await auth();
-  if (!session || !session.user) redirect("/profile");
+  if (!session || !session.user) redirect("/");
 
   let { blogs, totalPages, totalBlogsCount } = await getBlogs({ page: 1, limit });
   if (session?.user?.role === "editor") {
