@@ -18,7 +18,7 @@ export default function AuthBtn() {
   return (
     <div>
       {session?.user ? (
-        <Button as={Link} href={"/dashboard"} icon={<LuUser />}>
+        <Button as={Link} href={"/dashboard"} icon={<LuUser />} className="w-full md:w-auto">
           {session.user.role === "ADMIN" ? "Dashboard" : `Hi ${session.user.name}`}
         </Button>
       ) : (

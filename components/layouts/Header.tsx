@@ -21,7 +21,10 @@ export default function Header() {
           </div>
         </div>
         {/* nav mobile */}
-        <NavMobile />
+        <div className="md:hidden flex items-center gap-2">
+          <CartBtn />
+          <NavMobile />
+        </div>
       </div>
     </header>
   );

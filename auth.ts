@@ -105,6 +105,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (existingUser) {
+          await prisma.user.update({
+            where: { id: existingUser.id },
+            data: { emailVerified: new Date() },
+          });
+
           const existingAccount = await prisma.account.findFirst({
             where: {
               provider: account?.provider,

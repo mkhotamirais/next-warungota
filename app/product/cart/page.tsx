@@ -9,7 +9,7 @@ export default async function Cart() {
       <section>
         <div className="container max-w-xl py-4">
           <h1 className="h1 mb-4">Cart</h1>
-          <p className="text-center">Your cart is empty.</p>
+          <p className="">Your cart is empty.</p>
         </div>
       </section>
     );

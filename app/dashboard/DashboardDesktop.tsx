@@ -4,13 +4,15 @@ import Button from "@/components/ui/Button";
 import React from "react";
 import { menu as m } from "@/lib/content";
 import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import MenuDashboardFallback from "@/components/fallbacks/MenuDashboardFallback";
+import useLogout from "@/hooks/useLogout";
 
 export default function DashboardDesktop() {
   const pathname = usePathname();
   const { data: session, status } = useSession();
+  const { pendingLogout, handleLogout } = useLogout();
 
   let myMenu = m.allRoleMenu;
   if (session?.user?.role === "USER") {
@@ -34,13 +36,8 @@ export default function DashboardDesktop() {
           {item.label}
         </Button>
       ))}
-      <Button
-        type="button"
-        variant="secondary"
-        onClick={() => signOut({ redirectTo: "/signin" })}
-        className="w-full mt-2"
-      >
-        Sign Out
+      <Button type="button" variant="secondary" onClick={handleLogout} className="w-full mt-2" disabled={pendingLogout}>
+        {pendingLogout ? "Pending.." : "Logout"}
       </Button>
     </>
   );

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import SigninForm from "./SigninForm";
-import { GoogleSignin } from "./OAuthSignin";
+import { GoogleSignin } from "./GoogleSignin";
 
 export const metadata: Metadata = {
   title: "Sign In",

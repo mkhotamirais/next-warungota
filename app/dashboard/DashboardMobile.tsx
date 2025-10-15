@@ -7,20 +7,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import Button from "@/components/ui/Button";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import RefreshData from "./RefreshData";
+import useLogout from "@/hooks/useLogout";
 
-// Fungsi helper untuk mengolah path menjadi judul yang rapi
 const formatTitle = (path: string) => {
   const pathSegments = path.split("/").filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1];
 
-  // Kasus: '/dashboard'
   if (!lastSegment || lastSegment === "dashboard") {
     return "Dashboard";
   }
 
-  // Jika ada dua atau lebih segmen dan segmen kedua dari belakang diawali 'edit'
   if (pathSegments.length >= 2 && pathSegments[pathSegments.length - 2].startsWith("edit")) {
     const titleSegment = pathSegments[pathSegments.length - 2];
     const formattedTitle = titleSegment
@@ -30,7 +28,6 @@ const formatTitle = (path: string) => {
     return formattedTitle;
   }
 
-  // Jika ada dua atau lebih segmen dan segmen kedua darik belakan diawali 'page'
   if (pathSegments.length >= 2 && pathSegments[pathSegments.length - 2].startsWith("page")) {
     const titleSegment = pathSegments[pathSegments.length - 3];
     const page = pathSegments[pathSegments.length - 1];
@@ -38,7 +35,6 @@ const formatTitle = (path: string) => {
     return formattedTitle;
   }
 
-  // Kasus lainnya (page statis atau page dinamis non-edit)
   const formattedTitle = lastSegment
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -56,6 +52,7 @@ export default function DashboardMobile() {
   const pathname = usePathname();
   const dynamicTitle = formatTitle(pathname);
   const { data: session } = useSession();
+  const { pendingLogout, handleLogout } = useLogout();
 
   let myMenu = m.allRoleMenu;
   if (session?.user?.role === "USER") {
@@ -84,10 +81,11 @@ export default function DashboardMobile() {
             <Button
               type="button"
               variant="secondary"
-              onClick={() => signOut({ redirectTo: "/signin" })}
+              onClick={handleLogout}
               className="w-full mt-2"
+              disabled={pendingLogout}
             >
-              Sign Out
+              {pendingLogout ? "Pending..." : "Sign Out"}
             </Button>
           </SidebarClose>
         </div>
