@@ -98,38 +98,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return session;
     },
-    async signIn({ user, account }) {
-      if (account?.provider !== "credentials") {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email as string },
-        });
+    // async signIn({ user, account }) {
+    //   if (account?.provider !== "credentials") {
+    //     const existingUser = await prisma.user.findUnique({
+    //       where: { email: user.email as string },
+    //     });
 
-        if (existingUser) {
-          const existingAccount = await prisma.account.findFirst({
-            where: {
-              provider: account?.provider,
-              providerAccountId: account?.providerAccountId,
-            },
-          });
+    //     if (existingUser) {
+    //       const existingAccount = await prisma.account.findFirst({
+    //         where: {
+    //           provider: account?.provider,
+    //           providerAccountId: account?.providerAccountId,
+    //         },
+    //       });
 
-          if (!existingAccount) {
-            await prisma.account.create({
-              data: {
-                userId: existingUser.id,
-                provider: account?.provider as string,
-                providerAccountId: account?.providerAccountId as string,
-                type: account?.type as string,
-                access_token: account?.access_token as string,
-                token_type: account?.token_type,
-                scope: account?.scope,
-              },
-            });
-          }
-          return true;
-        }
-      }
+    //       if (!existingAccount) {
+    //         await prisma.account.create({
+    //           data: {
+    //             userId: existingUser.id,
+    //             provider: account?.provider as string,
+    //             providerAccountId: account?.providerAccountId as string,
+    //             type: account?.type as string,
+    //             access_token: account?.access_token as string,
+    //             token_type: account?.token_type,
+    //             scope: account?.scope,
+    //           },
+    //         });
+    //       }
+    //       return true;
+    //     }
+    //   }
 
-      return true;
-    },
+    //   return true;
+    // },
   },
 });
