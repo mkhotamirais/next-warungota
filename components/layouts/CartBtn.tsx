@@ -11,7 +11,7 @@ export default function CartBtn() {
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (session === undefined) return;
+    // if (session === undefined) return;
 
     setPending(true);
 
