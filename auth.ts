@@ -98,24 +98,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async signIn({ user, account }) {
-      if (account?.provider !== "credentials") {
-        const newUserId = user.id as string;
+      if (account?.provider !== "credentials" && user.email) {
         const existingUser = await prisma.user.findUnique({ where: { email: user.email as string } });
 
-        if (newUserId) {
-          await prisma.user.update({
-            where: { id: newUserId },
-            data: { emailVerified: new Date() },
-          });
-        }
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { emailVerified: new Date() },
+        });
 
         if (existingUser) {
-          if (existingUser?.emailVerified === null) {
-            await prisma.user.update({
-              where: { id: existingUser?.id },
-              data: { emailVerified: new Date() },
-            });
-          }
           const existingAccount = await prisma.account.findFirst({
             where: { provider: account?.provider, providerAccountId: account?.providerAccountId },
           });
