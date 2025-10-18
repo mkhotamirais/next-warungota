@@ -30,17 +30,15 @@ export default function AddToCart({ productId }: { productId: string }) {
       setPending(true);
       const res = await fetch("/api/cart", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, qty }),
       });
       if (res.status === 401) {
         router.push("/signin");
         return;
       } else if (res.ok) {
-        router.push("/product/cart");
-        // router.refresh();
+        // router.push("/product/cart");
+        router.refresh();
       } else {
         const errorData = await res.json();
         alert(`Gagal menambahkan produk: ${errorData.message}`);
@@ -48,6 +46,7 @@ export default function AddToCart({ productId }: { productId: string }) {
       setPending(false);
     });
   };
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="my-4">

@@ -48,70 +48,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/signin" },
   callbacks: {
-    // async jwt({ token, user, trigger, account }) {
-    //   if(account?.provider !== "credentials") {
-    //     token.emailVerified = new Date();
-    //   }
-
-    //   if (user) {
-    //     token.id = user.id;
-    //     token.name = user.name;
-    //     token.email = user.email;
-    //     token.role = user.role;
-    //     token.phone = user.phone;
-    //     token.emailVerified = user.emailVerified;
-    //     token.pendingEmail = user.pendingEmail;
-    //     return token;
-    //   }
-
-    //   if (trigger === "update") {
-    //     const latestUser = await prisma.user.findUnique({ where: { id: token.id as string } });
-    //     token.id = latestUser?.id as string;
-    //     token.name = latestUser?.name as string;
-    //     token.email = latestUser?.email as string;
-    //     token.role = latestUser?.role as string;
-    //     token.phone = latestUser?.phone as string;
-    //     token.emailVerified = latestUser?.emailVerified;
-    //     token.pendingEmail = latestUser?.pendingEmail;
-    //     return token;
-    //   }
-    //   return token;
-    // },
     async jwt({ token, user, trigger, account }) {
-      // --- 1. LOGIKA UTAMA SIGN IN (Saat Token Dibuat/Diperbarui) ---
       if (user) {
-        // user object hanya ada saat sign in sukses (trigger: "signIn")
-
-        // Cek apakah ini adalah LOGIN OAUTH dan VERIFIKASI TIDAK ADA
         if (account?.provider !== "credentials" && user.emailVerified === null) {
-          // Lakukan update database secara eksplisit untuk memperbaiki masalah adapter
           const updatedUser = await prisma.user.update({
             where: { id: user.id as string },
             data: { emailVerified: new Date() },
             select: { emailVerified: true, role: true, phone: true }, // Ambil data yang diperlukan
           });
 
-          // PENTING: Gunakan data yang baru di-update untuk token dan user object
           user.emailVerified = updatedUser.emailVerified;
           user.role = updatedUser.role; // Asumsi Anda juga memuat role, dsb.
-
-          // Catatan: Ini mengatasi masalah 'null' yang Anda laporkan.
         }
 
-        // Pemuatan data ke token
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.role = user.role;
         token.phone = user.phone;
-        token.emailVerified = user.emailVerified; // Ambil nilai yang sudah di-update
+        token.emailVerified = user.emailVerified;
         token.pendingEmail = user.pendingEmail;
         return token;
       }
 
-      // --- 2. LOGIKA REFRESH/UPDATE (Ketika user objek tidak ada) ---
       if (trigger === "update" || !token.id) {
-        // Muat data dari database untuk update sesi atau saat sesi di-refresh
         const latestUser = await prisma.user.findUnique({ where: { id: token.id as string } });
         if (latestUser) {
           token.id = latestUser.id;
@@ -175,7 +135,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return true;
         }
       }
-
       return true;
     },
   },

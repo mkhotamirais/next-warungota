@@ -9,14 +9,14 @@ import { FaCheck, FaChevronLeft, FaChevronRight, FaSpinner, FaTrash, FaXmark } f
 
 interface CartListProps {
   item: CartItemProps;
-  handleUpdate: (itemToUpdate: CartItemProps, newQty: number) => void;
-  handleToggleSelect: (productId: string, currentStatus: boolean) => void;
+  handleUpdate: (itemToUpdate: CartItemProps, newQty: number, check: boolean) => void;
   handleDeleteItem: (productId: string) => void;
 }
 
-export default function CartList({ item, handleUpdate, handleToggleSelect, handleDeleteItem }: CartListProps) {
+export default function CartList({ item, handleUpdate, handleDeleteItem }: CartListProps) {
   const [qty, setQty] = useState(item.quantity.toString());
-  const { pendingSave, setPendingCheckout, pendingCheck } = useCart();
+  const [check, setCheck] = useState(item.isChecked);
+  const { pendingSave, pendingDel, setPendingCheckout } = useCart();
 
   const saveRef = useRef<HTMLButtonElement>(null);
 
@@ -28,9 +28,22 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
     }
   }, [hasUnsavedChanges]);
 
+  useEffect(() => {
+    if (Number(qty) !== item.quantity || check !== item.isChecked) {
+      setPendingCheckout(true);
+    } else {
+      setPendingCheckout(false);
+    }
+  }, [check, item.isChecked, item.quantity, qty, setPendingCheckout]);
+
+  const handleChangeCheck = () => {
+    setCheck((prev) => !prev);
+  };
+
   const handleDecrement = () => {
     if (parseInt(qty) > 1) {
       setQty((prev) => String(Number(prev) - 1));
+      setPendingCheckout(true);
     }
     if (qty === "1") {
       handleDeleteItem(item.Product.id);
@@ -39,6 +52,7 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
 
   const handleIncrement = () => {
     setQty((prev) => String(Number(prev) + 1));
+    setPendingCheckout(true);
   };
 
   const handleChange = (value: string) => {
@@ -49,38 +63,27 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
     if (qty === "" || parseInt(qty) < 1) {
       setQty(item.quantity.toString());
     }
-    setPendingCheckout(null);
   };
 
   const handleCancel = () => {
     setQty(item.quantity.toString());
+    setCheck(item.isChecked);
+    setPendingCheckout(false);
   };
 
   const handleSave = useCallback(() => {
     const newQty = parseInt(qty);
-    if (!isNaN(newQty) && newQty > 0 && newQty !== item.quantity) {
-      handleUpdate(item, newQty);
+    if ((!isNaN(newQty) && newQty > 0 && newQty !== item.quantity) || check !== item.isChecked) {
+      handleUpdate(item, newQty, check);
     } else {
       setQty(item.quantity.toString());
     }
-  }, [handleUpdate, item, qty]);
+  }, [handleUpdate, item, qty, check]);
 
   return (
     <div key={item.id} className="flex justify-between mb-4 border-b pb-4">
       <div className="flex gap-4 items-center">
-        <div>
-          {pendingCheck === item.Product.id ? (
-            <FaSpinner className="animate-spin" />
-          ) : (
-            <input
-              aria-label="Checkbox"
-              type="checkbox"
-              checked={item.isChecked}
-              onChange={() => handleToggleSelect(item.Product.id, item.isChecked)}
-              className="size-5"
-            />
-          )}
-        </div>
+        <input aria-label="Checkbox" type="checkbox" checked={check} onChange={handleChangeCheck} className="size-5" />
         <Image
           src={item.Product.imageUrl || "/logo-warungota.png"}
           alt={item.Product.name}
@@ -112,7 +115,6 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
               onBlur={handleBlur}
               onFocus={(e) => {
                 e.target.select();
-                setPendingCheckout(item.Product.id);
               }}
               className="w-12 text-center border rounded"
             />
@@ -123,7 +125,7 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
         </div>
       </div>
       <div>
-        {Number(qty) !== item.quantity ? (
+        {Number(qty) !== item.quantity || check !== item.isChecked ? (
           <div className="space-y-1">
             <button
               type="button"
@@ -150,7 +152,7 @@ export default function CartList({ item, handleUpdate, handleToggleSelect, handl
               aria-label="Delete"
               className="text-red-500 p-2 border rounded border-red-500"
             >
-              {pendingSave === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+              {pendingDel === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
             </button>
           </div>
         )}

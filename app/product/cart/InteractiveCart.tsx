@@ -15,20 +15,19 @@ interface InteractiveCartProps {
 
 export default function InteractiveCart({ cartItems, cartQty, totalPrice }: InteractiveCartProps) {
   const router = useRouter();
-  const { setCartQty, setPendingSave, pendingCheckout, setPendingCheckout, setPendingCheck } = useCart();
+  const { setCartQty, setPendingSave, setPendingDel, pendingCheckout, setPendingCheckout } = useCart();
 
   useEffect(() => {
     setCartQty(cartQty);
   }, [setCartQty, cartQty]);
 
-  const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number) => {
-    setPendingCheckout(itemToUpdate.productId);
-    setPendingSave(itemToUpdate.productId);
+  const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number, check: boolean) => {
+    setPendingCheckout(true);
     try {
       const res = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty }),
+        body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty, check }),
       });
       if (!res.ok) {
         throw new Error("Failed to update cart item");
@@ -38,39 +37,15 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
       console.log(error);
       alert("Gagal memperbarui keranjang.");
     } finally {
+      setPendingCheckout(false);
       setPendingSave(null);
-      setPendingCheckout(null);
-    }
-  };
-
-  const handleToggleSelect = async (productId: string, currentStatus: boolean) => {
-    setPendingCheckout(productId);
-    setPendingCheck(productId);
-    try {
-      const res = await fetch("/api/cart", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: productId, isChecked: !currentStatus }),
-      });
-
-      if (res.ok) {
-        router.refresh();
-      } else {
-        alert("Gagal memperbarui status checklist.");
-      }
-    } catch (error) {
-      console.log(error);
-      alert("Gagal memperbarui status checklist.");
-    } finally {
-      setPendingCheck(null);
-      setPendingCheckout(null);
     }
   };
 
   const handleDeleteItem = async (productId: string) => {
     if (confirm("Apakah kamu yakin ingin menghapus item ini?")) {
-      setPendingCheckout(productId);
-      setPendingSave(productId);
+      setPendingDel(productId);
+
       try {
         await fetch("/api/cart", {
           method: "DELETE",
@@ -82,11 +57,14 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
         console.log(error);
         alert("Gagal menghapus item dari keranjang.");
       } finally {
-        setPendingCheckout(null);
-        setPendingSave(null);
+        setPendingDel(null);
       }
     }
     return;
+  };
+
+  const handleCheckout = () => {
+    router.push("/product/checkout");
   };
 
   return (
@@ -98,7 +76,6 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
               item={item}
               key={item.productId}
               handleUpdate={handleUpdate}
-              handleToggleSelect={handleToggleSelect}
               handleDeleteItem={handleDeleteItem}
             />
           ))
@@ -120,9 +97,9 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
           <div>
             <button
               type="button"
-              // onClick={handleCheckout}
+              onClick={handleCheckout}
               className="py-2 px-3 bg-primary text-white rounded disabled:bg-gray-400"
-              disabled={!!pendingCheckout || totalPrice === 0 || cartItems.length === 0}
+              disabled={pendingCheckout || totalPrice === 0 || cartItems.length === 0}
             >
               Checkout
             </button>

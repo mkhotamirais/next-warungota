@@ -95,7 +95,7 @@ export const PUT = async (req: Request) => {
   }
 
   const userId = session.user.id as string;
-  const { productId, qty } = await req.json();
+  const { productId, qty, check } = await req.json();
   const quantity = parseInt(qty);
 
   if (!productId || typeof quantity !== "number" || quantity < 1) {
@@ -109,13 +109,8 @@ export const PUT = async (req: Request) => {
     }
 
     const updatedItem = await prisma.cartItem.update({
-      where: {
-        cartId_productId: {
-          cartId: cart.id,
-          productId: productId,
-        },
-      },
-      data: { quantity: quantity },
+      where: { cartId_productId: { cartId: cart.id, productId: productId } },
+      data: { quantity: quantity, isChecked: check },
     });
 
     revalidateCart();
