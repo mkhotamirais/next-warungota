@@ -1,5 +1,6 @@
 import { getCarts } from "@/actions/cart";
 import InteractiveCart from "./InteractiveCart";
+import { Suspense } from "react";
 
 export default async function Cart() {
   const { cartQty, cartItems, totalPrice } = await getCarts();
@@ -24,7 +25,9 @@ export default async function Cart() {
     <section>
       <div className="container max-w-xl py-4">
         <h1 className="h1 mb-4">Cart</h1>
-        <InteractiveCart cartItems={orderedCartItemsByChecked} cartQty={cartQty} totalPrice={totalPrice} />
+        <Suspense fallback={<div>Loading...</div>}>
+          <InteractiveCart cartItems={orderedCartItemsByChecked} cartQty={cartQty} totalPrice={totalPrice} />
+        </Suspense>
       </div>
     </section>
   );

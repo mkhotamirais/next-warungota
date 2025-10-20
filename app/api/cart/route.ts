@@ -28,7 +28,12 @@ export async function GET() {
 
     const cartQty = cart.CartItem.reduce((total, item) => total + item.quantity, 0);
 
-    const totalPrice = cart.CartItem.reduce((total, item) => total + item.quantity * item.Product.price, 0);
+    const totalPrice = cart.CartItem.reduce((total, item) => {
+      if (item.isChecked) {
+        return total + item.quantity * item.Product.price;
+      }
+      return total;
+    }, 0);
 
     return Response.json({ cartItems: cart.CartItem, cartQty, totalPrice }, { status: 200 });
   } catch (error) {

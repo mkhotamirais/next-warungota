@@ -7,6 +7,8 @@ interface CartState {
   setPending: (pending: boolean) => void;
   pendingSave: string | null;
   setPendingSave: (id: string | null) => void;
+  pendingSaving: string | null;
+  setPendingSaving: (id: string | null) => void;
   pendingCheckout: boolean;
   setPendingCheckout: (id: boolean) => void;
   pendingDel: string | null;
@@ -20,6 +22,8 @@ export const useCart = create<CartState>((set) => ({
   setPending: (pending: boolean) => set({ pending }),
   pendingSave: null,
   setPendingSave: (id: string | null) => set({ pendingSave: id }),
+  pendingSaving: null,
+  setPendingSaving: (id: string | null) => set({ pendingSaving: id }),
   pendingCheckout: false,
   setPendingCheckout: (pendingCheckout) => set({ pendingCheckout }),
   pendingDel: null,

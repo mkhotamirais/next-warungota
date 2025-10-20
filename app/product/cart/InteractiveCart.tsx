@@ -15,7 +15,8 @@ interface InteractiveCartProps {
 
 export default function InteractiveCart({ cartItems, cartQty, totalPrice }: InteractiveCartProps) {
   const router = useRouter();
-  const { setCartQty, setPendingSave, setPendingDel, pendingCheckout, setPendingCheckout } = useCart();
+  const { setCartQty, setPendingSaving, setPendingSave, setPendingDel, pendingCheckout, setPendingCheckout } =
+    useCart();
 
   useEffect(() => {
     setCartQty(cartQty);
@@ -23,12 +24,14 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
 
   const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number, check: boolean) => {
     setPendingCheckout(true);
+    setPendingSaving(itemToUpdate.productId);
     try {
       const res = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty, check }),
       });
+
       if (!res.ok) {
         throw new Error("Failed to update cart item");
       }
@@ -37,8 +40,11 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
       console.log(error);
       alert("Gagal memperbarui keranjang.");
     } finally {
-      setPendingCheckout(false);
-      setPendingSave(null);
+      setTimeout(() => {
+        setPendingCheckout(false);
+        setPendingSave(null);
+        setPendingSaving(null);
+      }, 1000);
     }
   };
 
