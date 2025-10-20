@@ -14,12 +14,7 @@ export async function GET() {
 
     const cart = await prisma.cart.findUnique({
       where: { userId },
-      include: {
-        CartItem: {
-          include: { Product: true },
-          orderBy: { updatedAt: "desc" },
-        },
-      },
+      include: { CartItem: { include: { Product: true }, orderBy: { updatedAt: "desc" } } },
     });
 
     if (!cart) {
@@ -44,7 +39,6 @@ export async function GET() {
 
 const revalidateCart = () => {
   revalidatePath("/product/cart");
-  revalidatePath("/product/detail/[slug]", "page");
 };
 
 export const POST = async (req: Request) => {
@@ -68,6 +62,11 @@ export const POST = async (req: Request) => {
     }
 
     const existingCartItem = cart.CartItem.find((item) => item.productId === productId);
+    const product = await prisma.product.findUnique({ where: { id: productId }, select: { slug: true } });
+
+    if (!product) {
+      return Response.json({ message: "Product not found" }, { status: 404 });
+    }
 
     if (existingCartItem) {
       const updatedItem = await prisma.cartItem.update({
@@ -76,6 +75,7 @@ export const POST = async (req: Request) => {
       });
       const sumQty = await prisma.cartItem.aggregate({ where: { Cart: { userId } }, _sum: { quantity: true } });
       const cartQty = sumQty._sum.quantity || 0;
+
       revalidateCart();
       return Response.json({ message: "Item quantity updated", item: updatedItem, cartQty });
     } else {
@@ -84,6 +84,7 @@ export const POST = async (req: Request) => {
       });
       const sumQty = await prisma.cartItem.aggregate({ where: { Cart: { userId } }, _sum: { quantity: true } });
       const cartQty = sumQty._sum.quantity || 0;
+
       revalidateCart();
       return Response.json({ message: "Item added to cart", item: newCartItem, cartQty });
     }

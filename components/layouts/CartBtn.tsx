@@ -17,12 +17,14 @@ export default function CartBtn() {
 
     const getCarts = async () => {
       try {
-        const res = await fetch("/api/cart");
+        const res = await fetch("/api/cart", {
+          method: "GET",
+          next: { tags: ["cart-summary"] },
+        });
 
         if (!res.ok) {
           throw new Error("Failed to fetch cart data");
         }
-
         const data = await res.json();
         setCartQty(data.cartQty);
       } catch (error) {

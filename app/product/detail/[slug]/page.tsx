@@ -9,6 +9,7 @@ import AddToCart from "./AddToCart";
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
   const product = await getProductBySlug(slug);
+
   return { title: product?.name };
 };
 

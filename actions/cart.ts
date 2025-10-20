@@ -10,16 +10,7 @@ export const getCarts = async () => {
   const userId = session.user.id as string;
   const cart = await prisma.cart.findUnique({
     where: { userId },
-    include: {
-      CartItem: {
-        include: {
-          Product: true,
-        },
-        orderBy: {
-          updatedAt: "desc",
-        },
-      },
-    },
+    include: { CartItem: { include: { Product: true }, orderBy: { updatedAt: "desc" } } },
   });
 
   if (!cart) {

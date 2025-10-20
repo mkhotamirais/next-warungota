@@ -44,7 +44,7 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
         setPendingCheckout(false);
         setPendingSave(null);
         setPendingSaving(null);
-      }, 1000);
+      }, 1500);
     }
   };
 

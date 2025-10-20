@@ -8,7 +8,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 export default function AddToCart({ productId }: { productId: string }) {
   const [qty, setQty] = useState("1");
   const [pending, startTransition] = useTransition();
-  const { setPending } = useCart();
+  const { setPending, cartQty, setCartQty } = useCart();
   const router = useRouter();
 
   const handleIncrement = () => {
@@ -32,12 +32,14 @@ export default function AddToCart({ productId }: { productId: string }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, qty }),
+        next: { tags: ["cart-summary"], revalidate: 3600 },
       });
+
       if (res.status === 401) {
         router.push("/signin");
         return;
       } else if (res.ok) {
-        // router.push("/product/cart");
+        setCartQty(cartQty + Number(qty));
         router.refresh();
       } else {
         const errorData = await res.json();
