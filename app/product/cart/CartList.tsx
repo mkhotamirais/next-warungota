@@ -4,7 +4,7 @@ import { useCart } from "@/hooks/useCart";
 import { CartItemProps } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FaCheck, FaChevronLeft, FaChevronRight, FaSpinner, FaTrash, FaXmark } from "react-icons/fa6";
 
 interface CartListProps {
@@ -17,16 +17,6 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
   const [qty, setQty] = useState(item.quantity.toString());
   const [check, setCheck] = useState(item.isChecked);
   const { pendingSaving, pendingSave, setPendingSave, pendingDel, pendingCheckout, setPendingCheckout } = useCart();
-
-  const saveRef = useRef<HTMLButtonElement>(null);
-
-  const hasUnsavedChanges = Number(qty) !== item.quantity || check !== item.isChecked;
-
-  useEffect(() => {
-    if (hasUnsavedChanges) {
-      saveRef.current?.focus();
-    }
-  }, [hasUnsavedChanges]);
 
   useEffect(() => {
     if (Number(qty) !== item.quantity || check !== item.isChecked) {
@@ -148,7 +138,6 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
             <div className="space-y-1">
               <button
                 type="button"
-                ref={saveRef}
                 onClick={handleSave}
                 className="bg-primary p-2 text-sm rounded text-white flex items-center justify-center"
               >
