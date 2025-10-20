@@ -25,7 +25,7 @@ export default async function Cart() {
   return (
     <section>
       <div className="container max-w-xl py-4">
-        <h1 className="h1 mb-4">Cart jjj</h1>
+        <h1 className="h1 mb-4">Cart</h1>
         <Suspense fallback={<LoadCart />}>
           <InteractiveCart cartItems={orderedCartItemsByChecked} cartQty={cartQty} totalPrice={totalPrice} />
         </Suspense>
