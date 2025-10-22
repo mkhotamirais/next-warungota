@@ -1,7 +1,8 @@
 import { searchAll } from "@/actions/search-all";
-import BlogCardForAll from "@/components/sections/BlogCardForAll";
-import ProductCard from "@/components/sections/ProductCard";
-import React from "react";
+import React, { Suspense } from "react";
+import ResultProducts from "./ResultProducts";
+import FallbackSearch from "./FallbackSearch";
+import ResultBlogs from "./ResultBlogs";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ keyword: string }> }) {
   const keyword = (await searchParams).keyword;
@@ -21,30 +22,12 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
             <p>Tidak ada hasil pencarian</p>
           ) : (
             <div className="space-y-3">
-              <div>
-                {products && products?.length > 0 && (
-                  <div>
-                    <h2 className="mb-2 font-bold">Hasil dari Produk</h2>
-                    <div className="grid-all-list">
-                      {products?.map((product) => (
-                        <ProductCard key={product.id} item={product} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div>
-                {blogs && blogs?.length > 0 ? (
-                  <div>
-                    <h2 className="mb-2 font-bold">Hasil dari Blog</h2>
-                    <div className="grid-all-list">
-                      {blogs?.map((blog) => (
-                        <BlogCardForAll key={blog.id} blog={blog} />
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
+              <Suspense fallback={<FallbackSearch />}>
+                <ResultProducts products={products} />
+              </Suspense>
+              <Suspense fallback={<FallbackSearch />}>
+                <ResultBlogs blogs={blogs} />
+              </Suspense>
             </div>
           )}
         </div>
