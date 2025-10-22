@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import Modal, { ModalClose } from "../ui/Modal";
 import Input from "../form/Input";
-import Button from "../ui/Button";
 
 export default function SearchBtn() {
   const [keyword, setKeyword] = useState("");
