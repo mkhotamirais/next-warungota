@@ -78,7 +78,7 @@ export default function Modal({
         <div
           onClick={(e) => e.stopPropagation()}
           className={clsx(
-            "mx-3 bg-white rounded-lg shadow-lg w-full max-w-md transform transition-transform",
+            "mx-3 bg-white mb-42 rounded-lg shadow-lg w-full max-w-md transform transition-transform",
             open ? "scale-100" : "scale-95",
             className
           )}

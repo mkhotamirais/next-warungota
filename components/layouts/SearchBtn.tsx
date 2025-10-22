@@ -40,7 +40,7 @@ export default function SearchBtn() {
         title="Cari Semua"
         ariaLabel="search"
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="flex items-center">
           <Input
             ref={searchInputRef}
             label=""
@@ -50,12 +50,13 @@ export default function SearchBtn() {
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
             autoFocus={true}
+            className="w-full !mb-1"
           />
-          <div className="flex justify-end">
+          <div className="">
             <ModalClose asChild>
-              <Button type="submit" aria-label="search all" icon={<LuSearch />} className="btn btn-primary">
-                Cari
-              </Button>
+              <button type="submit" aria-label="search all" className="border p-2.5 rounded text-primary">
+                <LuSearch />
+              </button>
             </ModalClose>
           </div>
         </form>
