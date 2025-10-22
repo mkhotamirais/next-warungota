@@ -4,6 +4,7 @@ import Logo from "../Logo";
 import CartBtn from "./CartBtn";
 import NavMobile from "./NavMobile";
 import NavDesktop from "./NavDesktop";
+import SearchBtn from "./SearchBtn";
 
 export default function Header() {
   return (
@@ -14,6 +15,9 @@ export default function Header() {
         <div className="hidden md:flex">
           <div className="flex items-center gap-1">
             <NavDesktop />
+            <div className="ml-4">
+              <SearchBtn />
+            </div>
             <CartBtn />
             <div className="ml-4">
               <AuthBtn />
@@ -21,7 +25,8 @@ export default function Header() {
           </div>
         </div>
         {/* nav mobile */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="md:hidden flex items-center gap-1 lg:gap-2">
+          <SearchBtn />
           <CartBtn />
           <NavMobile />
         </div>

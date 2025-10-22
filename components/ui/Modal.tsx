@@ -58,8 +58,9 @@ export default function Modal({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={ariaLabel}
-        className="disabled:opacity-50"
+        className="disabled:opacity-50 leading-none block"
         disabled={triggerDisabled}
+        tabIndex={triggerDisabled ? -1 : 0}
       >
         {trigger}
       </button>
