@@ -1,4 +1,4 @@
-import BlogCard from "@/components/sections/BlogCard";
+import BlogCardForAll from "@/components/sections/BlogCardForAll";
 import { BlogProps } from "@/types/types";
 import React from "react";
 
@@ -8,9 +8,9 @@ interface ListProps {
 
 export default function List({ blogs }: ListProps) {
   return (
-    <div className="">
+    <div className="grid-all-list">
       {blogs?.map((blog) => (
-        <BlogCard key={blog.id} blog={blog} />
+        <BlogCardForAll key={blog.id} blog={blog} />
       ))}
     </div>
   );

@@ -6,7 +6,7 @@ import Pagination from "@/components/ui/Pagination";
 import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 import List from "@/app/blog/List";
 
-const limit = 1;
+const limit = 12;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
@@ -31,8 +31,10 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
     <>
       <Hero title={`Blog - ${categoryName}`} />
       <section className="py-12">
-        <div className="container flex flex-col md:flex-row gap-8">
-          <div className="w-full md:w-3/4">
+        <div className="container">
+          <AsideBlogCategory categorySlug={categorySlug} />
+
+          <div className="">
             {blogs?.length ? (
               <>
                 <Suspense fallback={<Load />}>
@@ -43,9 +45,6 @@ export default async function BlogCategory({ params }: { params: Promise<{ slug:
             ) : (
               <h2 className="h2">No Blog Found</h2>
             )}
-          </div>
-          <div className="w-full md:w-1/4">
-            <AsideBlogCategory />
           </div>
         </div>
       </section>

@@ -1,49 +1,50 @@
 import { searchAll } from "@/actions/search-all";
-import Image from "next/image";
+import BlogCardForAll from "@/components/sections/BlogCardForAll";
+import ProductCard from "@/components/sections/ProductCard";
 import React from "react";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ keyword: string }> }) {
   const keyword = (await searchParams).keyword;
 
   const results = await searchAll(keyword);
-  const products = results?.products as { id: string; name: string; imageUrl: string; price: number }[];
-  const blogs = results?.blogs as { id: string; imageUrl: string; title: string }[];
+  const products = results?.products;
+  const blogs = results?.blogs;
 
   return (
     <section className="py-8">
-      <div className="container">
-        <h1>Hasil Pencarian `{keyword}`</h1>
-        <div>
-          {!products && !blogs ? (
+      <div className="container space-y-3">
+        <h1 className="text-xl">
+          Hasil Pencarian <b>`{keyword}`</b>
+        </h1>
+        <div className="space-y-3">
+          {products?.length === 0 && blogs?.length === 0 ? (
             <p>Tidak ada hasil pencarian</p>
           ) : (
-            <div>
-              {products.length > 0 && (
-                <div>
-                  <h2>Produk</h2>
+            <div className="space-y-3">
+              <div>
+                {products && products?.length > 0 && (
                   <div>
-                    {products?.map((product) => (
-                      <div className="border flex items-center justify-between" key={product.id}>
-                        <div className="flex items-center">
-                          <Image src={product.imageUrl} alt={product.name} width={100} height={100} />
-                          <h3>{product.name}</h3>
-                        </div>
-                        <p>{product.price}</p>
-                      </div>
-                    ))}
+                    <h2 className="mb-2 font-bold">Hasil dari Produk</h2>
+                    <div className="grid-all-list">
+                      {products?.map((product) => (
+                        <ProductCard key={product.id} item={product} />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {blogs?.length > 0 ? (
-                <div>
-                  <h2>Blog</h2>
-                  <ul>
-                    {blogs?.map((blog: { id: string; title: string }) => (
-                      <li key={blog.id}>{blog.title}</li>
-                    ))}
-                  </ul>
-                </div>
-              ) : null}
+                )}
+              </div>
+              <div>
+                {blogs && blogs?.length > 0 ? (
+                  <div>
+                    <h2 className="mb-2 font-bold">Hasil dari Blog</h2>
+                    <div className="grid-all-list">
+                      {blogs?.map((blog) => (
+                        <BlogCardForAll key={blog.id} blog={blog} />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             </div>
           )}
         </div>

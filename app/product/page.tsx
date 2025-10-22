@@ -7,7 +7,7 @@ import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
 import Pagination from "@/components/ui/Pagination";
 
 const { title, description } = c.product;
-const limit = 8;
+const limit = 12;
 
 export default async function Product({ params }: { params: Promise<{ page?: string }> }) {
   const page = Number((await params).page || 1);
@@ -19,6 +19,8 @@ export default async function Product({ params }: { params: Promise<{ page?: str
       <Hero title={title} description={description} />
       <section className="py-12">
         <div className="container">
+          <AsideProdutCategory />
+
           {products?.length ? (
             <>
               <List products={products} />
@@ -29,9 +31,6 @@ export default async function Product({ params }: { params: Promise<{ page?: str
           ) : (
             <h2 className="h2">No Products Found</h2>
           )}
-          <div className="mt-8">
-            <AsideProdutCategory />
-          </div>
         </div>
       </section>
     </>

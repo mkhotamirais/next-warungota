@@ -6,8 +6,8 @@ import HomeProduct from "@/components/sections/HomeProduct";
 import React from "react";
 
 export default async function Home() {
-  const { products } = await getProducts({ limit: 4 });
-  const { blogs } = await getBlogs({ limit: 4 });
+  const { products } = await getProducts({ limit: 12 });
+  const { blogs } = await getBlogs({ limit: 12 });
 
   return (
     <>

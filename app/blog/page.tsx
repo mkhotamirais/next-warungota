@@ -7,7 +7,7 @@ import AsideBlogCategory from "@/components/sections/AsideBlogCategory";
 import List from "./List";
 
 const { title, description } = c.blog;
-const limit = 8;
+const limit = 12;
 
 export default async function Blog() {
   const { blogs, totalPages, totalBlogsCount } = await getBlogs({ page: 1, limit });
@@ -16,8 +16,10 @@ export default async function Blog() {
     <>
       <Hero title={title} description={description} />
       <section className="py-12">
-        <div className="container flex flex-col md:flex-row gap-8">
-          <div className="w-full md:w-3/4">
+        <div className="container">
+          <AsideBlogCategory />
+
+          <div className="">
             {blogs?.length ? (
               <>
                 <List blogs={blogs} />
@@ -28,9 +30,6 @@ export default async function Blog() {
             ) : (
               <h2 className="h2">No Blog Found</h2>
             )}
-          </div>
-          <div className="w-full md:w-1/4">
-            <AsideBlogCategory />
           </div>
         </div>
       </section>

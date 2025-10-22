@@ -22,8 +22,13 @@ export default function SearchBtn() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log(keyword === "");
 
-    router.push(`/search?keyword=${keyword}`);
+    if (!keyword || keyword === "") {
+      router.replace("/");
+    } else {
+      router.push(`/search?keyword=${keyword}`);
+    }
   };
 
   return (

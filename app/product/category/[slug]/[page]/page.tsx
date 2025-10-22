@@ -6,7 +6,7 @@ import Pagination from "@/components/ui/Pagination";
 import AsideProdutCategory from "@/components/sections/AsideProdutCategory";
 import List from "@/app/product/List";
 
-const limit = 1;
+const limit = 12;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
@@ -32,6 +32,8 @@ export default async function ProductCategoryPaginate({ params }: { params: Prom
       <Hero title={`Product - ${categoryName}`} />
       <section className="py-12">
         <div className="container">
+          <AsideProdutCategory categorySlug={categorySlug} />
+
           {products?.length ? (
             <>
               <Suspense fallback={<Load />}>
@@ -42,9 +44,6 @@ export default async function ProductCategoryPaginate({ params }: { params: Prom
           ) : (
             <h2 className="h2">No Products Found</h2>
           )}
-          <div className="mt-8">
-            <AsideProdutCategory />
-          </div>
         </div>
       </section>
     </>

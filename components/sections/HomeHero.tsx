@@ -4,7 +4,7 @@ import Button from "../ui/Button";
 
 export default function HomeHero() {
   return (
-    <section className="py-8 lg:py-12 bg-gray-200">
+    <section className="py-6 lg:py-10 bg-gray-200">
       <div className="container max-w-3xl flex flex-col sm:items-center justify-center text-left sm:text-center space-y-4">
         <h1 className="h1">Belanja dan Fotokopi dalam Satu Tempat</h1>
         <p>
@@ -15,7 +15,7 @@ export default function HomeHero() {
         {/* <SearchForm /> */}
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <Button as={Link} href="/shop" className="text-base rounded-lg w-36">
+          <Button as={Link} href="/product" className="text-base rounded-lg w-36">
             Semua Produk
           </Button>
           <Button as={Link} href="/contact" variant="outline" className="text-base rounded-lg w-36">
