@@ -6,11 +6,12 @@ import Select from "@/components/form/Select";
 import Button from "@/components/ui/Button";
 import useAddresses from "@/hooks/useAddresses";
 import { useAddressForm } from "@/hooks/useAddressForm";
+import { Address } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-export default function CreateAddressForm() {
+export default function EditAddressForm({ address }: { address: Address }) {
   const [label, setLabel] = useState("");
   const [recipient, setRecipient] = useState("");
   const [phone, setPhone] = useState("");
@@ -27,12 +28,27 @@ export default function CreateAddressForm() {
   const [pending, startTransation] = useTransition();
   const router = useRouter();
 
+  useEffect(() => {
+    if (address) {
+      setLabel(address?.label || "");
+      setRecipient(address.recipient);
+      setPhone(address.phone);
+      setStreet(address.street);
+      setProvince(address.province);
+      setRegency(address.regency);
+      setDistrict(address.district);
+      setVillage(address.village);
+      setPostalCode(address.postalCode);
+      setIsDefault(address.isDefault);
+    }
+  }, [address, setDistrict, setProvince, setRegency, setStreet, setVillage]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     startTransation(async () => {
-      const res = await fetch("/api/account/address", {
-        method: "POST",
+      const res = await fetch(`/api/account/address/${address.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           label,
@@ -66,16 +82,6 @@ export default function CreateAddressForm() {
       }
 
       setSuccess(result.message);
-      setLabel("");
-      setRecipient("");
-      setPhone("");
-      setStreet("");
-      setProvince("");
-      setRegency("");
-      setDistrict("");
-      setVillage("");
-      setPostalCode("");
-      setIsDefault(false);
       toast.success(result.message);
       router.push("/dashboard/account/address");
     });

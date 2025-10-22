@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
+import { formatRupiah } from "@/lib/utils";
 import { CartItemProps } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -103,7 +104,7 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
             <Link href={`/product/detail/${item.Product.slug}`} className="hover:underline">
               <h3 className="capitalize font-semibold">{item.Product.name}</h3>
             </Link>
-            <p>Rp {item.Product.price}</p>
+            <p>{formatRupiah(item.Product.price)}</p>
             <form onSubmit={handleSubmit} className="flex items-center gap-2">
               <button type="button" onClick={handleDecrement} aria-label="Decrement">
                 {qty === "1" ? <FaTrash className="text-red-500" /> : <FaChevronLeft />}

@@ -13,14 +13,14 @@ export default function ProductCard({ item }: { item: ProductProps }) {
           alt={item.name}
           width={400}
           height={400}
-          className="bg-white rounded-t object-cover object-center w-full h-72"
+          className="bg-white rounded-t object-cover object-center w-full h-36"
         />
       </Link>
-      <div className="p-3">
+      <div className="px-3 py-2">
         <Link href={`/product/detail/${item.slug}`} className="hover:underline">
-          <h3 className="h3">{item.name}</h3>
+          <h3 className="capitalize font-semibold">{item.name}</h3>
         </Link>
-        <p className="text-2xl font-semibold">{formatRupiah(item.price)}</p>
+        <p className="font-semibold">{formatRupiah(item.price)}</p>
       </div>
     </div>
   );

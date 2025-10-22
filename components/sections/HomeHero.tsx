@@ -4,7 +4,7 @@ import Button from "../ui/Button";
 
 export default function HomeHero() {
   return (
-    <section className="py-12 bg-gray-200">
+    <section className="py-8 lg:py-12 bg-gray-200">
       <div className="container max-w-3xl flex flex-col sm:items-center justify-center text-left sm:text-center space-y-4">
         <h1 className="h1">Belanja dan Fotokopi dalam Satu Tempat</h1>
         <p>

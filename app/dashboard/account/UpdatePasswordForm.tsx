@@ -25,7 +25,6 @@ export default function UpdatePasswordForm() {
         body: JSON.stringify({ currentPassword, newPassword, confirmNewPassword }),
       });
       const result = await res.json();
-      console.log(result);
 
       if (result?.errors || result?.error || result?.message) {
         setErrors(undefined);

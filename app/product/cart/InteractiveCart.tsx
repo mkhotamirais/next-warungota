@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCart } from "@/hooks/useCart";
 import CartList from "./CartList";
 import { useEffect } from "react";
+import { formatRupiah } from "@/lib/utils";
 
 interface InteractiveCartProps {
   cartItems: CartItemProps[];
@@ -63,7 +64,9 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
         console.log(error);
         alert("Gagal menghapus item dari keranjang.");
       } finally {
-        setPendingDel(null);
+        setTimeout(() => {
+          setPendingDel(null);
+        }, 1500);
       }
     }
     return;
@@ -98,7 +101,7 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
         <div className="sticky bottom-0 py-4 border-t flex items-center justify-between bg-white">
           <div className="flex flex-col">
             <span>Total Price</span>
-            <span>Rp {totalPrice}</span>
+            <span>{formatRupiah(totalPrice)}</span>
           </div>
           <div>
             <button

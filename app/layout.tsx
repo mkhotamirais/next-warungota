@@ -8,6 +8,7 @@ import { NextAuthProviders } from "@/components/NextAuthProvider";
 import Layer from "@/components/layouts/layer";
 import ClientProvider from "@/components/ClientProvider";
 import { SessionUpdaterProvider } from "@/components/SessionUpdaterProvider";
+import { Toaster } from "sonner";
 
 const { title, description } = c.home.hero;
 
@@ -29,6 +30,7 @@ export default async function RootLayout({
         <NextAuthProviders>
           <ClientProvider>
             <SessionUpdaterProvider />
+            <Toaster richColors />
             <Layer />
             <Header />
             <main className="flex-1">{children}</main>

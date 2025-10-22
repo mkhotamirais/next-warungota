@@ -7,6 +7,9 @@ interface GlobalState {
   setOpenMoreBlogOption: (openMoreBlogOption: string | null) => void;
   openMoreProductOption: string | null;
   setOpenMoreProductOption: (openMoreProductOption: string | null) => void;
+  openMoreAddressOption: string | null;
+  setOpenMoreAddressOption: (openMoreAddressOption: string | null) => void;
+  closeAllByLayer: () => void;
 }
 
 export const useGlobal = create<GlobalState>((set) => ({
@@ -16,4 +19,9 @@ export const useGlobal = create<GlobalState>((set) => ({
   setOpenMoreBlogOption: (openMoreBlogOption) => set(() => ({ openMoreBlogOption })),
   openMoreProductOption: null,
   setOpenMoreProductOption: (openMoreProductOption) => set(() => ({ openMoreProductOption })),
+  openMoreAddressOption: null,
+  setOpenMoreAddressOption: (openMoreAddressOption) => set(() => ({ openMoreAddressOption })),
+  closeAllByLayer: () => {
+    set(() => ({ openMoreBlogOption: null, openMoreProductOption: null, openMoreAddressOption: null }));
+  },
 }));
