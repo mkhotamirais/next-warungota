@@ -110,7 +110,7 @@ export default function EditProductForm({ productCategories, product }: UpdatePr
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      router.push("/dashboard/product");
+      router.push("/dashboard/admin/product");
       router.refresh();
     });
   };

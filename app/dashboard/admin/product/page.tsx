@@ -10,7 +10,7 @@ const limit = 8;
 
 export default async function Product({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const session = await auth();
-  if (!session || !session.user) redirect("/profile");
+  if (!session || !session.user) redirect("/dashboardaccount");
 
   const page = Number((await searchParams).page || 1);
 
@@ -23,7 +23,7 @@ export default async function Product({ searchParams }: { searchParams: Promise<
     <Suspense fallback={<Load />}>
       <List products={products} />
       {totalProductsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/product/page" />
+        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/product/page" />
       ) : null}
     </Suspense>
   );

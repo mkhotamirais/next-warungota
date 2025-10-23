@@ -78,7 +78,11 @@ export default function List({ products }: { products: ProductProps[] | undefine
                     openMoreProductOption === product.id ? "visible opacity-100" : "invisible opacity-0"
                   } absolute flex flex-col gap-1 top-full right-0 bg-white border border-gray-300 rounded p-2 z-50`}
                 >
-                  <Button as={Link} onClick={closeMoreOptions} href={`/dashboard/product/edit-product/${product.slug}`}>
+                  <Button
+                    as={Link}
+                    onClick={closeMoreOptions}
+                    href={`/dashboard/admin/product/edit-product/${product.slug}`}
+                  >
                     Edit
                   </Button>
                   <Delete product={product} closeMoreOptions={closeMoreOptions} />
