@@ -26,6 +26,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo-warungota-favicon.png" />
+      </head>
       <body className={`${geistSans.variable} antialiased min-h-screen flex flex-col`}>
         <NextAuthProviders>
           <ClientProvider>
