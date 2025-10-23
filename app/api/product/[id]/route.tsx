@@ -9,6 +9,7 @@ const revalidateProduct = () => {
   revalidatePath("/");
   revalidatePath("/product");
   revalidatePath("/product/page/[page]", "page");
+  revalidatePath("/dashboard/admin/product");
 };
 
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
@@ -20,9 +21,10 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
   const role = session.user.role as string;
 
   const product = await prisma.product.findUnique({ where: { id }, select: { userId: true } });
-  if (role !== "admin" && (role !== "editor" || product?.userId !== userId)) {
+  if (role !== "ADMIN" || product?.userId !== userId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   const rawData = await req.json();
   const imageUrl = rawData.imageUrl;
 
@@ -33,6 +35,7 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
   try {
     const result = await prisma.product.delete({ where: { id } });
     revalidateProduct();
+
     return Response.json({ message: `Product "${result.name}" deleted successfully` });
   } catch (error) {
     console.log(error);
@@ -48,7 +51,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
   const role = session.user.role as string;
 
   const currentProduct = await prisma.product.findUnique({ where: { id }, select: { userId: true, imageUrl: true } });
-  if (role !== "admin" && (role !== "editor" || currentProduct?.userId !== userId)) {
+  if (role !== "ADMIN" || currentProduct?.userId !== userId) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

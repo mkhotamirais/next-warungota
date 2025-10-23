@@ -9,11 +9,12 @@ const revalidateProduct = () => {
   revalidatePath("/");
   revalidatePath("/product");
   revalidatePath("/product/page/[page]", "page");
+  revalidatePath("/dashboard/admin/product");
 };
 
 export const POST = async (req: Request) => {
   const session = await auth();
-  if (!session || !session.user || (session.user.role !== "admin" && session.user.role !== "editor"))
+  if (!session || !session.user || session.user.role !== "ADMIN")
     return Response.json({ message: "Unauthorized" }, { status: 401 });
   const userId = session.user.id as string;
 
