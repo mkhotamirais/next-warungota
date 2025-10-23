@@ -7,7 +7,7 @@ import Pagination from "@/components/ui/Pagination";
 import List from "../../List";
 
 const { description } = c.product;
-const limit = 12;
+const limit = 30;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ page: string }> }) => {
   const page = Number((await params).page);
@@ -25,7 +25,7 @@ export default async function ProductPaginate({ params }: { params: Promise<{ pa
 
   return (
     <>
-      <Hero title={`Product Page ${page}`} description={description} />
+      <Hero title={`Product (${totalProductsCount}) - Page ${page}`} description={description} />
       <section className="py-12">
         <div className="container">
           <AsideProdutCategory />
