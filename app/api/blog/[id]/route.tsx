@@ -15,12 +15,12 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
   const session = await auth();
   if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  const userId = session.user.id as string;
+  // const userId = session.user.id as string;
   const id = (await params).id;
   const role = session.user.role as string;
 
-  const blog = await prisma.blog.findUnique({ where: { id }, select: { userId: true } });
-  if (role !== "admin" && (role !== "editor" || blog?.userId !== userId)) {
+  // const blog = await prisma.blog.findUnique({ where: { id }, select: { userId: true } });
+  if (role !== "ADMIN") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
   const rawData = await req.json();
@@ -43,12 +43,12 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
   const session = await auth();
   if (!session || !session.user) return Response.json({ message: "Unauthorized" }, { status: 401 });
 
-  const userId = session.user.id as string;
+  // const userId = session.user.id as string;
   const id = (await params).id;
   const role = session.user.role as string;
 
   const currentBlog = await prisma.blog.findUnique({ where: { id }, select: { userId: true, imageUrl: true } });
-  if (role !== "admin" && (role !== "editor" || currentBlog?.userId !== userId)) {
+  if (role !== "ADMIN") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 

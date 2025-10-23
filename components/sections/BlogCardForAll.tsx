@@ -16,7 +16,7 @@ export default function BlogCardForAll({ blog }: { blog: BlogProps | null | unde
           alt={blog.title}
           width={500}
           height={500}
-          className="w-full h-full object-cover object-center bg-gray-100"
+          className="w-full h-full object-contain object-center bg-gray-100"
         />
       </Link>
       <div className="w-full space-y-1 mb-0.5">

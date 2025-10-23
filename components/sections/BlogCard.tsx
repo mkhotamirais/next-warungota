@@ -19,7 +19,7 @@ export default function BlogCard({ blog, content = true }: BlogCardProps) {
           alt={blog.title}
           width={500}
           height={500}
-          className="w-full h-full object-cover object-center bg-gray-100"
+          className="w-full h-full object-contain object-center bg-gray-100"
         />
       </Link>
       <div className="w-full sm:w-2/3 space-y-3">

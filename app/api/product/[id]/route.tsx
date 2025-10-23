@@ -16,12 +16,12 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
   const session = await auth();
   if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  const userId = session.user.id as string;
+  // const userId = session.user.id as string;
   const id = (await params).id;
   const role = session.user.role as string;
 
-  const product = await prisma.product.findUnique({ where: { id }, select: { userId: true } });
-  if (role !== "ADMIN" || product?.userId !== userId) {
+  // const product = await prisma.product.findUnique({ where: { id }, select: { userId: true } });
+  if (role !== "ADMIN") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -46,12 +46,12 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
   const session = await auth();
   if (!session || !session.user) return Response.json({ message: "Unauthorized" }, { status: 401 });
 
-  const userId = session.user.id as string;
+  // const userId = session.user.id as string;
   const id = (await params).id;
   const role = session.user.role as string;
 
   const currentProduct = await prisma.product.findUnique({ where: { id }, select: { userId: true, imageUrl: true } });
-  if (role !== "ADMIN" || currentProduct?.userId !== userId) {
+  if (role !== "ADMIN") {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
