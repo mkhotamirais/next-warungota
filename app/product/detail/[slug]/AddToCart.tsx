@@ -40,6 +40,7 @@ export default function AddToCart({ productId }: { productId: string }) {
         return;
       } else if (res.ok) {
         setCartQty(cartQty + Number(qty));
+        setQty("1");
         router.refresh();
       } else {
         const errorData = await res.json();

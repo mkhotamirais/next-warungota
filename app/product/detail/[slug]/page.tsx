@@ -28,17 +28,17 @@ export default async function ProductSlug({ params }: { params: Promise<{ slug: 
   return (
     <section className="py-8">
       <div className="container">
-        <div className="flex gap-8">
-          <div className="w-1/2">
+        <div className="flex flex-col sm:flex-row gap-8">
+          <div className="w-full sm:w-1/2">
             <Image
               src={product.imageUrl || "/logo-warungota.png"}
               alt={product.name}
               width={400}
               height={400}
-              className="w-full h-auto"
+              className="w-full h-auto bg-gray-50 object-contain object-center"
             />
           </div>
-          <div>
+          <div className="w-full sm:w-1/2">
             <h1 className="h1">{product.name}</h1>
             <p className="text-2xl font-medium">{formatRupiah(product.price)}</p>
             <div>
@@ -47,7 +47,7 @@ export default async function ProductSlug({ params }: { params: Promise<{ slug: 
           </div>
         </div>
         <div className="py-8">
-          <h2 className="h2">Other Products</h2>
+          <h2 className="h2 mb-4">Other Products</h2>
           <div className="grid-all-list">
             {otherProducts.map((item) => (
               <ProductCard key={item.id} item={item} />
