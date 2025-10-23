@@ -28,7 +28,7 @@ export default async function AdminBlogPaginate({ params }: { params: Promise<{ 
     <Suspense fallback={<Load />}>
       <List blogs={blogs} />
       {totalBlogsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/blog/page" />
+        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/blog/page" />
       ) : null}
     </Suspense>
   );

@@ -23,7 +23,7 @@ export default async function Product({ params }: { params: Promise<{ page?: str
     <Suspense fallback={<Load />}>
       <List products={products} />
       {totalProductsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/product/page" />
+        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/product/page" />
       ) : null}
     </Suspense>
   );

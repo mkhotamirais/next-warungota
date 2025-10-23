@@ -9,7 +9,7 @@ export default function ProductCard({ item }: { item: ProductProps }) {
     <div key={item.id} className="shadow rounded">
       <Link href={`/product/detail/${item.slug}`}>
         <Image
-          src={item.imageUrl || ""}
+          src={item.imageUrl || "/logo-warungota.png"}
           alt={item.name}
           width={400}
           height={400}

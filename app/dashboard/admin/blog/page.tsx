@@ -21,7 +21,7 @@ export default async function AdminBlog() {
     <Suspense fallback={<Load />}>
       <List blogs={blogs} />
       {totalBlogsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={1} path="/dashboard/blog/page" />
+        <Pagination totalPages={totalPages} currentPage={1} path="/dashboard/admin/blog/page" />
       ) : null}
     </Suspense>
   );
