@@ -35,7 +35,7 @@ export default function List({ products }: { products: ProductProps[] | undefine
       </div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="h2">Product List</h2>
-        <Button as={Link} href="/dashboard/product/create-product">
+        <Button as={Link} href="/dashboard/admin/product/create-product">
           Create Product
         </Button>
       </div>
