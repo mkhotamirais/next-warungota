@@ -59,6 +59,11 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ productId }),
         });
+        const res = await fetch("/api/cart", { method: "GET" });
+        const result = await res.json();
+        if (result.cartItems.length === 0) {
+          setCartQty(0);
+        }
         router.refresh();
       } catch (error) {
         console.log(error);

@@ -186,12 +186,7 @@ export const DELETE = async (req: Request) => {
     }
 
     await prisma.cartItem.delete({
-      where: {
-        cartId_productId: {
-          cartId: cart.id,
-          productId: productId,
-        },
-      },
+      where: { cartId_productId: { cartId: cart.id, productId: productId } },
     });
 
     revalidateCart();

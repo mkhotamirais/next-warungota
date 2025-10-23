@@ -17,10 +17,7 @@ export default function CartBtn() {
 
     const getCarts = async () => {
       try {
-        const res = await fetch("/api/cart", {
-          method: "GET",
-          next: { tags: ["cart-summary"] },
-        });
+        const res = await fetch("/api/cart");
 
         if (!res.ok) {
           throw new Error("Failed to fetch cart data");
