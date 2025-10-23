@@ -5,6 +5,12 @@ import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
+const revalidateBlog = () => {
+  revalidatePath("/");
+  revalidatePath("/blog");
+  revalidatePath("/blog/page/[page]", "page");
+};
+
 export const POST = async (req: Request) => {
   const session = await auth();
   if (!session || !session.user || (session.user.role !== "admin" && session.user.role !== "editor"))
@@ -49,9 +55,7 @@ export const POST = async (req: Request) => {
     }
 
     await prisma.blog.create({ data: { title, slug, content, imageUrl, categoryId, userId } });
-    revalidatePath("/");
-    revalidatePath("/blog");
-    revalidatePath("/blog/page/[page]", "page");
+    revalidateBlog();
     return Response.json({ message: "Blog created successfully" });
   } catch (error) {
     console.log(error);

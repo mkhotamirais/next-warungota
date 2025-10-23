@@ -4,6 +4,11 @@ import { ProductCategorySchema } from "@/lib/zod";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
+const revalidateProductCategory = () => {
+  revalidatePath("/dashboard/admin/product-category");
+  revalidatePath("/dashboard/admin/product/create-product");
+};
+
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
 
@@ -36,16 +41,15 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
         await tx.productCategory.delete({ where: { id } });
       });
 
-      revalidatePath("/dashboard/product-category");
-      revalidatePath("/dashboard/product/create-product");
+      revalidateProductCategory();
 
       return Response.json({
         message: `Product category "${categoryToDelete.name}" deleted successfully. ${postCount} associated posts have been moved to "${defaultCategory.name}".`,
       });
     } else {
       await prisma.productCategory.delete({ where: { id } });
-      revalidatePath("/dashboard/product-category");
-      revalidatePath("/dashboard/product/create-product");
+
+      revalidateProductCategory();
 
       return Response.json({ message: `Product category "${categoryToDelete.name}" deleted successfully.` });
     }
@@ -80,8 +84,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     const result = await prisma.productCategory.update({ where: { id }, data: { name, slug } });
-    revalidatePath("/dashboard/product-category");
-    revalidatePath("/dashboard/product/create-product");
+    revalidateProductCategory();
 
     return Response.json({ message: `Product category "${result.name}" updated successfully` });
   } catch (error) {

@@ -36,7 +36,7 @@ export default function List({ blogs }: { blogs: BlogProps[] | undefined | null 
       </div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="h2">Blog List</h2>
-        <Button as={Link} href="/dashboard/blog/create-blog">
+        <Button as={Link} href="/dashboard/admin/blog/create-blog">
           Create Blog
         </Button>
       </div>

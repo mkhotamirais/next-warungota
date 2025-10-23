@@ -4,6 +4,11 @@ import { BlogCategorySchema } from "@/lib/zod";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
+const revalidateBlogCategory = () => {
+  revalidatePath("/dashboard/admin/blog-category");
+  revalidatePath("/dashboard/admin/blog/create-blog");
+};
+
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
 
@@ -36,16 +41,14 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
         await tx.blogCategory.delete({ where: { id } });
       });
 
-      revalidatePath("/dashboard/blog-category");
-      revalidatePath("/dashboard/blog/create-blog");
+      revalidateBlogCategory();
 
       return Response.json({
         message: `Blog category "${categoryToDelete.name}" deleted successfully. ${postCount} associated posts have been moved to "${defaultCategory.name}".`,
       });
     } else {
       await prisma.blogCategory.delete({ where: { id } });
-      revalidatePath("/dashboard/blog-category");
-      revalidatePath("/dashboard/blog/create-blog");
+      revalidateBlogCategory();
 
       return Response.json({ message: `Blog category "${categoryToDelete.name}" deleted successfully.` });
     }
@@ -80,8 +83,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     const result = await prisma.blogCategory.update({ where: { id }, data: { name, slug } });
-    revalidatePath("/dashboard/blog-category");
-    revalidatePath("/dashboard/blog/create-blog");
+    revalidateBlogCategory();
 
     return Response.json({ message: `Blog category "${result.name}" updated successfully` });
   } catch (error) {

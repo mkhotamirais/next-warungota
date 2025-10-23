@@ -5,6 +5,12 @@ import { del, put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
+const revalidateBlog = () => {
+  revalidatePath("/");
+  revalidatePath("/blog");
+  revalidatePath("/blog/page/[page]", "page");
+};
+
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const session = await auth();
   if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -26,9 +32,7 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.blog.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/blog");
-    revalidatePath("/blog/page/[page]", "page");
+    revalidateBlog();
     return Response.json({ message: `Blog "${result.title}" deleted successfully` });
   } catch (error) {
     console.log(error);
@@ -88,9 +92,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
     }
 
     await prisma.blog.update({ data: { title, slug, content, imageUrl, categoryId }, where: { id } });
-    revalidatePath("/");
-    revalidatePath("/blog");
-    revalidatePath("/blog/page/[page]", "page");
+    revalidateBlog();
     return Response.json({ message: "Blog updated successfully" });
   } catch (error) {
     console.log(error);

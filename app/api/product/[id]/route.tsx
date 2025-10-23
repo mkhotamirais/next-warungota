@@ -5,6 +5,12 @@ import { del, put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
+const revalidateProduct = () => {
+  revalidatePath("/");
+  revalidatePath("/product");
+  revalidatePath("/product/page/[page]", "page");
+};
+
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const session = await auth();
   if (!session || !session.user) return Response.json({ error: "Unauthorized" }, { status: 401 });
@@ -26,9 +32,7 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
 
   try {
     const result = await prisma.product.delete({ where: { id } });
-    revalidatePath("/");
-    revalidatePath("/product");
-    revalidatePath("/product/page/[page]", "page");
+    revalidateProduct();
     return Response.json({ message: `Product "${result.name}" deleted successfully` });
   } catch (error) {
     console.log(error);
@@ -93,9 +97,7 @@ export const PATCH = async (req: Request, { params }: { params: Promise<{ id: st
       data: { name, price, stock, description, slug, imageUrl, categoryId },
       where: { id },
     });
-    revalidatePath("/");
-    revalidatePath("/product");
-    revalidatePath("/product/page/[page]", "page");
+    revalidateProduct();
 
     return Response.json({ message: "Product updated successfully" });
   } catch (error) {
