@@ -22,12 +22,12 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
   useEffect(() => {
     if (Number(qty) !== item.quantity || check !== item.isChecked) {
       setPendingCheckout(true);
-      setPendingSave(item.Product.id);
+      setPendingSave(item.ProductVariant.id);
     } else {
       setPendingCheckout(false);
       setPendingSave(null);
     }
-  }, [check, item.isChecked, item.quantity, qty, setPendingCheckout, setPendingSave, item.Product.id]);
+  }, [check, item.isChecked, item.quantity, qty, setPendingCheckout, setPendingSave, item.ProductVariant.id]);
 
   const handleChangeCheck = () => {
     setCheck((prev) => !prev);
@@ -39,7 +39,7 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
       setPendingCheckout(true);
     }
     if (qty === "1") {
-      handleDeleteItem(item.Product.id);
+      handleDeleteItem(item.ProductVariant.id);
     }
   };
 
@@ -82,9 +82,9 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
     <>
       <div
         key={item.id}
-        className={`flex justify-between mb-4 border-b pb-4 relative ${pendingSave !== item.Product.id && pendingCheckout ? "pointer-events-none *:opacity-50" : ""}`}
+        className={`flex justify-between mb-4 border-b pb-4 relative ${pendingSave !== item.ProductVariant.id && pendingCheckout ? "pointer-events-none *:opacity-50" : ""}`}
       >
-        {pendingSave !== item.Product.id && pendingCheckout ? <div className="absolute inset-0"></div> : null}
+        {pendingSave !== item.ProductVariant.id && pendingCheckout ? <div className="absolute inset-0"></div> : null}
         <div className={`flex gap-4 items-center`}>
           <input
             aria-label="Checkbox"
@@ -94,17 +94,17 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
             className="size-5"
           />
           <Image
-            src={item.Product.imageUrl || "/logo-warungota.png"}
-            alt={item.Product.name}
+            src={item.ProductVariant.variantImageUrl || "/logo-warungota.png"}
+            alt={item.ProductVariant.sku || "Product"}
             width={100}
             height={100}
             className="size-20 object-cover object-center"
           />
           <div className="space-y-2 text-sm">
-            <Link href={`/product/detail/${item.Product.slug}`} className="hover:underline">
-              <h3 className="capitalize font-semibold">{item.Product.name}</h3>
+            <Link href={`/product/detail/${item.ProductVariant.Product.slug}`} className="hover:underline">
+              <h3 className="capitalize font-semibold">{item.ProductVariant.Product.name}</h3>
             </Link>
-            <p>{formatRupiah(item.Product.price)}</p>
+            <p>{formatRupiah(item.ProductVariant.price)}</p>
             <form onSubmit={handleSubmit} className="flex items-center gap-2">
               <button type="button" onClick={handleDecrement} aria-label="Decrement">
                 {qty === "1" ? <FaTrash className="text-red-500" /> : <FaChevronLeft />}
@@ -142,7 +142,7 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
                 onClick={handleSave}
                 className="bg-primary p-2 text-sm rounded text-white flex items-center justify-center"
               >
-                {pendingSaving === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaCheck />}
+                {pendingSaving === item.ProductVariant.id ? <FaSpinner className="animate-spin" /> : <FaCheck />}
               </button>
               <button
                 type="button"
@@ -157,11 +157,11 @@ export default function CartList({ item, handleUpdate, handleDeleteItem }: CartL
             <div className="self-start">
               <button
                 type="button"
-                onClick={() => handleDeleteItem(item.Product.id)}
+                onClick={() => handleDeleteItem(item.ProductVariant.id)}
                 aria-label="Delete"
                 className="text-red-500 p-2 border rounded border-red-500"
               >
-                {pendingDel === item.Product.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
+                {pendingDel === item.ProductVariant.id ? <FaSpinner className="animate-spin" /> : <FaTrash />}
               </button>
             </div>
           )}

@@ -49,6 +49,18 @@ export const getProducts = async ({
     include: {
       ProductCategory: { select: { name: true, slug: true } },
       User: { select: { name: true } },
+      VariationType: { select: { id: true, name: true } },
+      ProductVariant: {
+        include: {
+          Options: {
+            select: {
+              VariationOption: {
+                select: { id: true, value: true, VariationType: { select: { id: true, name: true } } },
+              },
+            },
+          },
+        },
+      },
     },
   });
 
@@ -60,7 +72,14 @@ export const getProducts = async ({
 export const getProductBySlug = async (slug: string) => {
   const product = await prisma.product.findUnique({
     where: { slug },
-    include: { ProductCategory: { select: { name: true, slug: true } }, User: { select: { name: true } } },
+    include: {
+      ProductCategory: { select: { name: true, slug: true } },
+      User: { select: { name: true } },
+      VariationType: { select: { id: true, name: true } },
+      ProductVariant: {
+        include: { Options: { include: { VariationOption: { include: { VariationType: true } } } }, Product: true },
+      },
+    },
   });
   return product;
 };

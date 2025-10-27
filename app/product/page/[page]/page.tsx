@@ -26,7 +26,7 @@ export default async function ProductPaginate({ params }: { params: Promise<{ pa
   return (
     <>
       <Hero title={`Product (${totalProductsCount}) - Page ${page}`} description={description} />
-      <section className="py-12">
+      <section className="py-12 bg-gray-200">
         <div className="container">
           <AsideProdutCategory />
 

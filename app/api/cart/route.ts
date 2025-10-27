@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { log } from "console";
 import { revalidatePath } from "next/cache";
 
 export async function GET() {
@@ -14,7 +15,7 @@ export async function GET() {
 
     const cart = await prisma.cart.findUnique({
       where: { userId },
-      include: { CartItem: { include: { Product: true }, orderBy: { updatedAt: "desc" } } },
+      include: { CartItem: { include: { ProductVariant: true }, orderBy: { updatedAt: "desc" } } },
     });
 
     if (!cart) {
@@ -25,7 +26,7 @@ export async function GET() {
 
     const totalPrice = cart.CartItem.reduce((total, item) => {
       if (item.isChecked) {
-        return total + item.quantity * item.Product.price;
+        return total + item.quantity * item.ProductVariant.price;
       }
       return total;
     }, 0);
@@ -48,10 +49,10 @@ export const POST = async (req: Request) => {
   }
 
   const userId = session.user.id as string;
-  const { productId, qty } = await req.json();
+  const { productVariantId, qty } = await req.json();
   const quantity = parseInt(qty);
 
-  if (!productId) {
+  if (!productVariantId) {
     return Response.json({ message: "Product ID is required" }, { status: 400 });
   }
 
@@ -61,9 +62,9 @@ export const POST = async (req: Request) => {
       cart = await prisma.cart.create({ data: { userId }, include: { CartItem: true } });
     }
 
-    const existingCartItem = cart.CartItem.find((item) => item.productId === productId);
-    const product = await prisma.product.findUnique({ where: { id: productId }, select: { slug: true } });
-
+    const existingCartItem = cart.CartItem.find((item) => item.productVariantId === productVariantId);
+    const product = await prisma.productVariant.findUnique({ where: { id: productVariantId } });
+    log(product);
     if (!product) {
       return Response.json({ message: "Product not found" }, { status: 404 });
     }
@@ -80,7 +81,7 @@ export const POST = async (req: Request) => {
       return Response.json({ message: "Item quantity updated", item: updatedItem, cartQty });
     } else {
       const newCartItem = await prisma.cartItem.create({
-        data: { cartId: cart.id, productId, quantity, isChecked: true },
+        data: { cartId: cart.id, productVariantId: productVariantId, quantity, isChecked: true },
       });
       const sumQty = await prisma.cartItem.aggregate({ where: { Cart: { userId } }, _sum: { quantity: true } });
       const cartQty = sumQty._sum.quantity || 0;
@@ -115,7 +116,7 @@ export const PUT = async (req: Request) => {
     }
 
     const updatedItem = await prisma.cartItem.update({
-      where: { cartId_productId: { cartId: cart.id, productId: productId } },
+      where: { cartId_productVariantId: { cartId: cart.id, productVariantId: productId } },
       data: { quantity: quantity, isChecked: check },
     });
 
@@ -150,9 +151,9 @@ export const PATCH = async (req: Request) => {
 
     const updatedItem = await prisma.cartItem.update({
       where: {
-        cartId_productId: {
+        cartId_productVariantId: {
           cartId: cart.id,
-          productId: productId,
+          productVariantId: productId,
         },
       },
       data: { isChecked: isChecked },
@@ -186,7 +187,7 @@ export const DELETE = async (req: Request) => {
     }
 
     await prisma.cartItem.delete({
-      where: { cartId_productId: { cartId: cart.id, productId: productId } },
+      where: { cartId_productVariantId: { cartId: cart.id, productVariantId: productId } },
     });
 
     revalidateCart();

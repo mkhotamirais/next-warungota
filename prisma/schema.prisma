@@ -100,37 +100,6 @@ model Blog {
   updatedAt    DateTime     @updatedAt
 }
 
-model Product {
-  id          String   @id @default(cuid())
-  slug        String   @unique
-  name        String   @db.VarChar(255)
-  description String?  @db.Text
-  price       Int
-  stock       Int      @default(0)
-  imageUrl    String?
-  tags        String[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  userId          String
-  User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId      String
-  ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
-  CartItem        CartItem[]
-  OrderItem       OrderItem[]
-}
-
-model ProductCategory {
-  id        String   @id @default(cuid())
-  slug      String   @unique
-  name      String   @db.VarChar(255)
-  isDefault Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Products Product[]
-}
-
 model Address {
   id         String  @id @default(cuid())
   label      String? // Misal: "Rumah", "Kantor"
@@ -155,6 +124,87 @@ model Address {
   @@unique([userId, label])
 }
 
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  // price       Int
+  // stock       Int      @default(0)
+  imageUrl    String?
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId          String
+  User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId      String
+  ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+  // CartItem        CartItem[]
+  // OrderItem       OrderItem[]
+
+  ProductVariant ProductVariant[] // 🔥 Relasi ke varian spesifik
+  VariationType  VariationType[] // 🔥 Tipe variasi yang dimiliki produk ini (misal: Warna & Ukuran)
+}
+
+model VariationType {
+  id        String  @id @default(cuid())
+  name      String  @db.VarChar(50) // Contoh: "Warna", "Ukuran"
+  productId String
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  VariationOptions VariationOption[] // Opsi dari tipe variasi ini (misal: "Merah", "S", "M")
+
+  @@unique([productId, name])
+}
+
+model VariationOption {
+  id              String        @id @default(cuid())
+  value           String        @db.VarChar(50) // Contoh: "Merah", "Biru", "S", "M"
+  variationTypeId String
+  VariationType   VariationType @relation(fields: [variationTypeId], references: [id], onDelete: Cascade)
+
+  VariantCombinations ProductVariantOption[]
+
+  @@unique([variationTypeId, value])
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  Product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // 🔥 Detail yang unik per variasi
+  sku             String? @unique // Kode SKU
+  price           Int // Harga spesifik varian ini
+  stock           Int     @default(0) // Stok spesifik varian ini
+  variantImageUrl String? // Gambar khusus untuk varian ini (misal: kemeja Merah)
+
+  Options   ProductVariantOption[]
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+}
+
+model ProductVariantOption {
+  productVariantId  String
+  ProductVariant    ProductVariant  @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  variationOptionId String
+  VariationOption   VariationOption @relation(fields: [variationOptionId], references: [id], onDelete: Cascade)
+
+  @@id([productVariantId, variationOptionId])
+}
+
+model ProductCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String   @db.VarChar(255)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Products Product[]
+}
+
 model Cart {
   id        String   @id @default(cuid())
   userId    String   @unique
@@ -170,15 +220,17 @@ model CartItem {
   quantity  Int     @default(1)
   isChecked Boolean @default(false)
 
-  cartId    String
-  Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  productId String
-  Product   Product @relation(fields: [productId], references: [id])
+  cartId           String
+  Cart             Cart           @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  // productId String
+  // Product   Product @relation(fields: [productId], references: [id])
+  productVariantId String
+  ProductVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([cartId, productId])
+  @@unique([cartId, productVariantId])
 }
 
 model Order {
@@ -195,13 +247,15 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
-  Order     Order   @relation(fields: [orderId], references: [id])
-  productId String
-  Product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Int
+  id      String @id @default(cuid())
+  orderId String
+  Order   Order  @relation(fields: [orderId], references: [id])
+
+  productVariantId String
+  ProductVariant   ProductVariant @relation(fields: [productVariantId], references: [id])
+
+  quantity Int
+  price    Int
 }
 
 enum OrderStatus {

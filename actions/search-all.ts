@@ -8,8 +8,24 @@ export const searchAll = async (key: string) => {
       include: {
         ProductCategory: { select: { name: true, slug: true } },
         User: { select: { name: true } },
+        VariationType: { select: { id: true, name: true } },
+        ProductVariant: {
+          select: {
+            id: true,
+            price: true,
+            variantImageUrl: true,
+            Options: {
+              select: {
+                VariationOption: {
+                  select: { id: true, value: true, VariationType: { select: { id: true, name: true } } },
+                },
+              },
+            },
+          },
+        },
       },
     });
+
     const blogs = await prisma.blog.findMany({
       where: { title: { contains: key, mode: "insensitive" } },
       orderBy: { title: "asc" },

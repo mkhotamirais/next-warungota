@@ -24,32 +24,33 @@ export default function SelectedCartItems({ cartItems }: SelectedCartItemsProps)
               {/* Gambar Produk */}
               <div className="w-16 h-16 flex-shrink-0 border rounded-md overflow-hidden">
                 <Image
-                  src={item.Product.imageUrl || "/logo-warungota.png"}
+                  src={item.ProductVariant.variantImageUrl || "/logo-warungota.png"}
                   width={100}
                   height={100}
-                  alt={item.Product.name}
+                  alt={item.ProductVariant.sku || item.ProductVariant.Product.name}
                   className="w-full h-full object-cover"
                 />
               </div>
 
               <div>
                 <Link
-                  href={`/product/detail/${item.Product.slug}`}
+                  href={`/product/detail/${item.ProductVariant.Product.slug}`}
                   className="text-base font-medium text-gray-800 hover:text-blue-600"
                 >
-                  {item.Product.name}
+                  {item.ProductVariant.Product.name} -{" "}
+                  {item.ProductVariant.Options.map((option) => option.VariationOption.value).join(" ")}
                 </Link>
                 <p className="text-sm text-gray-500">
-                  Qty: {item.quantity} | Stok: {item.Product.stock}
+                  Qty: {item.quantity} | Stok: {item.ProductVariant.stock}
                 </p>
               </div>
             </div>
 
             <div className="text-right">
               <p className="text-md font-semibold text-gray-900">
-                Rp{(item.quantity * item.Product.price).toLocaleString("id-ID")}
+                Rp{(item.quantity * item.ProductVariant.price).toLocaleString("id-ID")}
               </p>
-              <p className="text-xs text-gray-500">Rp{item.Product.price.toLocaleString("id-ID")}/item</p>
+              <p className="text-xs text-gray-500">Rp{item.ProductVariant.price.toLocaleString("id-ID")}/item</p>
             </div>
           </div>
         ))}

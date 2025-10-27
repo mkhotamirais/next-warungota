@@ -5,8 +5,14 @@ import Link from "next/link";
 import React from "react";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
+  const minPrice = Math.min(...item.ProductVariant.map((price) => price.price));
+  let maxPrice = Math.max(...item.ProductVariant.map((price) => price.price));
+  if (minPrice === maxPrice) {
+    maxPrice = 0;
+  }
+
   return (
-    <div key={item.id} className="shadow rounded border border-gray-200">
+    <div key={item.id} className="rounded border border-gray-200">
       <Link href={`/product/detail/${item.slug}`} className="w-full h-36 block">
         <Image
           src={item.imageUrl || "/logo-warungota.png"}
@@ -16,11 +22,17 @@ export default function ProductCard({ item }: { item: ProductProps }) {
           className="w-full h-full rounded-t object-contain object-center bg-white p-2"
         />
       </Link>
-      <div className="px-3 py-2 flex flex-col min-h-20">
+      <div className="p-2 sm:px-3 bg-gray-100 border-t border-gray-300">
         <Link href={`/product/detail/${item.slug}`} className="hover:underline">
-          <h3 className="capitalize">{smartTrim(item.name, 36)}</h3>
+          <h3 className="text-sm capitalize h-10 text-gray-700 leading-snug">{smartTrim(item.name, 30)}</h3>
         </Link>
-        <p className="font-semibold mt-auto">{formatRupiah(item.price)}</p>
+        <div className="leading-none text-xs py-0.5 px-1 border border-primary w-fit bg-primary/10 lowercase">
+          {item.ProductCategory.name}
+        </div>
+        <p className="font-semibold mt-auto">
+          <span>Rp</span>
+          {formatRupiah(minPrice)} {maxPrice > 0 && <span>- {formatRupiah(maxPrice)}</span>}
+        </p>
       </div>
     </div>
   );

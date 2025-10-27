@@ -34,7 +34,7 @@ export default function Pagination({ totalPages, currentPage, path }: Pagination
   const nextPage = currentPage < totalPages ? currentPage + 1 : totalPages;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 py-4">
       <Link href={`${path}/${prevPage}`}>
         <button
           type="button"
@@ -56,9 +56,10 @@ export default function Pagination({ totalPages, currentPage, path }: Pagination
         onFocus={(e) => e.target.select()}
         onChange={(e) => setInputPage(e.target.value)}
         onKeyDown={handleInputJump}
-        className="w-12 text-center border rounded-md"
+        className="w-12 text-center border rounded-md disabled:opacity-50"
         min="1"
         max={totalPages}
+        disabled={totalPages <= 1}
       />
       <span>/ {totalPages}</span>
 

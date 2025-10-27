@@ -17,7 +17,7 @@ export default async function Product({ params }: { params: Promise<{ page?: str
   return (
     <>
       <Hero title={`${title} (${totalProductsCount})`} description={description} />
-      <section className="py-12">
+      <section className="py-12 bg-gray-200">
         <div className="container">
           <AsideProdutCategory />
 

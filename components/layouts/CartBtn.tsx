@@ -11,7 +11,7 @@ export default function CartBtn() {
   const { data: session } = useSession();
 
   useEffect(() => {
-    // if (session === undefined) return;
+    if (session === undefined) return;
 
     setPending(true);
 
@@ -38,6 +38,8 @@ export default function CartBtn() {
   const cartBadge = (
     <span className="text-[10px] py-[1px] px-1 bg-red-500 text-white absolute right-0 -top-1 rounded">{cartQty}</span>
   );
+
+  if (session?.user.role === "ADMIN") return null;
 
   return (
     <Link

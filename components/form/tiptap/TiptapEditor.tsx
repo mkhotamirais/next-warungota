@@ -14,7 +14,7 @@ interface ITiptap {
 }
 
 export default function TiptapEditor({ label = "label", value, onChange, error }: ITiptap) {
-  console.log("value tiptap", value);
+  // console.log("value tiptap", value);
   const editor = useEditor({
     // extensions: [StarterKit],
     extensions: [

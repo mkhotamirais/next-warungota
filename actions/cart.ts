@@ -10,7 +10,19 @@ export const getCarts = async () => {
   const userId = session.user.id as string;
   const cart = await prisma.cart.findUnique({
     where: { userId },
-    include: { CartItem: { include: { Product: true }, orderBy: { updatedAt: "desc" } } },
+    include: {
+      CartItem: {
+        orderBy: { updatedAt: "desc" },
+        include: {
+          ProductVariant: {
+            include: {
+              Options: { include: { VariationOption: { include: { VariationType: true } } } },
+              Product: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!cart) {
@@ -21,7 +33,7 @@ export const getCarts = async () => {
 
   const totalPrice = cart.CartItem.reduce((total, item) => {
     if (item.isChecked) {
-      return total + item.quantity * item.Product.price;
+      return total + item.quantity * item.ProductVariant.price;
     }
     return total;
   }, 0);

@@ -25,12 +25,12 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
 
   const handleUpdate = async (itemToUpdate: CartItemProps, newQty: number, check: boolean) => {
     setPendingCheckout(true);
-    setPendingSaving(itemToUpdate.productId);
+    setPendingSaving(itemToUpdate.productVariantId);
     try {
       const res = await fetch("/api/cart", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: itemToUpdate.productId, qty: newQty, check }),
+        body: JSON.stringify({ productId: itemToUpdate.productVariantId, qty: newQty, check }),
       });
 
       if (!res.ok) {
@@ -88,7 +88,7 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
           cartItems.map((item) => (
             <CartList
               item={item}
-              key={item.productId}
+              key={item.productVariantId}
               handleUpdate={handleUpdate}
               handleDeleteItem={handleDeleteItem}
             />
