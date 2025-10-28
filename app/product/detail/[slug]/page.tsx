@@ -26,7 +26,7 @@ export default async function ProductSlug({ params }: { params: Promise<{ slug: 
     categorySlug: currentProductCategory?.slug,
   });
 
-  if (!slug || !product || !otherProducts.length) return notFound();
+  if (!slug || !product) return notFound();
 
   return (
     <section className="py-8">
