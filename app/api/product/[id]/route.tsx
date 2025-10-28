@@ -135,113 +135,115 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
 
     await Promise.all(uploadPromises);
 
-    await prisma.$transaction(async (tx) => {
-      const updatedProduct = await tx.product.update({
-        where: { id: productId },
-        data: {
-          name,
-          slug,
-          description,
-          imageUrl: imageUrlUpdate,
-          categoryId: validatedFields.data.categoryId,
-          tags: validatedTags as string[],
-        },
-      });
+    await prisma.$transaction(
+      async (tx) => {
+        const updatedProduct = await tx.product.update({
+          where: { id: productId },
+          data: {
+            name,
+            slug,
+            description,
+            imageUrl: imageUrlUpdate,
+            categoryId: validatedFields.data.categoryId,
+            tags: validatedTags as string[],
+          },
+        });
 
-      const incomingVariantIds = variantsToProcess.map((v) => v.dbId).filter((id): id is string => !!id);
+        const incomingVariantIds = variantsToProcess.map((v) => v.dbId).filter((id): id is string => !!id);
 
-      await tx.productVariant.deleteMany({
-        where: {
-          productId: productId,
-          id: { notIn: incomingVariantIds },
-        },
-      });
+        await tx.productVariant.deleteMany({
+          where: {
+            productId: productId,
+            id: { notIn: incomingVariantIds },
+          },
+        });
 
-      const createdTypes = new Map<string, string>();
-      const createdOptions = new Map<string, string>();
+        const createdTypes = new Map<string, string>();
+        const createdOptions = new Map<string, string>();
 
-      for (const variant of variantsToProcess) {
-        for (const option of variant.options) {
-          const typeKey = option.typeName;
-          const optionKey = `${typeKey}:${option.optionValue}`;
+        for (const variant of variantsToProcess) {
+          for (const option of variant.options) {
+            const typeKey = option.typeName;
+            const optionKey = `${typeKey}:${option.optionValue}`;
 
-          if (!createdTypes.has(typeKey)) {
-            let existingType = await tx.variationType.findFirst({
-              where: { name: typeKey, productId: updatedProduct.id },
-            });
-            if (!existingType) {
-              existingType = await tx.variationType.create({ data: { name: typeKey, productId: updatedProduct.id } });
-            }
-            createdTypes.set(typeKey, existingType.id);
-          }
-
-          const typeId = createdTypes.get(typeKey)!;
-
-          if (!createdOptions.has(optionKey)) {
-            let existingOption = await tx.variationOption.findFirst({
-              where: { value: option.optionValue, variationTypeId: typeId },
-            });
-            if (!existingOption) {
-              existingOption = await tx.variationOption.create({
-                data: { value: option.optionValue, variationTypeId: typeId },
+            if (!createdTypes.has(typeKey)) {
+              let existingType = await tx.variationType.findFirst({
+                where: { name: typeKey, productId: updatedProduct.id },
               });
+              if (!existingType) {
+                existingType = await tx.variationType.create({ data: { name: typeKey, productId: updatedProduct.id } });
+              }
+              createdTypes.set(typeKey, existingType.id);
             }
-            createdOptions.set(optionKey, existingOption.id);
+
+            const typeId = createdTypes.get(typeKey)!;
+
+            if (!createdOptions.has(optionKey)) {
+              let existingOption = await tx.variationOption.findFirst({
+                where: { value: option.optionValue, variationTypeId: typeId },
+              });
+              if (!existingOption) {
+                existingOption = await tx.variationOption.create({
+                  data: { value: option.optionValue, variationTypeId: typeId },
+                });
+              }
+              createdOptions.set(optionKey, existingOption.id);
+            }
           }
         }
-      }
 
-      for (const variant of variantsToProcess) {
-        const variantDbId = variant.dbId;
-        const tempId = variantDbId || variant.options.map((o) => o.optionValue).join("_");
+        for (const variant of variantsToProcess) {
+          const variantDbId = variant.dbId;
+          const tempId = variantDbId || variant.options.map((o) => o.optionValue).join("_");
 
-        const urlFromMap = variantImageUrlsMap.get(tempId);
-        const finalVariantImageUrl = urlFromMap !== undefined ? urlFromMap : null;
+          const urlFromMap = variantImageUrlsMap.get(tempId);
+          const finalVariantImageUrl = urlFromMap !== undefined ? urlFromMap : null;
 
-        const variantDataToSave = {
-          productId: updatedProduct.id,
-          price: variant.price,
-          stock: variant.stock,
-          variantImageUrl: finalVariantImageUrl, // Menggunakan URL yang sudah diproses
-          sku: variant.sku || generateSku(updatedProduct.slug, variant.options),
-        };
+          const variantDataToSave = {
+            productId: updatedProduct.id,
+            price: variant.price,
+            stock: variant.stock,
+            variantImageUrl: finalVariantImageUrl, // Menggunakan URL yang sudah diproses
+            sku: variant.sku || generateSku(updatedProduct.slug, variant.options),
+          };
 
-        let savedVariant;
-        if (variantDbId) {
-          savedVariant = await tx.productVariant.update({
-            where: { id: variantDbId },
-            data: variantDataToSave,
+          let savedVariant;
+          if (variantDbId) {
+            savedVariant = await tx.productVariant.update({
+              where: { id: variantDbId },
+              data: variantDataToSave,
+            });
+          } else {
+            savedVariant = await tx.productVariant.create({
+              data: variantDataToSave,
+            });
+          }
+
+          // Delete old connections and create new ones
+          await tx.productVariantOption.deleteMany({
+            where: { productVariantId: savedVariant.id },
           });
-        } else {
-          savedVariant = await tx.productVariant.create({
-            data: variantDataToSave,
+
+          const optionsToConnect = variant.options.map((option) => {
+            const optionKey = `${option.typeName}:${option.optionValue}`;
+            const optionId = createdOptions.get(optionKey);
+            if (!optionId) throw new Error("Internal: Variation Option ID not found.");
+
+            return {
+              productVariantId: savedVariant.id,
+              variationOptionId: optionId,
+            };
+          });
+
+          await tx.productVariantOption.createMany({
+            data: optionsToConnect,
           });
         }
-
-        // Delete old connections and create new ones
-        await tx.productVariantOption.deleteMany({
-          where: { productVariantId: savedVariant.id },
-        });
-
-        const optionsToConnect = variant.options.map((option) => {
-          const optionKey = `${option.typeName}:${option.optionValue}`;
-          const optionId = createdOptions.get(optionKey);
-          if (!optionId) throw new Error("Internal: Variation Option ID not found.");
-
-          return {
-            productVariantId: savedVariant.id,
-            variationOptionId: optionId,
-          };
-        });
-
-        await tx.productVariantOption.createMany({
-          data: optionsToConnect,
-        });
+      },
+      {
+        timeout: 10000,
       }
-    });
-    // },{
-    //   timeout: 10000
-    // });
+    );
 
     revalidateProduct();
     return Response.json({ message: "Product updated successfully" });

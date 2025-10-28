@@ -34,7 +34,11 @@ export default function SearchBtn() {
       <Modal
         modalOpen={modalOpen}
         onModalOpenChange={setModalOpen}
-        trigger={<LuSearch />}
+        trigger={
+          <span className="p-2 inline-block">
+            <LuSearch />
+          </span>
+        }
         title="Cari Semua"
         ariaLabel="search"
       >
