@@ -11,7 +11,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <h1 className="text-xl">
           Hasil Pencarian <b>`{keyword}`</b>
         </h1>
-        <Suspense fallback={<FallbackSearch />}>
+        <Suspense fallback={<FallbackSearch />} key={keyword}>
           <Results keyword={keyword} />
         </Suspense>
       </div>
