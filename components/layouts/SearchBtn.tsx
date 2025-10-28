@@ -21,7 +21,6 @@ export default function SearchBtn() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(keyword === "");
 
     if (!keyword || keyword === "") {
       router.replace("/");
@@ -44,7 +43,7 @@ export default function SearchBtn() {
             ref={searchInputRef}
             label=""
             id="keyword"
-            type="text"
+            type="search"
             placeholder="Search"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}

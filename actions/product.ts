@@ -16,6 +16,7 @@ interface GetProductParams {
   excludeSlug?: string;
   categorySlug?: string;
   userId?: string;
+  keyword?: string;
 }
 
 export const getProducts = async ({
@@ -24,20 +25,21 @@ export const getProducts = async ({
   excludeSlug,
   categorySlug,
   userId,
+  keyword = "",
 }: GetProductParams = {}) => {
   const whereClause: {
     slug?: { not: string };
     ProductCategory?: { slug: string };
     userId?: string;
+    name?: { contains: string; mode: "insensitive" };
   } = {};
 
   if (excludeSlug) whereClause.slug = { not: excludeSlug };
   if (categorySlug) whereClause.ProductCategory = { slug: categorySlug };
   if (userId) whereClause.userId = userId;
+  if (keyword) whereClause.name = { contains: keyword, mode: "insensitive" };
 
-  const totalProductsCount = await prisma.product.count({
-    where: whereClause,
-  });
+  const totalProductsCount = await prisma.product.count({ where: whereClause });
 
   const skip = (page - 1) * limit;
 
