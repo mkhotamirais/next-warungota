@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
-import { LuSearch } from "react-icons/lu";
+// import { LuSearch } from "react-icons/lu";
 import { useDebouncedCallback } from "use-debounce";
 
 export default function SearchProductAdmin() {
@@ -52,9 +52,9 @@ export default function SearchProductAdmin() {
         onChange={(e) => handleSearch(e.target.value)}
         className="border border-gray-300 py-2 px-3"
       />
-      <button type="submit" aria-label="search product admin" className="py-2 px-3 bg-primary text-white">
+      {/* <button type="submit" aria-label="search product admin" className="py-2 px-3 bg-primary text-white">
         <LuSearch />
-      </button>
+      </button> */}
       {/* </form> */}
     </div>
   );

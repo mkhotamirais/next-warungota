@@ -1,10 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
-import { getProducts } from "@/actions/product";
-import Pagination from "@/components/ui/Pagination";
-import Load from "@/components/fallbacks/Load";
-import ProductAdmin from "../../ProductAdmin";
+import ProductList from "../../ProductList";
+import LoadSearchProduct from "../../LoadSearchProduct";
+import ProductMsg from "../../ProductMsg";
+import Button from "@/components/ui/Button";
+import Link from "next/link";
+import SearchProductAdmin from "../../SearchProductAdmin";
 
 const limit = 8;
 
@@ -21,14 +23,21 @@ export default async function ProductPage({
   const page = Number((await params).page || 1);
   const keyword = (await searchParams).keyword || "";
 
-  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit, keyword });
-
   return (
-    <Suspense fallback={<Load />}>
-      <ProductAdmin products={products} />
-      {totalProductsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/product/page" />
-      ) : null}
-    </Suspense>
+    <>
+      <ProductMsg />
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="h2">Product List</h2>
+        <Button as={Link} href="/dashboard/admin/product/create-product">
+          Create Product
+        </Button>
+      </div>
+      <div className="mb-4">
+        <SearchProductAdmin />
+      </div>
+      <Suspense fallback={<LoadSearchProduct />} key={keyword}>
+        <ProductList page={page} limit={limit} keyword={keyword} />   {" "}
+      </Suspense>
+    </>
   );
 }
