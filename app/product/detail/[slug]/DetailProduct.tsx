@@ -61,39 +61,41 @@ export default function DetailProduct({ product }: { product: ProductProps }) {
             className="w-full h-72 object-contain object-center"
           />
         </div>
-        <div className="flex gap-1 p-1 border border-gray-300 rounded overflow-x-auto">
-          <button
-            type="button"
-            aria-label="unselect-variant"
-            onClick={() => handleSelectVariant(null)}
-            className="min-w-20 h-20 block"
-          >
-            <Image
-              src={product.imageUrl || "/logo-warungota.png"}
-              width={100}
-              height={100}
-              alt={product.name}
-              className="w-full h-full object-cover object-center"
-            />
-          </button>
-          {product.ProductVariant.map((item) => (
+        {product.ProductVariant.length > 1 ? (
+          <div className="flex gap-1 p-1 border border-gray-300 rounded overflow-x-auto">
             <button
               type="button"
-              aria-label="select-variant"
-              onClick={() => handleSelectVariant(item.id)}
-              key={item.id}
+              aria-label="unselect-variant"
+              onClick={() => handleSelectVariant(null)}
               className="min-w-20 h-20 block"
             >
               <Image
-                src={item.variantImageUrl || "/logo-warungota.png"}
+                src={product.imageUrl || "/logo-warungota.png"}
                 width={100}
                 height={100}
                 alt={product.name}
                 className="w-full h-full object-cover object-center"
               />
             </button>
-          ))}
-        </div>
+            {product.ProductVariant.map((item) => (
+              <button
+                type="button"
+                aria-label="select-variant"
+                onClick={() => handleSelectVariant(item.id)}
+                key={item.id}
+                className="min-w-20 h-20 block"
+              >
+                <Image
+                  src={item.variantImageUrl || "/logo-warungota.png"}
+                  width={100}
+                  height={100}
+                  alt={product.name}
+                  className="w-full h-full object-cover object-center"
+                />
+              </button>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="w-full sm:w-1/2">
