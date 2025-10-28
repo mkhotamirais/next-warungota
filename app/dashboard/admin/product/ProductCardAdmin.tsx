@@ -32,12 +32,12 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
               alt={product.name}
               width={50}
               height={50}
-              className="size-14"
+              className="size-14 min-w-14"
             />
           </Link>
           <div className="flex flex-col gap-1">
             <Link href={`/product/detail/${product.slug}`} className="hover:underline">
-              <h3 className="h3">{smartTrim(product.name, 40)}</h3>
+              <h3 className="font-semibold">{smartTrim(product.name, 40)}</h3>
             </Link>
             <div className="text-sm text-gray-600 flex gap-2">
               <span>{product.ProductCategory?.name || "category"}</span>

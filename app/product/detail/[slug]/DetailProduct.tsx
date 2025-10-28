@@ -11,13 +11,19 @@ export default function DetailProduct({ product }: { product: ProductProps }) {
   const { data: session } = useSession();
   let price = 0;
   let maxPrice = 0;
+
   if (product.ProductVariant.length === 1) {
     price = product.ProductVariant[0].price;
     maxPrice = 0;
   }
+
   if (product.ProductVariant.length > 1) {
     price = Math.min(...product.ProductVariant.map((item) => item.price));
     maxPrice = Math.max(...product.ProductVariant.map((item) => item.price));
+  }
+
+  if (maxPrice === price) {
+    maxPrice = 0;
   }
 
   const [showName, setShowName] = useState(product.name);
