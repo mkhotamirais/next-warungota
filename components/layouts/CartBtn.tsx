@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 
 export default function CartBtn() {
   const { cartQty, setCartQty, pending, setPending } = useCart();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     if (session === undefined) return;
@@ -39,7 +39,7 @@ export default function CartBtn() {
     <span className="text-[10px] py-[1px] px-1 bg-red-500 text-white absolute right-0 -top-1 rounded">{cartQty}</span>
   );
 
-  if (session?.user.role === "ADMIN") return null;
+  if (session?.user.role === "ADMIN" || status === "authenticated" || status === "loading") return null;
 
   return (
     <Link

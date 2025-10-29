@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
-import { getProducts } from "@/actions/product";
+import { getProductCategories, getProducts } from "@/actions/product";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
+import FilterProducts from "../../FilterProducts";
 import ProductList from "../../ProductList";
 
 const limit = 30;
@@ -35,8 +36,18 @@ export default async function ProductPaginate({
   const minPrice = (await searchParams).minPrice || "";
   const maxPrice = (await searchParams).maxPrice || "";
 
+  const productCategories = await getProductCategories();
+
   return (
     <>
+      <section className="py-4">
+        <div className="container">
+          <div className="py-4 flex flex-col justify-center items-center bg-white">
+            <h1 className="text-xl font-semibold mb-3 sr-only">Product </h1>
+            <FilterProducts productCategories={productCategories} />
+          </div>
+        </div>
+      </section>
       <section className="py-12 bg-gray-200">
         <div className="container">
           <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}-${categorySlug}`}>

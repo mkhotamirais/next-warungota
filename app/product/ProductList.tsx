@@ -22,13 +22,7 @@ export default async function ProductList({
   minPrice,
   maxPrice,
 }: ProductListProps) {
-  const { products, totalPages, totalProductsCount } = await getProducts({
-    page,
-    limit,
-    keyword,
-    categorySlug,
-  });
-  // const productCategories = await getProductCategories();
+  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit, keyword, categorySlug });
 
   let appliedProducts = products;
 
@@ -54,31 +48,20 @@ export default async function ProductList({
 
   return (
     <>
-      {/* <section>
-        <div className="py-4 flex flex-col justify-center items-center bg-white">
-          <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
-          <div>
-            <FilterProducts totalProductsCount={totalProductsCount} productCategories={productCategories} />
+      {appliedProducts?.length ? (
+        <>
+          <div className="grid-all-list">
+            {products.map((item, i) => (
+              <ProductCard key={i} item={item} />
+            ))}
           </div>
-        </div>
-      </section> */}
-
-      <>
-        {appliedProducts?.length ? (
-          <>
-            <div className="grid-all-list">
-              {products.map((item, i) => (
-                <ProductCard key={i} item={item} />
-              ))}
-            </div>
-            {totalProductsCount > limit ? (
-              <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
-            ) : null}
-          </>
-        ) : (
-          <h2 className="h2">No Products Found</h2>
-        )}
-      </>
+          {totalProductsCount > limit ? (
+            <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+          ) : null}
+        </>
+      ) : (
+        <h2 className="h2">No Products Found</h2>
+      )}
     </>
   );
 }
