@@ -4,10 +4,13 @@ import { content as c } from "@/lib/content";
 import ProductCard from "./ProductCard";
 import Button from "../ui/Button";
 import Link from "next/link";
+import { sortProductsImageFirst } from "@/lib/utils";
 
 const { title, description } = c.product;
 
 export default function HomeProduct({ products }: { products: ProductProps[] | undefined | null }) {
+  const orderedProductsHasImageFirst = sortProductsImageFirst(products || []);
+
   return (
     <section className="py-10">
       <div className="container">
@@ -16,7 +19,7 @@ export default function HomeProduct({ products }: { products: ProductProps[] | u
           <p>{description}</p>
         </div>
         <div className="grid-all-list">
-          {products?.map((item) => (
+          {orderedProductsHasImageFirst?.map((item) => (
             <ProductCard key={item.id} item={item} />
           ))}
         </div>

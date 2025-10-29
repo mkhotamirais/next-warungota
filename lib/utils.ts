@@ -1,3 +1,5 @@
+import { ProductProps } from "@/types/types";
+
 export const roles = ["admin", "editor", "user"];
 
 export const smartTrim = (text: string, maxLength = 60) => {
@@ -79,4 +81,27 @@ export const diffForHumans = (date: string | number | Date) => {
 export const stripHtml = (html: string) => {
   // Regex yang cocok dengan semua tag HTML
   return html.replace(/<[^>]+>/g, "");
+};
+
+export const sortProductsImageFirst = (products: ProductProps[]) => {
+  const orderedProducts = products.sort((a, b) => {
+    const aHasUrl = typeof a.imageUrl === "string" && a.imageUrl.startsWith("http");
+    const bHasUrl = typeof b.imageUrl === "string" && b.imageUrl.startsWith("http");
+
+    // Logika Penyusunan (Mengutamakan yang memiliki URL):
+
+    // 1. Jika A punya URL dan B tidak punya: A diutamakan (A sebelum B)
+    if (aHasUrl && !bHasUrl) {
+      return -1;
+    }
+
+    // 2. Jika B punya URL dan A tidak punya: B diutamakan (B sebelum A)
+    if (!aHasUrl && bHasUrl) {
+      return 1;
+    }
+
+    // 3. Jika keduanya punya URL atau keduanya tidak punya: Pertahankan urutan relatif (atau susun berdasarkan ID/Name jika perlu)
+    return 0;
+  });
+  return orderedProducts;
 };

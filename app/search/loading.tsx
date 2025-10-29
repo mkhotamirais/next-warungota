@@ -1,5 +1,5 @@
 import React from "react";
-import FallbackSearch from "./FallbackSearch";
+import FallbackSearch from "../../components/fallbacks/FallbackSearchProducts";
 
 export default function Loading() {
   return (

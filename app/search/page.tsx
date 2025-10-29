@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
-import FallbackSearch from "./FallbackSearch";
 import Results from "./Results";
+import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ keyword: string }> }) {
   const keyword = (await searchParams).keyword;
@@ -11,7 +11,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <h1 className="text-xl">
           Hasil Pencarian <b>`{keyword}`</b>
         </h1>
-        <Suspense fallback={<FallbackSearch />} key={keyword}>
+        <Suspense fallback={<FallbackSearchProducts />} key={keyword}>
           <Results keyword={keyword} />
         </Suspense>
       </div>

@@ -21,7 +21,7 @@ interface GetProductParams {
 
 export const getProducts = async ({
   limit = 8,
-  page = 1, // Default ke halaman 1
+  page = 1,
   excludeSlug,
   categorySlug,
   userId,
@@ -45,7 +45,7 @@ export const getProducts = async ({
 
   const products = await prisma.product.findMany({
     where: whereClause,
-    orderBy: { createdAt: "desc" },
+    orderBy: { updatedAt: "desc" },
     take: limit,
     skip: skip,
     include: {
