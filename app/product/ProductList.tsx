@@ -56,7 +56,7 @@ export default async function ProductList({
   return (
     <>
       <section>
-        <div className="container py-4 flex flex-col justify-center items-center">
+        <div className="py-4 flex flex-col justify-center items-center bg-white">
           <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
           <div>
             <FilterProducts totalProductsCount={totalProductsCount} productCategories={productCategories} />

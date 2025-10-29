@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { LuFilter, LuSearch, LuX } from "react-icons/lu";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef } from "react";
+import { LuFilter, LuX } from "react-icons/lu";
 import { ProductCategory } from "@prisma/client";
+import FilterProductSearch from "./FilterProductSearch";
+import useFilterProducts from "@/hooks/useFilterProducts";
+import FilterSortPrice from "./FilterSortPrice";
+import FilterProductCategory from "./FilterProductCategory";
 
 interface FilterProductsProps {
   totalProductsCount: number;
@@ -11,18 +14,9 @@ interface FilterProductsProps {
 }
 
 export default function FilterProducts({ totalProductsCount, productCategories }: FilterProductsProps) {
-  const [open, setOpen] = useState(false);
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams.toString());
   const btnFilterRef = useRef<HTMLButtonElement>(null);
 
-  const [keyword, setKeyword] = useState(params.get("keyword") || "");
-  const [category, setCategory] = useState<string | null>(null);
-  const [sortPrice, setSortPrice] = useState<"asc" | "desc" | null>(null);
-  const [minPrice, setMinPrice] = useState(params.get("minPrice") || "");
-  const [maxPrice, setMaxPrice] = useState(params.get("maxPrice") || "");
+  const { open, setOpen, handleReset, handleFilter } = useFilterProducts();
 
   useEffect(() => {
     if (open) {
@@ -35,108 +29,11 @@ export default function FilterProducts({ totalProductsCount, productCategories }
         }
       });
     }
-  }, [open]);
-
-  const handleSortPrice = (type: "asc" | "desc" | null) => {
-    if (sortPrice === type) {
-      setSortPrice(null);
-    } else {
-      setSortPrice(type);
-    }
-  };
-
-  const handleCategory = (slug: string) => {
-    if (category === slug) {
-      setCategory(null);
-    } else {
-      setCategory(slug);
-    }
-  };
-
-  const handleChangeMinPrice = (val: string) => {
-    const value = val.replace(/[^0-9]/g, "");
-    setMinPrice(value);
-  };
-
-  const handleChangeMaxPrice = (val: string) => {
-    const value = val.replace(/[^0-9]/g, "");
-    if (value < minPrice) {
-      setMaxPrice(minPrice);
-      return;
-    }
-    setMaxPrice(value);
-  };
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (keyword) {
-      params.set("keyword", keyword);
-    } else {
-      params.delete("keyword");
-    }
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleFilter = () => {
-    if (category) {
-      params.set("categorySlug", category);
-    } else {
-      params.delete("categorySlug");
-    }
-
-    if (sortPrice) {
-      params.set("sortPrice", sortPrice);
-    } else {
-      params.delete("sortPrice");
-    }
-
-    if (minPrice) {
-      params.set("minPrice", minPrice);
-      if (!maxPrice) {
-        params.set("maxPrice", minPrice);
-      } else {
-        params.set("maxPrice", maxPrice);
-      }
-    } else {
-      params.delete("minPrice");
-      params.delete("maxPrice");
-    }
-
-    router.push(`?${params.toString()}`);
-    setOpen(false);
-  };
-
-  const handleReset = () => {
-    params.delete("keyword");
-    setCategory(null);
-    params.delete("categorySlug");
-    setSortPrice(null);
-    params.delete("sortPrice");
-    setMinPrice("");
-    params.delete("minPrice");
-    setMaxPrice("");
-    params.delete("maxPrice");
-    router.push(`?${params.toString()}`);
-    setOpen(false);
-  };
-
-  const btnStyle = "border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary";
+  }, [open, setOpen]);
 
   return (
     <div className="flex items-center gap-1">
-      <form onSubmit={handleSearch} className="border border-gray-300 rounded flex items-center overflow-hidden">
-        <input
-          title="search products input"
-          type="search"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-          className="px-3 py-2"
-          placeholder={`Search ${totalProductsCount} products`}
-        />
-        <button type="submit" aria-label="search products" className="p-3 bg-primary text-white block">
-          <LuSearch />
-        </button>
-      </form>
+      <FilterProductSearch totalProductsCount={totalProductsCount} />
       <div className="">
         <button
           type="button"
@@ -172,80 +69,9 @@ export default function FilterProducts({ totalProductsCount, productCategories }
                 </div>
               </div>
               <div className="space-y-3">
-                <div>
-                  <h4 className="text-lg mb-2 font-semibold">Urutkan harga</h4>
-                  <div className="flex gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleSortPrice("asc")}
-                      className={`${btnStyle} ${sortPrice === "asc" ? "bg-primary text-white" : ""}`}
-                    >
-                      Harga Terendah
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSortPrice("desc")}
-                      className={`${btnStyle} ${sortPrice === "desc" ? "bg-primary text-white" : ""}`}
-                    >
-                      Harga Tertinggi
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-lg mb-2 font-semibold">Kategori</h4>
-                  <div className="flex gap-1 flex-wrap">
-                    {productCategories?.map((c) => (
-                      <button
-                        type="button"
-                        key={c.slug}
-                        onClick={() => handleCategory(c.slug)}
-                        className={`${c.slug === category ? "bg-primary text-white" : ""} ${btnStyle}`}
-                      >
-                        {c.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-lg mb-2 font-semibold">Rentang Harga</h4>
-                  <div className="flex gap-1 items-center">
-                    <div>
-                      <label htmlFor="min-price">Min Price</label>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        pattern="[0-9]*"
-                        id="min-price"
-                        placeholder="Haga Minimal"
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                        value={minPrice}
-                        onChange={(e) => handleChangeMinPrice(e.target.value)}
-                        onFocus={(e) => e.target.select()}
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="max-price">Max Price</label>
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        pattern="[0-9]*"
-                        id="min-price"
-                        className="w-full px-2 py-1 border border-gray-300 rounded"
-                        value={maxPrice}
-                        placeholder={`${minPrice ? minPrice : "Harga Maksimal"}`}
-                        onChange={(e) => handleChangeMaxPrice(e.target.value)}
-                        onFocus={(e) => {
-                          if (Number(maxPrice) < Number(minPrice)) {
-                            setMaxPrice(minPrice);
-                          }
-                          setTimeout(() => {
-                            e.target.select();
-                          }, 100);
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
+                <FilterSortPrice />
+                <FilterProductCategory productCategories={productCategories} />
+
                 <div className="sticky bottom-0 w-full bg-white py-2">
                   <button
                     ref={btnFilterRef}
