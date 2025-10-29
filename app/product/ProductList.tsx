@@ -7,7 +7,7 @@ const limit = 30;
 
 interface ProductListProps {
   page: number;
-  // keyword: string;
+  keyword: string;
   // categorySlug?: string;
   // sortPrice?: "asc" | "desc" | null;
   // minPrice: string;
@@ -16,7 +16,7 @@ interface ProductListProps {
 
 export default async function ProductList({
   page,
-  // keyword,
+  keyword,
   // categorySlug,
   // sortPrice,
   // minPrice,
@@ -25,7 +25,7 @@ export default async function ProductList({
   const { products, totalPages, totalProductsCount } = await getProducts({
     page,
     limit,
-    // keyword,
+    keyword,
     // categorySlug,
   });
 
