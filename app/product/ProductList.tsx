@@ -1,8 +1,7 @@
-import { getProductCategories, getProducts } from "@/actions/product";
+import { getProducts } from "@/actions/product";
 import ProductCard from "@/components/sections/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import React from "react";
-import FilterProducts from "./FilterProducts";
 
 const limit = 30;
 
@@ -29,7 +28,7 @@ export default async function ProductList({
     keyword,
     categorySlug,
   });
-  const productCategories = await getProductCategories();
+  // const productCategories = await getProductCategories();
 
   let appliedProducts = products;
 
@@ -55,14 +54,14 @@ export default async function ProductList({
 
   return (
     <>
-      <section>
+      {/* <section>
         <div className="py-4 flex flex-col justify-center items-center bg-white">
           <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
           <div>
             <FilterProducts totalProductsCount={totalProductsCount} productCategories={productCategories} />
           </div>
         </div>
-      </section>
+      </section> */}
 
       <>
         {appliedProducts?.length ? (
