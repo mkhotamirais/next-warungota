@@ -51,7 +51,7 @@
   }
 
   .btn-filter {
-    @apply text-red-500;
+    @apply border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary;
   }
 
   .grid-all-list {
