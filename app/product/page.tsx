@@ -2,9 +2,9 @@ import React, { Suspense } from "react";
 import ProductList from "./ProductList";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 import {
-  // getProductCategories,
+  getProductCategories,
 
-  getProducts,
+  // getProducts,
 } from "@/actions/product";
 import FilterProducts from "./FilterProducts";
 
@@ -28,19 +28,19 @@ export default async function Product({
   const minPrice = (await searchParams).minPrice || "";
   const maxPrice = (await searchParams).maxPrice || "";
 
-  const { totalProductsCount } = await getProducts();
-  // const productCategories = await getProductCategories();
+  // const { totalProductsCount } = await getProducts();
+  const productCategories = await getProductCategories();
 
   return (
     <>
       <section>
         <div className="py-4 flex flex-col justify-center items-center bg-white">
-          <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
+          {/* <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1> */}
           <Suspense fallback={<div>Loading...</div>}>
             <FilterProducts
-              totalProductsCount={totalProductsCount}
+              // totalProductsCount={totalProductsCount}
 
-              // productCategories={productCategories}
+              productCategories={productCategories}
             />
           </Suspense>
         </div>

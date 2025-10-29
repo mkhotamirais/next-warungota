@@ -1,7 +1,7 @@
 "use client";
 
 // import { useEffect, useRef } from "react";
-// import { ProductCategory } from "@prisma/client";
+import { ProductCategory } from "@prisma/client";
 // import useFilterProducts from "@/hooks/useFilterProducts";
 // import { LuFilter, LuX } from "react-icons/lu";
 // import FilterProductSearch from "./FilterProductSearch";
@@ -9,11 +9,11 @@
 // import FilterProductCategory from "./FilterProductCategory";
 
 interface FilterProductsProps {
-  totalProductsCount: number;
-  // productCategories: ProductCategory[];
+  // totalProductsCount: number;
+  productCategories: ProductCategory[];
 }
 
-export default function FilterProducts({ totalProductsCount }: FilterProductsProps) {
+export default function FilterProducts({ productCategories }: FilterProductsProps) {
   // const btnFilterRef = useRef<HTMLButtonElement>(null);
 
   // const { open, setOpen, handleReset, handleFilter } = useFilterProducts();
@@ -34,7 +34,15 @@ export default function FilterProducts({ totalProductsCount }: FilterProductsPro
   // console.log(tota)
 
   return (
-    <div>filter {totalProductsCount}</div>
+    <div>
+      filter product
+      <div>
+        {productCategories?.map((c) => (
+          <div key={c.slug}>{c.name}</div>
+        ))}
+      </div>
+    </div>
+
     // <div className="flex items-center gap-1">
     //   <FilterProductSearch totalProductsCount={totalProductsCount} />
     //   <div className="">
