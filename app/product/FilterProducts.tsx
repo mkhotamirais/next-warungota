@@ -3,17 +3,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LuFilter, LuSearch, LuX } from "react-icons/lu";
 import { useRouter, useSearchParams } from "next/navigation";
-// import { ProductCategory } from "@prisma/client";
+import { ProductCategory } from "@prisma/client";
 
 interface FilterProductsProps {
   totalProductsCount: number;
-  // productCategories: ProductCategory[];
+  productCategories: ProductCategory[];
 }
 
-export default function FilterProducts({
-  totalProductsCount,
-  // productCategories
-}: FilterProductsProps) {
+export default function FilterProducts({ totalProductsCount, productCategories }: FilterProductsProps) {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
@@ -48,13 +45,13 @@ export default function FilterProducts({
     }
   };
 
-  // const handleCategory = (slug: string) => {
-  //   if (category === slug) {
-  //     setCategory(null);
-  //   } else {
-  //     setCategory(slug);
-  //   }
-  // };
+  const handleCategory = (slug: string) => {
+    if (category === slug) {
+      setCategory(null);
+    } else {
+      setCategory(slug);
+    }
+  };
 
   const handleChangeMinPrice = (val: string) => {
     const value = val.replace(/[^0-9]/g, "");
@@ -196,7 +193,7 @@ export default function FilterProducts({
                 </div>
                 <div>
                   <h4 className="text-lg mb-2 font-semibold">Kategori</h4>
-                  {/* <div className="flex gap-1 flex-wrap">
+                  <div className="flex gap-1 flex-wrap">
                     {productCategories?.map((c) => (
                       <button
                         type="button"
@@ -207,7 +204,7 @@ export default function FilterProducts({
                         {c.name}
                       </button>
                     ))}
-                  </div> */}
+                  </div>
                 </div>
                 <div>
                   <h4 className="text-lg mb-2 font-semibold">Rentang Harga</h4>
