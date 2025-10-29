@@ -1,7 +1,6 @@
 import React, { Suspense } from "react";
 // import { getProductCategories, getProducts } from "@/actions/product";
 import { getProducts } from "@/actions/product";
-import FilterProducts from "../../FilterProducts";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 import ProductList from "../../ProductList";
 
@@ -36,24 +35,10 @@ export default async function ProductPaginate({
   // const sortPrice = (await searchParams).sortPrice || null;
   // const minPrice = (await searchParams).minPrice || "";
   // const maxPrice = (await searchParams).maxPrice || "";
-
-  const { totalProductsCount } = await getProducts();
   // const productCategories = await getProductCategories();
 
   return (
     <>
-      <section>
-        <div className="container py-4 flex flex-col justify-center items-center">
-          <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
-          <div>
-            <FilterProducts
-              totalProductsCount={totalProductsCount}
-
-              // productCategories={productCategories}
-            />
-          </div>
-        </div>
-      </section>
       <section className="py-12 bg-gray-200">
         <div className="container">
           {/* <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}-${categorySlug}`}> */}

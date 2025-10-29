@@ -2,6 +2,7 @@ import { getProducts } from "@/actions/product";
 import ProductCard from "@/components/sections/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import React from "react";
+import FilterProducts from "./FilterProducts";
 
 const limit = 30;
 
@@ -52,21 +53,35 @@ export default async function ProductList({
   // }
 
   return (
-    <div>
-      {products?.length ? (
-        <>
-          <div className="grid-all-list">
-            {products.map((item, i) => (
-              <ProductCard key={i} item={item} />
-            ))}
+    <>
+      <section>
+        <div className="container py-4 flex flex-col justify-center items-center">
+          <h1 className="text-xl font-semibold mb-3 sr-only">Product ({totalProductsCount})</h1>
+          <div>
+            <FilterProducts
+              totalProductsCount={totalProductsCount}
+              // productCategories={productCategories}
+            />
           </div>
-          {totalProductsCount > limit ? (
-            <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
-          ) : null}
-        </>
-      ) : (
-        <h2 className="h2">No Products Found</h2>
-      )}
-    </div>
+        </div>
+      </section>
+
+      <>
+        {products?.length ? (
+          <>
+            <div className="grid-all-list">
+              {products.map((item, i) => (
+                <ProductCard key={i} item={item} />
+              ))}
+            </div>
+            {totalProductsCount > limit ? (
+              <Pagination totalPages={totalPages} currentPage={page} path="/product/page" />
+            ) : null}
+          </>
+        ) : (
+          <h2 className="h2">No Products Found</h2>
+        )}
+      </>
+    </>
   );
 }
