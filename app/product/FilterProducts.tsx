@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { LuFilter, LuX } from "react-icons/lu";
 import { ProductCategory } from "@prisma/client";
-import FilterProductSearch from "./FilterProductSearch";
+// import FilterProductSearch from "./FilterProductSearch";
 import useFilterProducts from "@/hooks/useFilterProducts";
 import FilterSortPrice from "./FilterSortPrice";
 import FilterProductCategory from "./FilterProductCategory";
@@ -33,7 +33,7 @@ export default function FilterProducts({ totalProductsCount, productCategories }
 
   return (
     <div className="flex items-center gap-1">
-      <FilterProductSearch totalProductsCount={totalProductsCount} />
+      {/* <FilterProductSearch totalProductsCount={totalProductsCount} /> */}
       <div className="">
         <button
           type="button"
