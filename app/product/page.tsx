@@ -4,6 +4,8 @@ import { getProductCategories } from "@/actions/product";
 import FilterProducts from "./FilterProducts";
 import ProductList from "./ProductList";
 
+const limit = 30;
+
 export default async function Product({
   params,
   searchParams,
@@ -12,7 +14,7 @@ export default async function Product({
   searchParams: Promise<{
     keyword?: string;
     categorySlug?: string;
-    sortPrice?: "asc" | "desc";
+    sortPrice?: "asc" | "desc" | null;
     minPrice?: string;
     maxPrice?: string;
   }>;
@@ -38,9 +40,13 @@ export default async function Product({
       </section>
       <section className="py-10 bg-gray-200">
         <div className="container">
-          <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}-${categorySlug}`}>
+          <Suspense
+            fallback={<FallbackSearchProducts />}
+            key={`${keyword}-${categorySlug}-${sortPrice}-${minPrice}-${maxPrice}`}
+          >
             <ProductList
               page={page}
+              limit={limit}
               keyword={keyword}
               categorySlug={categorySlug}
               sortPrice={sortPrice}

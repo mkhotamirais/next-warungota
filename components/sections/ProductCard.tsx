@@ -5,11 +5,8 @@ import Link from "next/link";
 import React from "react";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
-  const minPrice = Math.min(...item.ProductVariant.map((price) => price.price));
-  let maxPrice = Math.max(...item.ProductVariant.map((price) => price.price));
-  if (minPrice === maxPrice) {
-    maxPrice = 0;
-  }
+  const minPrice = item.ProductVariant.reduce((prev, curr) => Math.min(prev, curr.price), Infinity);
+  const maxPrice = item.ProductVariant.reduce((prev, curr) => Math.max(prev, curr.price), -Infinity);
 
   return (
     <div key={item.id} className="rounded border border-gray-200">
@@ -31,7 +28,8 @@ export default function ProductCard({ item }: { item: ProductProps }) {
         </div>
         <p className="font-semibold mt-auto">
           <span>Rp</span>
-          {formatRupiah(minPrice)} {maxPrice > 0 && <span>- {formatRupiah(maxPrice)}</span>}
+          {formatRupiah(minPrice)}{" "}
+          {maxPrice > minPrice && maxPrice > 0 ? <span>- {formatRupiah(maxPrice)}</span> : null}
         </p>
       </div>
     </div>

@@ -3,13 +3,13 @@
 import Button from "@/components/ui/Button";
 import Modal, { ModalClose } from "@/components/ui/Modal";
 import { useCart } from "@/hooks/useCart";
-import { ProductProps } from "@/types/types";
+import { SingleProductProps } from "@/types/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { LuShoppingCart } from "react-icons/lu";
 
-export default function AddToCart({ product }: { product: ProductProps }) {
+export default function AddToCart({ product }: { product: SingleProductProps }) {
   const pv = product.ProductVariant;
   const [qty, setQty] = useState("1");
   const [pending, startTransition] = useTransition();

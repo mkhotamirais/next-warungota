@@ -3,52 +3,40 @@ import ProductCard from "@/components/sections/ProductCard";
 import Pagination from "@/components/ui/Pagination";
 import React from "react";
 
-const limit = 30;
-
 interface ProductListProps {
   page: number;
+  limit: number;
   keyword: string;
   categorySlug?: string;
   sortPrice?: "asc" | "desc" | null;
-  minPrice: string;
-  maxPrice: string;
+  minPrice?: string;
+  maxPrice?: string;
 }
 
 export default async function ProductList({
   page,
+  limit,
   keyword,
   categorySlug,
   sortPrice,
   minPrice,
   maxPrice,
 }: ProductListProps) {
-  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit, keyword, categorySlug });
-
-  let appliedProducts = products;
-
-  const productsWithMinPrice = products.map((product) => ({
-    ...product,
-    minPrice: product.ProductVariant.reduce((min, variant) => Math.min(min, variant.price), Infinity),
-  }));
-
-  if (sortPrice) {
-    appliedProducts =
-      sortPrice === "asc"
-        ? productsWithMinPrice.sort((a, b) => a.minPrice - b.minPrice)
-        : productsWithMinPrice.sort((a, b) => b.minPrice - a.minPrice);
-  } else {
-    appliedProducts = products;
-  }
-
-  if (minPrice && maxPrice) {
-    appliedProducts = productsWithMinPrice.filter(
-      (product) => product?.minPrice >= Number(minPrice) && product.minPrice <= Number(maxPrice)
-    );
-  }
+  const min = Number(minPrice);
+  const max = Number(maxPrice);
+  const { products, totalPages, totalProductsCount } = await getProducts({
+    page,
+    limit,
+    keyword,
+    categorySlug,
+    sortPrice,
+    minPrice: min,
+    maxPrice: max,
+  });
 
   return (
     <>
-      {appliedProducts?.length ? (
+      {products?.length ? (
         <>
           <div className="grid-all-list">
             {products.map((item, i) => (

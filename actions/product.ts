@@ -17,6 +17,9 @@ interface GetProductParams {
   categorySlug?: string;
   userId?: string;
   keyword?: string;
+  sortPrice?: "asc" | "desc" | null;
+  minPrice?: number;
+  maxPrice?: number;
 }
 
 export const getProducts = async ({
@@ -26,6 +29,9 @@ export const getProducts = async ({
   categorySlug,
   userId,
   keyword = "",
+  sortPrice,
+  minPrice,
+  maxPrice,
 }: GetProductParams = {}) => {
   const whereClause: {
     slug?: { not: string };
@@ -51,24 +57,54 @@ export const getProducts = async ({
     include: {
       ProductCategory: { select: { name: true, slug: true } },
       User: { select: { name: true } },
-      VariationType: { select: { id: true, name: true } },
-      ProductVariant: {
-        include: {
-          Options: {
-            select: {
-              VariationOption: {
-                select: { id: true, value: true, VariationType: { select: { id: true, name: true } } },
-              },
-            },
-          },
-        },
-      },
+      ProductVariant: { select: { price: true } },
     },
   });
 
   const totalPages = Math.ceil(totalProductsCount / limit);
 
-  return { products, totalProductsCount, totalPages };
+  const productsWithPriceRange = products.map((product) => {
+    const prices = product.ProductVariant.map((variant) => variant.price);
+
+    const productMinPrice = prices.length === 0 ? null : Math.min(...prices);
+
+    return { ...product, productMinPrice };
+  });
+
+  let filteredProducts = productsWithPriceRange;
+
+  if (minPrice || maxPrice) {
+    filteredProducts = productsWithPriceRange.filter((product) => {
+      const productPrice = product.productMinPrice;
+
+      if (productPrice === null) {
+        return false;
+      }
+
+      const isAboveMin = minPrice ? productPrice >= minPrice : true;
+
+      const isBelowMax = maxPrice ? productPrice <= maxPrice : true;
+
+      return isAboveMin && isBelowMax;
+    });
+  }
+
+  let appliedProducts = filteredProducts;
+
+  if (sortPrice) {
+    const sortMultiplier = sortPrice === "asc" ? 1 : -1;
+    const HUGE_VALUE = Infinity;
+
+    appliedProducts = [...filteredProducts].sort((a, b) => {
+      const aPrice = a.productMinPrice ?? HUGE_VALUE;
+      const bPrice = b.productMinPrice ?? HUGE_VALUE;
+
+      const priceDifference = aPrice - bPrice;
+      return priceDifference * sortMultiplier;
+    });
+  }
+
+  return { products: appliedProducts, totalProductsCount, totalPages };
 };
 
 export const getProductBySlug = async (slug: string) => {

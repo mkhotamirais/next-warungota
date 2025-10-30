@@ -53,6 +53,7 @@ export default async function ProductPaginate({
           <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}-${categorySlug}`}>
             <ProductList
               page={page}
+              limit={limit}
               keyword={keyword}
               categorySlug={categorySlug}
               sortPrice={sortPrice}

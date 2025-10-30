@@ -5,9 +5,9 @@ import React, { useState } from "react";
 import AddToCart from "./AddToCart";
 import { formatRupiah } from "@/lib/utils";
 import { useSession } from "next-auth/react";
-import { ProductProps } from "@/types/types";
+import { SingleProductProps } from "@/types/types";
 
-export default function DetailProduct({ product }: { product: ProductProps }) {
+export default function DetailProduct({ product }: { product: SingleProductProps }) {
   const { data: session } = useSession();
   let price = 0;
   let maxPrice = 0;

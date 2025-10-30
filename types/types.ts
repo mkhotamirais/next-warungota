@@ -14,19 +14,7 @@ export type ProductProps = Prisma.ProductGetPayload<{
   include: {
     ProductCategory: { select: { name: true; slug: true } };
     User: { select: { name: true } };
-    VariationType: { select: { id: true; name: true } };
-    ProductVariant: {
-      select: {
-        id: true;
-        price: true;
-        variantImageUrl: true;
-        Options: {
-          select: {
-            VariationOption: { select: { id: true; value: true; VariationType: { select: { id: true; name: true } } } };
-          };
-        };
-      };
-    };
+    ProductVariant: { select: { price: true } };
   };
 }>;
 
