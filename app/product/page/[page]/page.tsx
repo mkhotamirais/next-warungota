@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { getProductCategories, getProducts } from "@/actions/product";
+import { getAllProductsName, getProductCategories, getProducts } from "@/actions/product";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 import FilterProducts from "../../FilterProducts";
 import ProductList from "../../ProductList";
@@ -27,6 +27,7 @@ export default async function ProductPaginate({
     sortPrice?: "asc" | "desc";
     minPrice?: string;
     maxPrice?: string;
+    prekeyword?: string;
   }>;
 }) {
   const page = Number((await params).page || 1);
@@ -35,8 +36,10 @@ export default async function ProductPaginate({
   const sortPrice = (await searchParams).sortPrice || null;
   const minPrice = (await searchParams).minPrice || "";
   const maxPrice = (await searchParams).maxPrice || "";
+  const prekeyword = (await searchParams).prekeyword || "";
 
   const productCategories = await getProductCategories();
+  const productNames = await getAllProductsName(prekeyword);
 
   return (
     <>
@@ -44,7 +47,7 @@ export default async function ProductPaginate({
         <div className="container">
           <div className="py-4 flex flex-col justify-center items-center bg-white">
             <h1 className="text-xl font-semibold mb-3 sr-only">Product </h1>
-            <FilterProducts productCategories={productCategories} />
+            <FilterProducts productCategories={productCategories} productNames={productNames} />
           </div>
         </div>
       </section>

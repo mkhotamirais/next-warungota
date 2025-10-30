@@ -121,3 +121,15 @@ export const getProductBySlug = async (slug: string) => {
   });
   return product;
 };
+
+export const getAllProductsName = async (keyword: string) => {
+  if (!keyword) return [];
+  const products = await prisma.product.findMany({
+    where: { name: { contains: keyword, mode: "insensitive" } },
+    take: 10,
+    select: { name: true },
+  });
+
+  const productNames = products.map((product) => product.name);
+  return productNames;
+};

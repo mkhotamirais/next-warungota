@@ -7,9 +7,10 @@ import { ProductCategory } from "@prisma/client";
 
 interface FilterProductsProps {
   productCategories: ProductCategory[];
+  productNames: string[];
 }
 
-export default function FilterProducts({ productCategories }: FilterProductsProps) {
+export default function FilterProducts({ productCategories, productNames }: FilterProductsProps) {
   const [open, setOpen] = useState(false);
   const btnFilterRef = useRef<HTMLButtonElement>(null);
 
@@ -17,6 +18,7 @@ export default function FilterProducts({ productCategories }: FilterProductsProp
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
 
+  const [openKeywords, setOpenKeywords] = useState(false);
   const [keyword, setKeyword] = useState(params.get("keyword") || "");
   const [category, setCategory] = useState<string | null>(null);
   const [sortPrice, setSortPrice] = useState<"asc" | "desc" | null>(null);
@@ -35,6 +37,23 @@ export default function FilterProducts({ productCategories }: FilterProductsProp
       });
     }
   }, [open]);
+
+  const handeChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+    params.set("prekeyword", e.target.value);
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    params.delete("prekeyword");
+    if (keyword) {
+      params.set("keyword", keyword);
+    } else {
+      params.delete("keyword");
+    }
+    router.push(`?${params.toString()}`);
+  };
 
   const handleSortPrice = (type: "asc" | "desc" | null) => {
     if (sortPrice === type) {
@@ -64,16 +83,6 @@ export default function FilterProducts({ productCategories }: FilterProductsProp
       return;
     }
     setMaxPrice(value);
-  };
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (keyword) {
-      params.set("keyword", keyword);
-    } else {
-      params.delete("keyword");
-    }
-    router.push(`?${params.toString()}`);
   };
 
   const handleFilter = () => {
@@ -123,16 +132,39 @@ export default function FilterProducts({ productCategories }: FilterProductsProp
 
   return (
     <div className="flex items-center gap-1">
-      <form onSubmit={handleSearch} className="border border-gray-300 rounded flex items-center overflow-hidden">
+      <form onSubmit={handleSearch} className="relative border border-gray-300 rounded flex items-center">
         <input
           title="search products input"
           type="search"
           value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
+          onChange={(e) => handeChangeSearch(e)}
           className="px-3 py-2"
-          // placeholder={`Search ${totalProductsCount} products`}
           placeholder={`Search products`}
+          onFocus={() => setOpenKeywords(true)}
+          onBlur={() => {
+            setTimeout(() => {
+              setOpenKeywords(false);
+            }, 300);
+          }}
         />
+        {productNames.length && openKeywords ? (
+          <div className="absolute top-full left-0 right-0 w-full">
+            <div className="flex flex-col">
+              {productNames.map((name, i) => (
+                <button
+                  type="button"
+                  key={i}
+                  onClick={() => {
+                    setKeyword(name);
+                  }}
+                  className="text-left px-3 py-2 bg-white/80 border-b border-gray-300 rounded-md hover:scale-105 transition-all"
+                >
+                  {name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : null}
         <button type="submit" aria-label="search products" className="p-3 bg-primary text-white block">
           <LuSearch />
         </button>
