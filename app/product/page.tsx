@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 // import { getProductCategories } from "@/actions/product";
-import FilterProducts from "./FilterProducts";
+// import FilterProducts from "./FilterProducts";
 import ProductList from "./ProductList";
 
 const limit = 30;
@@ -34,7 +34,7 @@ export default async function Product({
         <div className="container">
           <div className="py-4 flex flex-col justify-center items-center bg-white">
             <h1 className="text-xl font-semibold mb-3 sr-only">Product </h1>
-            <FilterProducts />
+            {/* <FilterProducts /> */}
           </div>
         </div>
       </section>
