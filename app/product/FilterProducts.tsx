@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { LuFilter, LuSearch, LuX } from "react-icons/lu";
+import { LuFilter, LuX } from "react-icons/lu";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCategory } from "@prisma/client";
+import { useDebouncedCallback } from "use-debounce";
 
 interface FilterProductsProps {
   productCategories: ProductCategory[];
-  productNames: string[];
 }
 
-export default function FilterProducts({ productCategories, productNames }: FilterProductsProps) {
+export default function FilterProducts({ productCategories }: FilterProductsProps) {
   const [open, setOpen] = useState(false);
   const btnFilterRef = useRef<HTMLButtonElement>(null);
 
@@ -18,8 +18,7 @@ export default function FilterProducts({ productCategories, productNames }: Filt
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
 
-  const [openKeywords, setOpenKeywords] = useState(false);
-  const [keyword, setKeyword] = useState(params.get("keyword") || "");
+  // const [keyword, setKeyword] = useState(params.get("keyword") || "");
   const [category, setCategory] = useState<string | null>(null);
   const [sortPrice, setSortPrice] = useState<"asc" | "desc" | null>(null);
   const [minPrice, setMinPrice] = useState(params.get("minPrice") || "");
@@ -38,22 +37,24 @@ export default function FilterProducts({ productCategories, productNames }: Filt
     }
   }, [open]);
 
-  const handeChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-    params.set("prekeyword", e.target.value);
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    params.delete("prekeyword");
-    if (keyword) {
-      params.set("keyword", keyword);
-    } else {
+  const handeChangeSearch = useDebouncedCallback((val: string) => {
+    if (val) params.set("keyword", val);
+    else {
       params.delete("keyword");
     }
     router.push(`?${params.toString()}`);
-  };
+  }, 500);
+
+  // const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   params.delete("prekeyword");
+  //   if (keyword) {
+  //     params.set("keyword", keyword);
+  //   } else {
+  //     params.delete("keyword");
+  //   }
+  //   router.push(`?${params.toString()}`);
+  // };
 
   const handleSortPrice = (type: "asc" | "desc" | null) => {
     if (sortPrice === type) {
@@ -132,43 +133,19 @@ export default function FilterProducts({ productCategories, productNames }: Filt
 
   return (
     <div className="flex items-center gap-1">
-      <form onSubmit={handleSearch} className="relative border border-gray-300 rounded flex items-center">
-        <input
-          title="search products input"
-          type="search"
-          value={keyword}
-          onChange={(e) => handeChangeSearch(e)}
-          className="px-3 py-2"
-          placeholder={`Search products`}
-          onFocus={() => setOpenKeywords(true)}
-          onBlur={() => {
-            setTimeout(() => {
-              setOpenKeywords(false);
-            }, 300);
-          }}
-        />
-        {productNames.length && openKeywords ? (
-          <div className="absolute top-full left-0 right-0 w-full">
-            <div className="flex flex-col">
-              {productNames.map((name, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  onClick={() => {
-                    setKeyword(name);
-                  }}
-                  className="text-left px-3 py-2 bg-white/80 border-b border-gray-300 rounded-md hover:scale-105 transition-all"
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : null}
-        <button type="submit" aria-label="search products" className="p-3 bg-primary text-white block">
+      {/* <form onSubmit={handleSearch} className="relative border border-gray-300 rounded flex items-center"> */}
+      <input
+        title="search products input"
+        type="search"
+        defaultValue={params.get("keyword") || ""}
+        onChange={(e) => handeChangeSearch(e.target.value)}
+        className="px-3 py-2 border rounded border-gray-300"
+        placeholder={`Search products`}
+      />
+      {/* <button type="submit" aria-label="search products" className="p-3 bg-primary text-white block">
           <LuSearch />
-        </button>
-      </form>
+        </button> */}
+      {/* </form> */}
       <div className="">
         <button
           type="button"

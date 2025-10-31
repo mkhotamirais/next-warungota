@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
-import { getAllProductsName, getProductCategories } from "@/actions/product";
+import { getProductCategories } from "@/actions/product";
 import FilterProducts from "./FilterProducts";
 import ProductList from "./ProductList";
 
@@ -17,7 +17,6 @@ export default async function Product({
     sortPrice?: "asc" | "desc" | null;
     minPrice?: string;
     maxPrice?: string;
-    prekeyword?: string;
   }>;
 }) {
   const page = Number((await params).page || 1);
@@ -27,10 +26,7 @@ export default async function Product({
   const minPrice = (await searchParams).minPrice || "";
   const maxPrice = (await searchParams).maxPrice || "";
 
-  const prekeyword = (await searchParams).prekeyword || "";
-
   const productCategories = await getProductCategories();
-  const productNames = await getAllProductsName(prekeyword);
 
   return (
     <>
@@ -38,7 +34,7 @@ export default async function Product({
         <div className="container">
           <div className="py-4 flex flex-col justify-center items-center bg-white">
             <h1 className="text-xl font-semibold mb-3 sr-only">Product </h1>
-            <FilterProducts productCategories={productCategories} productNames={productNames} />
+            <FilterProducts productCategories={productCategories} />
           </div>
         </div>
       </section>
