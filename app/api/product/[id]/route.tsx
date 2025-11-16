@@ -64,7 +64,7 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
     return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });
   }
 
-  const { name, slug, description, variants, tags: validatedTags } = validatedFields.data;
+  const { name, price, stock, slug, description, variants, tags: validatedTags } = validatedFields.data;
   const variantsToProcess = variants as VariantDataWithDbId[];
   try {
     const oldProduct = await prisma.product.findUnique({
@@ -141,6 +141,8 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
           where: { id: productId },
           data: {
             name,
+            price,
+            stock,
             slug,
             description,
             imageUrl: imageUrlUpdate,

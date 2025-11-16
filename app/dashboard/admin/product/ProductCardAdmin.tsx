@@ -7,7 +7,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import Link from "next/link";
 import Image from "next/image";
 import { ProductProps } from "@/types/types";
-import { smartTrim } from "@/lib/utils";
+import { formatRupiah, smartTrim } from "@/lib/utils";
 import { useGlobal } from "@/hooks/useGlobal";
 
 export default function ProductCardAdmin({ product }: { product: ProductProps }) {
@@ -37,7 +37,9 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
           </Link>
           <div className="flex flex-col gap-1">
             <Link href={`/product/detail/${product.slug}`} className="hover:underline">
-              <h3 className="font-semibold">{smartTrim(product.name, 40)}</h3>
+              <h3 className="font-semibold first-letter:capitalize">
+                {smartTrim(product.name, 40)} - Rp{formatRupiah(product.price)}
+              </h3>
             </Link>
             <div className="text-sm text-gray-600 flex gap-2">
               <span>{product.ProductCategory?.name || "category"}</span>

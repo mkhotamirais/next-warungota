@@ -17,6 +17,8 @@ import VariationManager from "../VariantManager";
 
 export default function CreateProductForm({ productCategories }: CreateProductFormProps) {
   const [name, setName] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [stock, setStock] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
@@ -129,6 +131,8 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
 
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("price", price);
+    formData.append("stock", stock);
     formData.append("description", description);
     formData.append("categoryId", categoryId);
 
@@ -234,7 +238,6 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
           </div>
         )}
 
-        {/* Detail Produk Induk */}
         <Input
           id="name"
           label="Nama Produk"
@@ -244,8 +247,31 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
           onChange={(e) => setName(e.target.value)}
           error={errors?.name?.errors}
         />
+        <div className="flex flex-row gap-2">
+          <Input
+            id="price"
+            label="Price"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Price Product"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            error={errors?.price?.errors}
+            className="w-3/4"
+          />
 
-        {/* Harga dan Stok Dihapus dari sini */}
+          <Input
+            id="stok"
+            label="Stok"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Stok produk"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            error={errors?.stock?.errors}
+            className="w-1/4"
+          />
+        </div>
 
         <TiptapEditor
           label="Description"
@@ -294,7 +320,7 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
           <p className="text-sm text-red-600 mb-4">{errors.variants.errors[0]}</p>
         )}
 
-        <Button type="submit" disabled={pending || variantsState.length === 0}>
+        <Button type="submit" disabled={pending}>
           {pending ? "Creating..." : "Create Product"}
         </Button>
       </form>

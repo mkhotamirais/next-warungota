@@ -96,6 +96,8 @@ export default function EditProductForm({ productCategories, product: rawProduct
   const { initialVariationTypes, initialVariantsState } = transformProductToState(product);
 
   const [name, setName] = useState<string>(product.name);
+  const [price, setPrice] = useState<string>(String(product.price));
+  const [stock, setStock] = useState<string>(String(product.stock));
   const [description, setDescription] = useState<string>(product.description || "");
   const [categoryId, setCategoryId] = useState<string>(product.categoryId);
   const [tags, setTags] = useState<string[]>(product.tags || []);
@@ -223,6 +225,8 @@ export default function EditProductForm({ productCategories, product: rawProduct
 
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("price", price);
+    formData.append("stock", stock);
     formData.append("description", description);
     formData.append("categoryId", categoryId);
     formData.append("removeMainImage", String(removeMainImage));
@@ -319,7 +323,6 @@ export default function EditProductForm({ productCategories, product: rawProduct
           </div>
         )}
 
-        {/* ... (Detail Produk Induk) ... */}
         <Input
           id="name"
           label="Nama Produk"
@@ -329,6 +332,32 @@ export default function EditProductForm({ productCategories, product: rawProduct
           onChange={(e) => setName(e.target.value)}
           error={errors?.name?.errors}
         />
+
+        <div className="flex flex-row gap-2">
+          <Input
+            id="price"
+            label="Price"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Price Product"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            error={errors?.price?.errors}
+            className="w-3/4"
+          />
+
+          <Input
+            id="stok"
+            label="Stok"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Stok produk"
+            value={stock}
+            onChange={(e) => setStock(e.target.value)}
+            error={errors?.stock?.errors}
+            className="w-1/4"
+          />
+        </div>
 
         <TiptapEditor
           label="Description"

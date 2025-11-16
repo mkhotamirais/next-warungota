@@ -1,34 +1,20 @@
 import React, { useState } from "react";
 
-interface InputProps {
+type StandardInputProps = Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "id" | "ref" | "className" // Hilangkan props yang sudah Anda definisikan ulang
+>;
+
+interface InputProps extends StandardInputProps {
   ref?: React.ForwardedRef<HTMLInputElement>;
   id: string;
   label: string | React.ReactNode;
   type?: string;
-  placeholder?: string;
   error?: string[] | undefined;
-  value?: string;
-  defaultValue?: string;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  autoFocus?: boolean;
-  disabled?: boolean;
   className?: string;
 }
 
-export default function Input({
-  ref,
-  id,
-  label,
-  type = "text",
-  placeholder,
-  error,
-  value,
-  defaultValue,
-  onChange,
-  autoFocus,
-  disabled,
-  className,
-}: InputProps) {
+export default function Input({ ref, id, label, type = "text", error, className, ...rest }: InputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -42,13 +28,8 @@ export default function Input({
           type={type === "password" ? (showPassword ? "text" : "password") : type}
           id={id}
           name={id}
-          disabled={disabled}
           className={`input ${type === "password" ? "pr-12" : ""}`}
-          placeholder={placeholder}
-          value={value}
-          defaultValue={defaultValue}
-          onChange={onChange}
-          autoFocus={autoFocus}
+          {...rest}
         />
         {type === "password" ? (
           <button

@@ -6,6 +6,13 @@ export const menu = {
     { label: "Product", url: "/product" },
     { label: "Blog", url: "/blog" },
   ],
+  footerMenu: [
+    { label: "Home", url: "/" },
+    { label: "About", url: "/about" },
+    { label: "Contact", url: "/contact" },
+    { label: "Product", url: "/product" },
+    { label: "Blog", url: "/blog" },
+  ],
   allRoleMenu: [
     { label: "Dashboard", url: "/dashboard" },
     { label: "Profile", url: "/dashboard/account" },

@@ -129,8 +129,8 @@ model Product {
   slug        String   @unique
   name        String   @db.VarChar(255)
   description String?  @db.Text
-  // price       Int
-  // stock       Int      @default(0)
+  price       Int      @default(0)
+  stock       Int      @default(0)
   imageUrl    String?
   tags        String[]
   createdAt   DateTime @default(now())

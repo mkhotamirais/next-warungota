@@ -65,7 +65,7 @@ export const POST = async (req: Request) => {
     return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });
   }
 
-  const { name, slug, description, variants, tags: validatedTags } = validatedFields.data;
+  const { name, price, stock, slug, description, variants, tags: validatedTags } = validatedFields.data;
   const variantsToProcess = variants as VariantData[]; // Deklarasi yang benar
 
   try {
@@ -114,7 +114,17 @@ export const POST = async (req: Request) => {
     await prisma.$transaction(
       async (tx) => {
         const newProduct = await tx.product.create({
-          data: { name, slug, description, imageUrl, userId, categoryId, tags: validatedTags as string[] },
+          data: {
+            name,
+            price,
+            stock,
+            slug,
+            description,
+            imageUrl,
+            userId,
+            categoryId,
+            tags: validatedTags as string[],
+          },
         });
 
         const uniqueTypeNames = new Set(variantsToProcess.flatMap((v) => v.options.map((o) => o.typeName)));

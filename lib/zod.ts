@@ -159,6 +159,17 @@ export const ProductSchema = z
   .object({
     name: z.string().min(1, { message: "Nama produk tidak boleh kosong." }),
     description: z.string().optional(),
+    price: z
+      .string()
+      .min(1, { message: "Harga tidak boleh kosong." })
+      .transform((val) => Number(val))
+      .refine((val) => !isNaN(val), {
+        message: "Harga harus berupa angka.",
+      })
+      .refine((val) => val >= 0, {
+        message: "Harga harus angka positif.",
+      }),
+    stock: z.coerce.number().min(0, { message: "Stock harus angka positif." }),
     tags: z.array(z.string()).optional(),
     categoryId: z.cuid("Invalid category ID"),
     image: z

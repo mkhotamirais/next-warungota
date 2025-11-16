@@ -27,8 +27,6 @@ export default function DetailProduct({ product }: { product: SingleProductProps
   }
 
   const [showName, setShowName] = useState(product.name);
-  const [showPrice, setShowPrice] = useState(price);
-  const [showMaxPrice, setShowMaxPrice] = useState(maxPrice);
   const [showImageUrl, setShowImageUrl] = useState(product.imageUrl);
 
   const handleSelectVariant = (id: string | null) => {
@@ -38,13 +36,9 @@ export default function DetailProduct({ product }: { product: SingleProductProps
       setShowName(
         `${product.name} - ${selected.Options.map((item) => item.VariationOption.VariationType.name).join(" ")} ${selected.Options.map((item) => item.VariationOption.value).join(" ")}`
       );
-      setShowPrice(selected.price);
-      setShowMaxPrice(0);
       setShowImageUrl(selected.variantImageUrl);
     } else {
       setShowName(product.name);
-      setShowPrice(price);
-      setShowMaxPrice(maxPrice);
       setShowImageUrl(product.imageUrl);
     }
   };
@@ -102,7 +96,7 @@ export default function DetailProduct({ product }: { product: SingleProductProps
         <h1 className="text-lg font-semibold capitalize">{showName}</h1>
         <p className="text-2xl font-medium">
           <span className="text-base">Rp</span>
-          {formatRupiah(showPrice)} {showMaxPrice > 0 && <span className=""> - {formatRupiah(showMaxPrice)}</span>}
+          {product.price > 0 ? `Rp${formatRupiah(product.price)}` : "Diskon"}
         </p>
 
         {session?.user.role === "USER" ? (

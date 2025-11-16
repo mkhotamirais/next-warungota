@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layouts/Header";
+// import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { content as c } from "@/lib/content";
 import { NextAuthProviders } from "@/components/NextAuthProvider";
@@ -9,6 +9,7 @@ import Layer from "@/components/layouts/layer";
 import ClientProvider from "@/components/ClientProvider";
 import { SessionUpdaterProvider } from "@/components/SessionUpdaterProvider";
 import { Toaster } from "sonner";
+import Header2 from "@/components/layouts/Header2";
 
 const { title, description } = c.home.hero;
 
@@ -35,7 +36,8 @@ export default async function RootLayout({
             <SessionUpdaterProvider />
             <Toaster richColors />
             <Layer />
-            <Header />
+            {/* <Header /> */}
+            <Header2 />
             <main className="flex-1">{children}</main>
             <Footer />
           </ClientProvider>
