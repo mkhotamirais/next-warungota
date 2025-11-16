@@ -4,7 +4,7 @@ import React from "react";
 
 export default function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2">
+    <Link href="/" className="flex items-center gap-2 min-w-10 sm:min-w-auto">
       <Image src="/logo-warungota.png" alt="logo" width={32} height={32} className="h-10 w-auto" />
       <span className="font-bold text-lg tracking-tighter hidden sm:block">WarungOta</span>
     </Link>

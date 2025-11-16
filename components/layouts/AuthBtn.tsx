@@ -18,9 +18,12 @@ export default function AuthBtn() {
   return (
     <div>
       {session?.user ? (
-        <Button as={Link} href={"/dashboard"} icon={<LuUser />} className="w-full md:w-auto">
-          {session.user.role === "ADMIN" ? "Dashboard" : `Hi ${session.user.name}`}
-        </Button>
+        <a href={"/dashboard"} aria-label="dashboard" className="btn-outline">
+          <LuUser size={"16"} />
+          <span className="hidden sm:block">
+            {session.user.role === "ADMIN" ? "Dashboard" : `Hi ${session.user.name}`}
+          </span>
+        </a>
       ) : (
         <Button as={Link} href="/signin" className="w-full md:w-auto">
           Sign In
