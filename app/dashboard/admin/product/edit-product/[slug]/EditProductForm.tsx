@@ -404,7 +404,7 @@ export default function EditProductForm({ productCategories, product: rawProduct
           <p className="text-sm text-red-600 mb-4">{errors.variants.errors[0]}</p>
         )}
 
-        <Button type="submit" disabled={pending || variantsState.length === 0}>
+        <Button type="submit" disabled={pending}>
           {pending ? "Updating..." : "Update Product"}
         </Button>
       </form>
