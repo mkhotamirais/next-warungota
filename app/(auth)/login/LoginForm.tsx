@@ -28,7 +28,10 @@ export default function LoginForm() {
   const [showPass, setShowPass] = useState(false);
 
   const onSubmit = async (data: inferSchema) => {
-    const res = await signIn("credentials", { email: data.email, password: data.password, redirect: false });
+    const { email, password } = data;
+    const res = await signIn("credentials", { email, password, redirect: false });
+    console.log(res);
+
     if (res?.error) {
       if (res.code === "credentials") {
         toast.error("Invalid email or password.");

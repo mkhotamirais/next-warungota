@@ -21,11 +21,13 @@ export default {
       authorize: async (credentials) => {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
+        console.log("ep", email, password);
 
         if (!email || !password) return null;
         const normalizedEmail = email.toLowerCase();
 
         const user = await prisma.user.findUnique({ where: { email: normalizedEmail }, include: { accounts: true } });
+        console.log("user", user);
         if (!user) return null;
 
         if (!user.password) {
@@ -40,7 +42,7 @@ export default {
       },
     }),
   ],
-  pages: { signIn: "/signin" },
+  pages: { signIn: "/login" },
   callbacks: {
     async jwt({ token, user, trigger }) {
       if (user) {
@@ -62,7 +64,7 @@ export default {
         token.role = user.role;
         token.phone = user.phone;
         token.emailVerified = user.emailVerified;
-        token.pendingEmail = user.pendingEmail;
+        // token.pendingEmail = user.pendingEmail;
         return token;
       }
 
