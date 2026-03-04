@@ -55,7 +55,7 @@ export default function AuthBtn() {
             </DropdownMenuGroup>
             <DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => signOut()}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => signOut({ redirectTo: "/login" })}>Logout</DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>

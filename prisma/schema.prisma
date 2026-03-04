@@ -12,13 +12,21 @@ enum Role {
   ADMIN
 }
 
+enum OrderStatus {
+  PENDING // Menunggu pembayaran dari user
+  PAID // Pembayaran berhasil (diverifikasi Webhook)
+  PROCESSING // Penjual sedang mengemas barang
+  SHIPPED // Barang dalam perjalanan (kurir)
+  DELIVERED // Barang sudah sampai tujuan
+  CANCELED // Dibatalkan (oleh user atau sistem/expired)
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
 
   password                     String?
   role                         Role    @default(USER)
@@ -30,6 +38,30 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  accounts           Account[]
+  PasswordResetToken PasswordResetToken?
+  Product            Product[]
+  Cart               Cart?
+  Order              Order[]
+  Address            Address[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  userId  String   @unique // Kunci unik ke model User
+  token   String   @unique // Token unik yang dikirim via email
+  expires DateTime // Kapan token akan kedaluwarsa
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -51,4 +83,136 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+}
+
+model Address {
+  id         String  @id @default(cuid())
+  label      String? // Misal: "Rumah", "Kantor"
+  recipient  String // Nama penerima
+  phone      String
+  street     String
+  province   String // Province = Provinsi
+  regency    String // City | Kota = Regency | Kabupaten
+  district   String // District = Kecamatan
+  village    String // Village | Kampung = Urbah Village = Kelurahan
+  postalCode String
+  isDefault  Boolean @default(false)
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  Order Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, label])
+  @@index([userId])
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  price       Int      @default(0)
+  stock       Int      @default(0)
+  imageUrl    String?
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId          String
+  User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId      String
+  ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+
+  @@index([categoryId]) // Untuk filter per kategori
+  @@index([name]) // Untuk search bar yang kita buat tadi
+  @@index([createdAt]) // Untuk sorting "Produk Terbaru"
+}
+
+model ProductCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String   @db.VarChar(255)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Products Product[]
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  CartItem CartItem[]
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  quantity  Int     @default(1)
+  isChecked Boolean @default(false)
+
+  cartId    String
+  Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  Product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  totalAmount Int
+  status      OrderStatus @default(PENDING)
+  OrderItem   OrderItem[]
+  snapToken   String?
+
+  // Identitas Gateway (Satu model untuk semua)
+  gateway       String // "XENDIT", "MIDTRANS", dll
+  externalId    String  @unique // ID yang dikirim ke gateway
+  paymentUrl    String? // Link pembayaran dari gateway
+  paymentMethod String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  expiresAt DateTime?
+
+  addressId String?
+  Address   Address? @relation(fields: [addressId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([externalId])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  Order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName String?
+
+  productId String
+  Product   Product @relation(fields: [productId], references: [id])
+
+  quantity Int
+  price    Int
+
+  @@index([orderId])
+  @@index([productId])
 }
