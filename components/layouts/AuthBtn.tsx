@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
 import { Button } from "../ui/button";
 import { LogIn } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -14,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Image from "next/image";
 
 export default function AuthBtn() {
   const { data: session, status } = useSession();
@@ -28,8 +28,23 @@ export default function AuthBtn() {
       {session && user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" aria-label="user initial" size={"icon-lg"} className="rounded-full">
-              {initial}
+            <Button
+              variant="outline"
+              aria-label="user initial"
+              size={"icon-lg"}
+              className="rounded-full overflow-hidden"
+            >
+              {user?.image ? (
+                <Image
+                  src={user.image}
+                  width={50}
+                  height={50}
+                  alt="user image"
+                  className="w-full h-full object-center object-cover"
+                />
+              ) : (
+                initial
+              )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

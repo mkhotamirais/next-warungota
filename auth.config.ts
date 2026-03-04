@@ -1,5 +1,5 @@
 // import GitHub from "next-auth/providers/github";
-// import Google from "next-auth/providers/google";
+import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { CredentialsSignin, type NextAuthConfig } from "next-auth";
 import prisma from "./lib/prisma";
@@ -14,7 +14,17 @@ class CustomAuthError extends CredentialsSignin {
 
 export default {
   providers: [
-    // Google({ allowDangerousEmailAccountLinking: true }),
+    Google({ allowDangerousEmailAccountLinking: true }),
+    // Google({
+    //   authorization: {
+    //     params: {
+    //       prompt: "consent",
+    //       access_type: "offline",
+    //       response_type: "code",
+    //     },
+    //   },
+    //   allowDangerousEmailAccountLinking: true,
+    // }),
     // GitHub({ allowDangerousEmailAccountLinking: true }),
     Credentials({
       credentials: { email: {}, password: {} },
