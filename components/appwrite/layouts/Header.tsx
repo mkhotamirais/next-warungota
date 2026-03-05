@@ -1,6 +1,6 @@
 import React from "react";
 import Logo from "../Logo";
-import { menu as m } from "@/lib/common";
+import { menu as m } from "@/lib/constants";
 import NavDesktop from "@/components/layouts/NavDesktop";
 import NavMobile from "@/components/layouts/NavMobile";
 import AuthBtn from "./AuthBtn";

@@ -1,3 +1,9 @@
+// const isProd = process.env.NODE_ENV === "production";
+
+export const ytUrl = "https://www.googleapis.com/youtube/v3/channels";
+export const googleApiKey = process.env.GOOGLE_API_KEY as string;
+export const ytChannelId = "UCkXmLjEr95LVtGuIm3l2dPg";
+
 export const menu = {
   main: [
     { label: "Home", url: "/" },
@@ -8,6 +14,18 @@ export const menu = {
     { label: "Home", url: "/baas/appwrite" },
     { label: "Blog", url: "/baas/appwrite/blog" },
   ],
+  footer: {
+    menu_1: [
+      //
+    ],
+    menu_2: [
+      //
+    ],
+    menu_3: [
+      { label: "Jsonplaceholder", url: "/client/public-api/jsonplaceholder" },
+      { label: "Youtube", url: "/client/public-api/youtube" },
+    ],
+  },
 };
 
 // export const menu = {

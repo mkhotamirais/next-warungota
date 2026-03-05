@@ -2,7 +2,7 @@ import React from "react";
 import Logo from "../Logo";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
-import { menu as m } from "@/lib/common";
+import { menu as m } from "@/lib/constants";
 import AuthBtn from "./AuthBtn";
 
 export default function Header() {

@@ -1,6 +1,9 @@
 import React from "react";
 import Logo from "../Logo";
 import Link from "next/link";
+import { menu as m } from "@/lib/constants";
+
+const menu3 = m.footer.menu_3;
 
 export default function Footer() {
   return (
@@ -15,8 +18,12 @@ export default function Footer() {
             <div>menu2</div>
             <div>
               <p>Client Side</p>
-              <div>
-                <Link href="/client/public-api/jsonplaceholder">Jsonplaceholder</Link>
+              <div className="">
+                {menu3.map((item, i) => (
+                  <Link key={i} href={item.url} className="block">
+                    {item.label}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
