@@ -20,6 +20,16 @@ export const menu = {
     { label: "Home", url: "/baas/appwrite" },
     { label: "Blog", url: "/baas/appwrite/blog" },
   ],
+  user: [
+    { label: "User Home", url: "/user" },
+    { label: "Profile", url: "/user/profile" },
+    { label: "Address", url: "/user/address" },
+  ],
+  admin: [
+    { label: "Dashboard", url: "/admin" },
+    { label: "Product", url: "/admin/product" },
+    //
+  ],
   footer: {
     menu_1: [
       //

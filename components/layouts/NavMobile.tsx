@@ -21,11 +21,11 @@ export default function NavMobile({ menu }: Props) {
     <div className="block md:hidden">
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="ghost" aria-label="mobile menu">
+          <Button variant="ghost" size={"icon-lg"} aria-label="mobile menu">
             <Menu />
           </Button>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="w-64">
           <SheetHeader>
             <SheetTitle>
               <Logo />

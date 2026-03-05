@@ -14,12 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
+import { menu as m } from "@/lib/constants";
 
 export default function AuthBtn() {
   const { data: session, status } = useSession();
 
   const user = session?.user;
   const initial = user?.name?.charAt(0).toUpperCase() || "U";
+
+  const menu = user?.role === "ADMIN" ? m.admin : m.user;
 
   if (status === "loading") return null;
 
@@ -50,8 +53,11 @@ export default function AuthBtn() {
           <DropdownMenuContent align="end">
             <DropdownMenuGroup>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Billing</DropdownMenuItem>
+              {menu.map((item, i) => (
+                <DropdownMenuItem key={i}>
+                  <Link href={item.url}>{item.label}</Link>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuGroup>
             <DropdownMenuGroup>
               <DropdownMenuSeparator />

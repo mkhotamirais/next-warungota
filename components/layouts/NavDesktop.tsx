@@ -4,12 +4,11 @@ import { Button } from "../ui/button";
 
 interface Props {
   menu: { label: string; url: string }[];
-  authBtn?: React.ReactNode;
 }
 
-export default function NavDesktop({ menu, authBtn }: Props) {
+export default function NavDesktop({ menu }: Props) {
   return (
-    <div className="flex items-center gap-1 justify-between">
+    <div className="hidden md:flex items-center gap-1 justify-between">
       <nav>
         {menu.map((item, i) => (
           <Button key={i} variant={"ghost"} asChild>
@@ -17,7 +16,6 @@ export default function NavDesktop({ menu, authBtn }: Props) {
           </Button>
         ))}
       </nav>
-      <div>{authBtn}</div>
     </div>
   );
 }

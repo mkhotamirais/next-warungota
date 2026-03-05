@@ -8,7 +8,6 @@ export default async function YoutubePage() {
 
   const item = data?.items?.[0];
   const profileImg = item?.snippet?.thumbnails?.medium?.url;
-  console.log(item);
 
   return (
     <div>
