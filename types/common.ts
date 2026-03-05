@@ -1,0 +1,37 @@
+// import { duitkuPaymentMethods } from "@/lib/content";
+// import { Prisma } from "@/lib/generated/prisma";
+
+export type SortType = "price_asc" | "price_desc" | "name_asc" | "name_desc" | undefined;
+
+// export type ProductProps = Prisma.ProductGetPayload<{
+//   include: { ProductCategory: { select: { name: true; slug: true } }; User: { select: { name: true } } };
+// }>;
+
+// export type CartItemProps = Prisma.CartItemGetPayload<{
+//   include: { Product: true };
+// }> & { quantity: number };
+
+// export type SingleProductProps = Prisma.ProductGetPayload<{
+//   include: {
+//     ProductCategory: { select: { name: true; slug: true } };
+//     User: { select: { name: true } };
+//   };
+// }> & { quantity?: number };
+
+// export type BlogProps = Prisma.BlogGetPayload<{
+//   include: { BlogCategory: { select: { name: true; slug: true } }; User: { select: { name: true } } };
+// }>;
+
+// export type OrderProps = Prisma.OrderGetPayload<{
+//   include: {
+//     OrderItem: {
+//       include: { Product: true };
+//     };
+//     Address: true;
+//   };
+// }>;
+
+// // DUITKU
+// export type DuitkuPaymentMethodType = (typeof duitkuPaymentMethods)[number]["id"];
+// export type SingleDuitkuMethod = (typeof duitkuPaymentMethods)[number];
+// export type SingleDuitkuMethodWithIcon = SingleDuitkuMethod & { icon: React.ReactNode };
