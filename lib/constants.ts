@@ -4,6 +4,12 @@ export const ytUrl = "https://www.googleapis.com/youtube/v3/channels";
 export const googleApiKey = process.env.GOOGLE_API_KEY as string;
 export const ytChannelId = "UCkXmLjEr95LVtGuIm3l2dPg";
 
+export const metadata = {
+  home: {
+    title: "WarungOta - Belanja dan Fotokopi dalam Satu Tempat",
+  },
+};
+
 export const menu = {
   main: [
     { label: "Home", url: "/" },
@@ -27,37 +33,6 @@ export const menu = {
     ],
   },
 };
-
-// export const menu = {
-//   mainMenu: [
-//     { label: "Home", url: "/" },
-//     { label: "Tentang", url: "/about" },
-//     { label: "Kontak", url: "/contact" },
-//     { label: "Blog", url: "/blog" },
-//     { label: "Produk", url: "/product" },
-//   ],
-//   footerMenu: [
-//     { label: "Home", url: "/" },
-//     { label: "About", url: "/about" },
-//     { label: "Contact", url: "/contact" },
-//   ],
-//   allRoleMenu: [
-//     { label: "Dashboard", url: "/dashboard" },
-//     { label: "Profile", url: "/dashboard/profile" },
-//   ],
-//   userMenu: [
-//     { label: "Address", url: "/dashboard/user/address" },
-//     //
-//   ],
-//   adminMenu: [
-//     { label: "Product", url: "/dashboard/admin/product" },
-//     { label: "Create Product", url: "/dashboard/admin/product/create-product" },
-//     { label: "Product Category", url: "/dashboard/admin/product-category" },
-//     { label: "Blog", url: "/dashboard/admin/blog" },
-//     { label: "Create Blog", url: "/dashboard/admin/blog/create-blog" },
-//     { label: "Blog Category", url: "/dashboard/admin/blog-category" },
-//   ],
-// };
 
 export const mainMenu = [
   { label: "Home", url: "/" },
@@ -98,6 +73,12 @@ export const verifyRoute = "/verify-email";
 export const verifyPendingRoute = "/verify-email-request";
 
 export const content = {
+  metadata: {
+    home: {
+      title: "halo",
+      description: "halo content",
+    },
+  },
   home: {
     hero: {
       title: "WarungOta - Belanja dan Fotokopi dalam Satu Tempat",
