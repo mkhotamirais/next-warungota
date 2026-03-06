@@ -40,6 +40,13 @@ export const menu = {
     menu_3: [
       { label: "Jsonplaceholder", url: "/client/public-api/jsonplaceholder" },
       { label: "Youtube", url: "/client/public-api/youtube" },
+      { label: "Sticky", url: "/client/others/sticky" },
+      { label: "Clock", url: "/client/others/clock" },
+      { label: "Stopwatch", url: "/client/others/stopwatch" },
+      { label: "Symbol Color", url: "/client/others/symbol-color" },
+      { label: "Ts1", url: "/client/others/ts1" },
+      { label: "Ts2", url: "/client/others/ts2" },
+      { label: "Ts3", url: "/client/others/ts3" },
     ],
   },
 };

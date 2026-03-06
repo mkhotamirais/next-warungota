@@ -3,7 +3,6 @@ import Logo from "../Logo";
 import { menu as m } from "@/lib/constants";
 import NavDesktop from "@/components/layouts/NavDesktop";
 import NavMobile from "@/components/layouts/NavMobile";
-import AuthBtn from "./AuthBtn";
 
 export default function Header() {
   return (
@@ -12,8 +11,8 @@ export default function Header() {
         <div className="flex gap-8 items-center justify-between h-full">
           <Logo />
           <div className="flex-1">
-            <NavDesktop menu={m.appwrite} authBtn={<AuthBtn />} />
-            <NavMobile menu={m.appwrite} />
+            <NavDesktop menu={m.appwrite} authBtn={<></>} />
+            <NavMobile menu={m.appwrite} authBtn={<></>} />
           </div>
         </div>
       </div>

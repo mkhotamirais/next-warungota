@@ -15,10 +15,12 @@ import Link from "next/link";
 
 interface Props {
   menu: { label: string; url: string }[];
+  authBtn: React.ReactNode;
 }
-export default function NavMobile({ menu }: Props) {
+export default function NavMobile({ menu, authBtn }: Props) {
   return (
-    <div className="block md:hidden">
+    <div className="md:hidden flex items-center gap-2">
+      <div>{authBtn}</div>
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size={"icon-lg"} aria-label="mobile menu">

@@ -54,7 +54,7 @@ export default function AuthBtn() {
             <DropdownMenuGroup>
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               {menu.map((item, i) => (
-                <DropdownMenuItem key={i}>
+                <DropdownMenuItem key={i} asChild>
                   <Link href={item.url}>{item.label}</Link>
                 </DropdownMenuItem>
               ))}
