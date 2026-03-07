@@ -38,6 +38,8 @@ export const menu = {
       //
     ],
     menu_3: [
+      { label: "Components", url: "/client/components" },
+      { label: "Dummyjson", url: "/client/public-api/dummyjson" },
       { label: "Jsonplaceholder", url: "/client/public-api/jsonplaceholder" },
       { label: "Youtube", url: "/client/public-api/youtube" },
       { label: "Sticky", url: "/client/others/sticky" },
@@ -151,3 +153,5 @@ export const duitkuPaymentMethods = [
   { id: "ID", category: "paylater", name: "Indodana", expiryPeriod: 60, desc: "Cicilan Indodana" },
   { id: "AT", category: "paylater", name: "Atome", expiryPeriod: 60, desc: "Cicilan Atome" },
 ] as const;
+
+export const limit = 6;

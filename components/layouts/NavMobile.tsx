@@ -19,7 +19,7 @@ interface Props {
 }
 export default function NavMobile({ menu, authBtn }: Props) {
   return (
-    <div className="md:hidden flex items-center gap-2">
+    <div className="md:hidden flex items-center justify-end gap-2">
       <div>{authBtn}</div>
       <Sheet>
         <SheetTrigger asChild>
