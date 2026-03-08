@@ -39,6 +39,7 @@ export const menu = {
     ],
     menu_3: [
       { label: "Components", url: "/client/components" },
+      { label: "Todo", url: "/client/todo" },
       { label: "Dummyjson", url: "/client/public-api/dummyjson" },
       { label: "Jsonplaceholder", url: "/client/public-api/jsonplaceholder" },
       { label: "Youtube", url: "/client/public-api/youtube" },

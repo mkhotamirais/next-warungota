@@ -13,6 +13,7 @@ interface Props {
 export default function BasePage({ data, page, totalPages }: Props) {
   return (
     <div className="container">
+      <h1>Dummyjson</h1>
       <div className="grid grid-cols-3 gap-1">
         {data?.map((item: { id: number; title: string }, i) => (
           <div key={i} className="border p-1 px-2 rounded-lg text-sm">

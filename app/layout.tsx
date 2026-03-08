@@ -5,6 +5,7 @@ import Header from "@/components/layouts/Header";
 import Footer from "@/components/layouts/Footer";
 import { Toaster } from "sonner";
 import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
+import ClientProvider from "@/components/providers/ClientProvider";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -25,10 +26,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.variable} font-sans antialiased`}>
         <NextAuthProviders>
-          <Toaster position="top-center" richColors swipeDirections={["left", "right", "top"]} />
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
+          <ClientProvider>
+            <Toaster position="top-center" richColors swipeDirections={["left", "right", "top"]} />
+            <Header />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+          </ClientProvider>
         </NextAuthProviders>
       </body>
     </html>
