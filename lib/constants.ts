@@ -30,28 +30,62 @@ export const menu = {
     { label: "Product", url: "/admin/product" },
     //
   ],
-  footer: {
-    menu_1: [
-      //
-    ],
-    menu_2: [
-      //
-    ],
-    menu_3: [
-      { label: "Components", url: "/client/components" },
-      { label: "Todo", url: "/client/todo" },
-      { label: "Dummyjson", url: "/client/public-api/dummyjson" },
-      { label: "Jsonplaceholder", url: "/client/public-api/jsonplaceholder" },
-      { label: "Youtube", url: "/client/public-api/youtube" },
-      { label: "Sticky", url: "/client/others/sticky" },
-      { label: "Clock", url: "/client/others/clock" },
-      { label: "Stopwatch", url: "/client/others/stopwatch" },
-      { label: "Symbol Color", url: "/client/others/symbol-color" },
-      { label: "Ts1", url: "/client/others/ts1" },
-      { label: "Ts2", url: "/client/others/ts2" },
-      { label: "Ts3", url: "/client/others/ts3" },
-    ],
-  },
+  footer: [
+    {
+      title: "Baas",
+      menu: [
+        { label: "Appwrite", url: "/baas/appwrite" },
+        { label: "Firebase", url: "/baas/firebase" },
+        { label: "Supabase", url: "/baas/supabase" },
+      ],
+    },
+    {
+      title: "Rest API",
+      menu: [
+        { label: "MERN", url: "/rest-api/mern" },
+        //
+      ],
+    },
+    {
+      title: "Public API",
+      menu: [
+        { label: "Dummyjson", url: "/public-api/dummyjson" },
+        { label: "Jsonplaceholder", url: "/public-api/jsonplaceholder" },
+        { label: "Youtube", url: "/public-api/youtube" },
+      ],
+    },
+    {
+      title: "Basics",
+      menu: [
+        { label: "Ts1", url: "/basics/ts1" },
+        { label: "Ts2", url: "/basics/ts2" },
+        { label: "Ts3", url: "/basics/ts3" },
+        { label: "Hooks", url: "/basics/hooks" },
+      ],
+    },
+    {
+      title: "Tips",
+      menu: [
+        { label: "Components", url: "/tips/components" },
+        { label: "Sticky", url: "/tips/sticky" },
+      ],
+    },
+    {
+      title: "Client Apps",
+      menu: [
+        { label: "Todo", url: "/client-apps/todo" },
+        //
+      ],
+    },
+    {
+      title: "Others",
+      menu: [
+        { label: "Clock", url: "/others/clock" },
+        { label: "Stopwatch", url: "/others/stopwatch" },
+        { label: "Symbol Color", url: "/others/symbol-color" },
+      ],
+    },
+  ],
 };
 
 export const mainMenu = [

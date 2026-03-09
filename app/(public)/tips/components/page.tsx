@@ -23,7 +23,7 @@ export default function Components() {
           </div>
           <div>
             <h2>Pagination</h2>
-            <Link href="/client/public-api/dummyjson">Lihat Dummyjson</Link>
+            <Link href="/public-api/dummyjson">Lihat Dummyjson</Link>
           </div>
         </div>
       </div>
