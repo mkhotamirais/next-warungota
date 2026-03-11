@@ -64,10 +64,13 @@ export const menu = {
       ],
     },
     {
-      title: "Tips",
+      title: "Components",
       menu: [
-        { label: "Components", url: "/tips/components" },
-        { label: "Sticky", url: "/tips/sticky" },
+        { label: "Simple Components", url: "/components" },
+        { label: "Sticky", url: "/components/sticky" },
+        { label: "Navbar", url: "/components/navbar" },
+        { label: "Accordion", url: "/components/accordion" },
+        { label: "Form", url: "/components/form" },
       ],
     },
     {
