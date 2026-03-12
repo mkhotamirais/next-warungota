@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from "next/image";
 import { menu as m } from "@/lib/constants";
+import { useMobileMenu } from "@/hooks/zustand/useMobileMenu";
 
 export default function AuthBtn() {
   const { data: session, status } = useSession();
+  const { setOpen } = useMobileMenu();
 
   const user = session?.user;
   const initial = user?.name?.charAt(0).toUpperCase() || "U";
@@ -66,8 +68,8 @@ export default function AuthBtn() {
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
-        <Button type="button" asChild>
-          <Link href="/login">
+        <Button type="button" asChild className="">
+          <Link href="/login" onClick={() => setOpen(false)}>
             Login
             <LogIn />
           </Link>

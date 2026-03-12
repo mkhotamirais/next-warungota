@@ -14,6 +14,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type inferSchema = z.infer<typeof loginSchema>;
 
@@ -69,7 +70,12 @@ export default function LoginForm() {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid} className="max-w-sm">
-              <FieldLabel htmlFor="password">Password</FieldLabel>
+              <div className="flex justify-between">
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Link href="/reset-password-request" className="text-sm text-primary hover:underline" tabIndex={-1}>
+                  Forgot password?
+                </Link>
+              </div>
               <InputGroup>
                 <InputGroupInput
                   {...field}
