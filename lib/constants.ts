@@ -28,7 +28,7 @@ export const menu = {
   admin: [
     { label: "Dashboard", url: "/admin" },
     { label: "Product", url: "/admin/product" },
-    //
+    { label: "Product Category", url: "/admin/product-category" },
   ],
   footer: [
     {

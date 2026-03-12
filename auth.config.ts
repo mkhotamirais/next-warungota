@@ -31,13 +31,11 @@ export default {
       authorize: async (credentials) => {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
-        console.log("ep", email, password);
 
         if (!email || !password) return null;
         const normalizedEmail = email.toLowerCase();
 
         const user = await prisma.user.findUnique({ where: { email: normalizedEmail }, include: { accounts: true } });
-        console.log("user", user);
         if (!user) return null;
 
         if (!user.password) {
