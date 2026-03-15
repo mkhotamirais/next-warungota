@@ -9,8 +9,8 @@ export default function Ts2() {
     <section>
       <h2 className="h2">Ts2</h2>
       <div>
-        <Les1 style={{ color: "red", border: "1px solid", margin: "3px" }} />
-        <Les2 style={{ color: "blue", border: "1px solid", margin: "3px" }} />
+        {/* <Les1 style={{ color: "red", border: "1px solid", margin: "3px" }} />
+        <Les2 style={{ color: "blue", border: "1px solid", margin: "3px" }} /> */}
         <Les3 />
         <Kelas1 message="pesan" />
         <ComponentProp Component1={Comp1} Component2={Comp2} />
@@ -25,13 +25,13 @@ export default function Ts2() {
   );
 }
 
-function Les1({ style }: { style: React.CSSProperties }) {
-  return <div style={style}>React.CSSProperties</div>;
-}
+// function Les1({ style }: { style: React.CSSProperties }) {
+//   return <div style={style}>React.CSSProperties</div>;
+// }
 
-function Les2({ style }: { style: Record<string, string> }) {
-  return <div style={style}>Record</div>;
-}
+// function Les2({ style }: { style: Record<string, string> }) {
+//   return <div style={style}>Record</div>;
+// }
 
 function Les3() {
   const onClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => console.log(e.target);

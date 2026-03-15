@@ -1,14 +1,13 @@
 "use client";
 
-import { Button } from "../ui/button";
 import { ProductCategory } from "@/lib/generated/prisma";
-import { useProductCategory } from "@/hooks/tanstack/useProductCategory";
+import { Button } from "../ui/button";
 
-export default function HomeProductCategoryList() {
-  const { data } = useProductCategory();
+interface Props {
+  categories: ProductCategory[];
+}
 
-  const categories = (data as ProductCategory[]) || [];
-
+export default function HomeProductCategoryList({ categories }: Props) {
   return (
     <section className="container py-4">
       <div className="flex gap-2 overflow-x-scroll [&::-webkit-scrollbar]:hidden">

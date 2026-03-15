@@ -4,13 +4,12 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { ProductProps } from "@/types/product";
-import { useProduct } from "@/hooks/tanstack/useProduct";
 import ProductCard from "../cards/ProductCard";
 
-export default function HomeProductList() {
-  const { data } = useProduct();
-  const products = (data?.products as ProductProps[]) || [];
-
+interface Props {
+  products: ProductProps[];
+}
+export default function HomeProductList({ products }: Props) {
   return (
     <section className="container py-6 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
