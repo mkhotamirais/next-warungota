@@ -12,7 +12,7 @@ export default function Header() {
         <div className="flex gap-8 items-center justify-between h-full">
           <Logo />
           <div className="flex-1">
-            <NavDesktop menu={m.appwrite} authBtn={<AuthBtn />} />
+            <NavDesktop menu={m.appwrite} />
             <NavMobile menu={m.appwrite} authBtn={<AuthBtn />} />
           </div>
         </div>

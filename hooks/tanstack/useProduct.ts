@@ -1,14 +1,33 @@
+import { SortType } from "@/types/common";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// 1. Hook Utama untuk List & CRUD (Create, Update, Delete)
-export const useProduct = (page: number = 1, limit: number = 8, keyword: string = "") => {
+interface Props {
+  limit?: number;
+  page?: number;
+  excludeSlug?: string;
+  categorySlug?: string;
+  userId?: string;
+  keyword?: string;
+  keywordAdmin?: string;
+  sortData?: SortType;
+  minPrice?: number;
+  maxPrice?: number;
+}
+
+export const useProduct = ({ page = 1, limit = 8, keyword = "", keywordAdmin, ...rest }: Props = {}) => {
   const queryClient = useQueryClient();
 
   // GET ALL PRODUCTS (Daftar Produk)
   const query = useQuery({
     queryKey: ["products", page, limit, keyword],
     queryFn: async () => {
-      const res = await fetch(`/api/product?page=${page}&limit=${limit}&keyword=${keyword || ""}`);
+      const res = await fetch(
+        `/api/product?page=${page}&limit=${limit}&keyword=${keyword || ""}&keywordAdmin=${keywordAdmin || ""}&${Object.entries(
+          rest,
+        )
+          .map(([key, value]) => `${key}=${value || ""}`)
+          .join("&")}`,
+      );
       if (!res.ok) throw new Error("Gagal mengambil daftar produk");
       const result = await res.json();
       return result;

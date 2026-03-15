@@ -7,31 +7,31 @@ import { ProductCategory } from "@/lib/generated/prisma";
 import { productCategorySchema } from "@/lib/schemas/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaCheck, FaSpinner, FaXmark } from "react-icons/fa6";
 import { toast } from "sonner";
 import z from "zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useProductGlobal } from "@/hooks/zustand/useProductGlobal";
 // import { Spinner } from "@/components/ui/spinner";
 
 type inferSchema = z.infer<typeof productCategorySchema>;
 
-interface EditProps {
+interface Props {
   category: ProductCategory;
-  setIsEdit: Dispatch<SetStateAction<string | null>>;
 }
 
-export default function Edit({ category, setIsEdit }: EditProps) {
+export default function Edit({ category }: Props) {
   const form = useForm<inferSchema>({
     resolver: zodResolver(productCategorySchema),
     defaultValues: { name: category.name },
   });
+  const { setIsEditProdCat } = useProductGlobal();
   const router = useRouter();
   const { updateCategory, isUpdating: pending } = useProductCategory();
 
   const cancelEdit = () => {
-    setIsEdit(null);
+    setIsEditProdCat(null);
     form.reset({ name: category.name });
   };
 
@@ -45,7 +45,7 @@ export default function Edit({ category, setIsEdit }: EditProps) {
 
     form.reset();
 
-    setIsEdit(null);
+    setIsEditProdCat(null);
 
     if (document.activeElement instanceof HTMLElement) {
       document.activeElement.blur();

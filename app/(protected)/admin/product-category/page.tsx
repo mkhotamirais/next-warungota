@@ -1,14 +1,17 @@
 import List from "./List";
 import Create from "./Create";
+import AuthTitleHeader from "../../AuthTitleHeader";
+import { Separator } from "@/components/ui/separator";
 
 export default async function ProductCategory() {
   return (
-    <div className="max-w-xl">
-      <h1 className="h1 mb-4">Product Category List</h1>
+    <>
+      <AuthTitleHeader title="Product Category" url="/admin/product" label="Product List" />
       <div className="space-y-4">
         <Create />
+        <Separator className="my-2" />
         <List />
       </div>
-    </div>
+    </>
   );
 }

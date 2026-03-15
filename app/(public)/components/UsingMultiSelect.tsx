@@ -1,6 +1,6 @@
 "use client";
 
-import { MultiSelect } from "@/components/ui/custom/multi-select";
+import { MultiSelect } from "@/components/ui/custom/MultiSelect";
 import React, { useState } from "react";
 
 export default function UsingMultiSelect() {

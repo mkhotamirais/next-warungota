@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { productCategorySchema } from "@/lib/schemas/product";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { useProductGlobal } from "@/hooks/zustand/useProductGlobal";
 
 type inferSchema = z.infer<typeof productCategorySchema>;
 
@@ -19,7 +20,7 @@ export default function Create() {
     resolver: zodResolver(productCategorySchema),
     defaultValues: { name: "" },
   });
-
+  const { setIsEditProdCat } = useProductGlobal();
   const { createCategory, isCreating: pending } = useProductCategory();
   const router = useRouter();
 
@@ -28,7 +29,6 @@ export default function Create() {
 
     if (result?.error) {
       toast.error(result.error);
-      // setPending(false);
       return;
     }
 
@@ -38,7 +38,6 @@ export default function Create() {
       document.activeElement.blur();
     }
 
-    // setPending(false);
     toast.success(result?.message);
     router.refresh();
   };
@@ -58,6 +57,7 @@ export default function Create() {
                 aria-invalid={fieldState.invalid}
                 placeholder="category name"
                 autoComplete="off"
+                onFocus={() => setIsEditProdCat(null)}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

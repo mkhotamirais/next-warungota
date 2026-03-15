@@ -10,6 +10,7 @@ interface MultiInputProps {
   value?: string[];
   onChange?: (value: string[]) => void;
   placeholder?: string;
+  className?: string;
 }
 
 /**
@@ -25,7 +26,7 @@ interface MultiInputProps {
  * placeholder="Contoh: Ayam, Kucing"
  * />
  */
-export default function MultiInput({ value = [], onChange = () => {}, placeholder }: MultiInputProps) {
+export default function MultiInput({ value = [], onChange = () => {}, placeholder, className }: MultiInputProps) {
   const [inputValue, setInputValue] = useState("");
 
   const processTags = (input: string) => {
@@ -53,7 +54,7 @@ export default function MultiInput({ value = [], onChange = () => {}, placeholde
   };
 
   return (
-    <div className="space-y-3">
+    <div className={`${className} space-y-3`}>
       <div className="flex gap-2">
         <Input
           placeholder={placeholder || "Ketik dan tekan Enter atau gunakan koma..."}

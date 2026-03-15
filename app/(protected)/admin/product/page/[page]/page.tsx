@@ -1,13 +1,13 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import BasePage from "./BasePage";
-import { Suspense } from "react";
-import HeaderProductAdmin from "./HeaderProductAdmin";
+import BasePage from "../../BasePage";
+import HeaderProductAdmin from "../../HeaderProductAdmin";
 import FallbackSearchProductsAdmin from "@/components/fallbacks/FallbackSearchProductsAdmin";
+import { Suspense } from "react";
 
 const limit = 8;
 
-export default async function Product({
+export default async function ProductPage({
   params,
   searchParams,
 }: {
@@ -15,9 +15,9 @@ export default async function Product({
   searchParams: Promise<{ keyword?: string; "keyword-admin"?: string }>;
 }) {
   const session = await auth();
-  if (!session || !session.user) redirect("/dashboard");
+  if (!session || !session.user) redirect("/profile");
 
-  const page = Number((await params).page) || 1;
+  const page = Number((await params).page || 1);
   const keyword = (await searchParams).keyword || undefined;
   const keywordAdmin = (await searchParams)["keyword-admin"] || undefined;
 

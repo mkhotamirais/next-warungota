@@ -135,9 +135,13 @@
 }
 
 .h1 {
-  @apply text-3xl font-bold leading-tight tracking-tighter md:text-4xl mb-6;
+  @apply text-3xl font-bold leading-tight tracking-tighter md:text-4xl;
 }
 
 .btn {
   @apply border;
+}
+
+.grid-list {
+  @apply grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 gap-1 sm:gap-1.5;
 }

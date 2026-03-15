@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-import { ProductSchema } from "@/lib/zod";
+import { productSchema } from "@/lib/schemas/product";
 import { del, put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
@@ -55,7 +55,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
     const removeImage = formData.get("removeImage") === "true";
 
     const rawData = Object.fromEntries(formData.entries());
-    const validatedFields = ProductSchema.safeParse({ ...rawData, image: imageFile, tags });
+    const validatedFields = productSchema.safeParse({ ...rawData, image: imageFile, tags });
 
     if (!validatedFields.success) {
       return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });

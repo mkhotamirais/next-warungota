@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { FaPenToSquare } from "react-icons/fa6";
 import Edit from "./Edit";
 import Delete from "./Delete";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { Button } from "@/components/ui/button";
 import { useProductCategory } from "@/hooks/tanstack/useProductCategory";
+import { useProductGlobal } from "@/hooks/zustand/useProductGlobal";
 
 export default function List() {
-  const [isEdit, setIsEdit] = useState<string | null>(null);
+  const { isEditProdCat, setIsEditProdCat } = useProductGlobal();
   const { data: productCategories, isLoading: pending } = useProductCategory();
   if (pending) return <div className="p-4 text-center">Loading categories...</div>;
 
@@ -19,32 +19,32 @@ export default function List() {
 
   return (
     <div>
-      <h2 className="h2 mb-4">Product Category List</h2>
+      {/* <h2 className="h2 mb-4">Product Category List</h2> */}
       {productCategories
         // ?.sort((a, b) => a.name.localeCompare(b.name))
         ?.map((category: ProductCategory) => (
           <div key={category.id} className="flex items-center gap-2 mb-1">
             <div className="w-full">
-              {isEdit === category.id ? (
-                <Edit category={category} setIsEdit={setIsEdit} />
+              {isEditProdCat === category.id ? (
+                <Edit category={category} />
               ) : (
                 <div
                   className={`${category.isDefault ? "opacity-50 pointer-none" : "cursor-text"} border py-2 px-3 rounded border-gray-200 w-full cursor-text`}
                   onClick={() => {
-                    if (!category.isDefault) setIsEdit(category.id);
+                    if (!category.isDefault) setIsEditProdCat(category.id);
                   }}
                 >
                   {category.name}
                 </div>
               )}
             </div>
-            {isEdit !== category.id ? (
+            {isEditProdCat !== category.id ? (
               <div className="flex items-center gap-2">
                 <Button
                   size={"icon"}
                   type="button"
                   aria-label="Edit"
-                  onClick={() => setIsEdit(category?.id)}
+                  onClick={() => setIsEditProdCat(category?.id)}
                   disabled={category.isDefault}
                 >
                   <FaPenToSquare />

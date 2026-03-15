@@ -15,7 +15,7 @@ export const productSchema = z.object({
     .refine((val) => Number(val) >= 0, "Stok harus angka positif"), //   .string()
   tags: z.array(z.string()),
   // categoryId: z.cuid("Invalid category ID"),
-  categoryId: z.cuid("Invalid category ID"),
+  categoryId: z.string(),
   image: z
     .any()
     .refine((file): file is File | null => file === null || file instanceof File, "Invalid file")
@@ -33,3 +33,18 @@ export const productCategorySchema = z.object({
     .min(1, { message: "Product category name is required" })
     .transform((val) => val.trim()),
 });
+
+// export const blogSchema = z.object({
+//   title: z.string().min(3, "Title must be at least 3 characters").max(255, "Title is too long"),
+//   content: z.string().min(10, "Content must be at least 10 characters"),
+//   image: z
+//     .any()
+//     .refine((file): file is File | null => file === null || file instanceof File, "Invalid file")
+//     .refine((file) => !file || file.size <= 2 * 1024 * 1024, "Max file size is 2MB")
+//     .refine(
+//       (file) => !file || ["image/jpeg", "image/jpg", "image/png"].includes(file.type),
+//       "Only JPG/JPEG/PNG allowed",
+//     )
+//     .nullable()
+//     .optional(),
+//   categoryId: z.string(),
