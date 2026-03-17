@@ -1,3 +1,4 @@
+import { baseUrl } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { registerSchema } from "@/lib/schemas/auth";
 import { hashSync } from "bcrypt-ts";
@@ -23,7 +24,12 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = hashSync(password, 10);
-    await prisma.user.create({ data: { name, email, password: hashedPassword, emailVerified: null } });
+    const user = await prisma.user.create({ data: { name, email, password: hashedPassword, emailVerified: null } });
+    await fetch(`${baseUrl}/api/emails/send-email-verification`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, userId: user.id }),
+    });
 
     return Response.json({ ok: true, message: "Registration successful." }, { status: 201 });
   } catch (error) {

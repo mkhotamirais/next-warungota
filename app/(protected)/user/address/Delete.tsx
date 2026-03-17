@@ -1,9 +1,9 @@
 "use client";
 
-import { ProductProps } from "@/types/product";
-import React, { useState } from "react";
-import { Dialog } from "@radix-ui/react-dialog";
+import { Address } from "@/lib/generated/prisma";
+import { Button } from "@/components/ui/button";
 import {
+  Dialog,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -11,40 +11,39 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-// import { deleteProduct } from "@/actions/product";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import { useProduct } from "@/hooks/tanstack/useProduct";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useAddress } from "@/hooks/tanstack/useAddress";
 
-interface DeleteProps {
-  product: ProductProps;
+interface IDelete {
+  address: Address;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Delete({ product, setOpen }: DeleteProps) {
+export default function Delete({ address, setOpen }: IDelete) {
   const [openDialog, setOpenDialog] = useState(false);
-
+  const { deleteAddress, isDeleting: pending } = useAddress();
   const router = useRouter();
-  const { deleteProduct, isDeleting: pending } = useProduct();
 
   const handleDelete = async () => {
-    const result = await deleteProduct(product.slug);
+    const result = await deleteAddress(address.id);
 
     if (result?.error) {
       toast.error(result.error);
       return;
     }
+
+    toast.success(result.message);
     setOpen(false);
     setOpenDialog(false);
-    toast.success(result.message);
     router.refresh();
   };
 
   return (
     <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-      <DialogTrigger asChild className="">
+      <DialogTrigger asChild>
         <Button variant={"ghost"} className="text-red-500 hover:text-red-400 justify-start w-full px-2 h-8">
           Delete
         </Button>
@@ -52,14 +51,12 @@ export default function Delete({ product, setOpen }: DeleteProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Delete Product <b>{product.name}</b>
+            Delete <b>{address.label}</b>
           </DialogTitle>
-          <DialogDescription>
-            Delete <b>{product.name}</b>, this action cannot be undone, are you sure?
-          </DialogDescription>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
-
-        <div className="flex gap-2 mt-4">
+        <p>This action cannot be undone, are you sure?</p>
+        <div className="flex gap-2 mt-2">
           <Button type="button" variant="destructive" disabled={pending} onClick={handleDelete} className="w-28">
             {pending && <Spinner />}
             Delete

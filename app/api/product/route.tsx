@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { Prisma } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
 import { productSchema } from "@/lib/schemas/product";
-import { generateSlug } from "@/lib/utils";
+import { generateSlug, smartTrim } from "@/lib/utils";
 import { SortType } from "@/types/common";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
@@ -126,10 +126,14 @@ export async function POST(req: Request) {
 
     let imageUrl: string | null = null;
     if (imageFile) {
-      const blob = await put(`products/${Date.now()}-${imageFile.name}`, imageFile, {
-        access: "public",
-        multipart: true,
-      });
+      const blob = await put(
+        `products/${Date.now()}-${price.toString()}-${smartTrim(name, 20)}-from-${smartTrim(imageFile.name, 20)}`,
+        imageFile,
+        {
+          access: "public",
+          multipart: true,
+        },
+      );
       imageUrl = blob.url;
     }
 

@@ -7,13 +7,12 @@ import FallbackSearchProductsAdmin from "@/components/fallbacks/FallbackSearchPr
 
 const limit = 8;
 
-export default async function Product({
-  params,
-  searchParams,
-}: {
+interface Props {
   params: Promise<{ page?: string }>;
   searchParams: Promise<{ keyword?: string; "keyword-admin"?: string }>;
-}) {
+}
+
+export default async function Product({ params, searchParams }: Props) {
   const session = await auth();
   if (!session || !session.user) redirect("/dashboard");
 

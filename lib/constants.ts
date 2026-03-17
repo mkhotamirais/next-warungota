@@ -1,4 +1,6 @@
-// const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV === "production";
+
+export const baseUrl = isProd ? process.env.NEXT_PUBLIC_BASE_URL_PROD! : process.env.NEXT_PUBLIC_BASE_URL!;
 
 export const ytUrl = "https://www.googleapis.com/youtube/v3/channels";
 export const googleApiKey = process.env.GOOGLE_API_KEY as string;

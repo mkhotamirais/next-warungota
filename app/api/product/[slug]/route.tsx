@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { productSchema } from "@/lib/schemas/product";
+import { generateSlug } from "@/lib/utils";
 import { del, put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
@@ -86,7 +87,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
         name,
         price: Number(price),
         stock: Number(stock),
-        slug,
+        slug: generateSlug(name),
         description,
         imageUrl: imageUrlUpdate,
         categoryId,

@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 export default function Login() {
   return (
     <div>
-      <h1 className="h1 text-center">Login</h1>
+      <h1 className="h1 text-center mb-8">Login</h1>
       <LoginGoogle />
       <Separator className="my-6" />
       <LoginForm />

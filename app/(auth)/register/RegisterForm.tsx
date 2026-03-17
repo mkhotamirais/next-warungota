@@ -93,6 +93,7 @@ export default function RegisterForm() {
                   type={showPass ? "text" : "password"}
                   placeholder="Enter password"
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 <InputGroupAddon align="inline-end">
                   <Button
@@ -123,6 +124,7 @@ export default function RegisterForm() {
                   type={showConfPass ? "text" : "password"}
                   placeholder="Enter password"
                   aria-invalid={fieldState.invalid}
+                  autoComplete="off"
                 />
                 <InputGroupAddon align="inline-end">
                   <Button

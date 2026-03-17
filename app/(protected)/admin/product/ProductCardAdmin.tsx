@@ -23,7 +23,7 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
   return (
     <div className="flex justify-between mb-2 items-center w-full border border-gray-300 bg-white rounded">
       <div className="flex gap-2 w-full p-1 items-center">
-        <Link href={`/product-detail/${product.slug}`} className="size-12 flex items-center justify-center">
+        <Link href={`/products/detail/${product.slug}`} className="size-12 flex items-center justify-center">
           {product?.imageUrl ? (
             <Image
               src={product?.imageUrl || "/images/logo-warungota.png"}
@@ -37,7 +37,7 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
           )}
         </Link>
         <div className="flex flex-col gap-1">
-          <Link href={`/product-detail/${product.slug}`} className="hover:underline">
+          <Link href={`/products/detail/${product.slug}`} className="hover:underline">
             <h3 className="first-letter:capitalize leading-none">{smartTrim(product.name, 45)}</h3>
           </Link>
           <p className="font-semibold">Rp{formatRupiah(product.price)}</p>
@@ -59,7 +59,7 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
           <DropdownMenuItem asChild>
             <Link href={`/admin/product/edit-product/${product.slug}`}>Edit</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild variant="destructive">
+          <DropdownMenuItem asChild>
             <Delete product={product} setOpen={setOpen} />
           </DropdownMenuItem>
         </DropdownMenuContent>

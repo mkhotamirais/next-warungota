@@ -1,36 +1,45 @@
-// import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { CredentialsSignin, type NextAuthConfig } from "next-auth";
 import prisma from "./lib/prisma";
 import { compareSync } from "bcrypt-ts";
+import { baseUrl } from "./lib/constants";
 
 class CustomAuthError extends CredentialsSignin {
   constructor(message: string) {
     super();
-    this.code = message; // Kita masukkan pesan kita ke properti 'code'
+    this.code = message;
   }
 }
+
+const loginLimitCache = new Map<string, { attempts: number; lockUntil: number }>();
 
 export default {
   providers: [
     Google({ allowDangerousEmailAccountLinking: true }),
-    // Google({
-    //   authorization: {
-    //     params: {
-    //       prompt: "consent",
-    //       access_type: "offline",
-    //       response_type: "code",
-    //     },
-    //   },
-    //   allowDangerousEmailAccountLinking: true,
-    // }),
-    // GitHub({ allowDangerousEmailAccountLinking: true }),
     Credentials({
-      credentials: { email: {}, password: {} },
-      authorize: async (credentials) => {
+      credentials: { email: {}, password: {}, confirm_username: {} },
+      authorize: async (credentials, req) => {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
+        const confirm_username = credentials?.confirm_username as string | undefined;
+
+        // Ambil IP dari header (Vercel/Next.js standar)
+        const ip = (req.headers.get("x-forwarded-for") as string) || "unknown";
+        const now = Date.now();
+
+        // 1. HONEYPOT CHECK
+        if (confirm_username) {
+          throw new CustomAuthError("Invalid credentials");
+        }
+
+        // 2. RATE LIMIT CHECK
+        const status = loginLimitCache.get(ip);
+        if (status && status.lockUntil > now) {
+          const secondsLeft = Math.ceil((status.lockUntil - now) / 1000);
+          // Kita kirim kode error khusus yang nanti di-parse di frontend
+          throw new CustomAuthError(`LOCKED:${secondsLeft}`);
+        }
 
         if (!email || !password) return null;
         const normalizedEmail = email.toLowerCase();
@@ -44,27 +53,53 @@ export default {
         }
 
         const passwordMatch = compareSync(password, user.password);
-        if (!passwordMatch) return null;
+        if (!passwordMatch) {
+          const currentAttempts = (status?.attempts || 0) + 1;
 
+          if (currentAttempts >= 3) {
+            const lockDuration = 1 * 60 * 1000; // 15 menit
+            loginLimitCache.set(ip, { attempts: currentAttempts, lockUntil: now + lockDuration });
+            throw new CustomAuthError(`LOCKED:${lockDuration / 1000}`);
+          }
+
+          loginLimitCache.set(ip, { attempts: currentAttempts, lockUntil: 0 });
+          // Mengirim pesan sisa percobaan
+          throw new CustomAuthError(`Invalid email or password.`);
+        }
+
+        if (user.emailVerified === null || !user.emailVerified) {
+          try {
+            await fetch(`${baseUrl}/api/emails/send-email-verification`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, userId: user.id }),
+            });
+          } catch (error) {
+            console.error("Gagal kirim email verifikasi:", error);
+          }
+          // throw new CustomAuthError("Please verify your email. We've sent a new link.");
+        }
+
+        // LOGIN SUKSES
+        loginLimitCache.delete(ip);
         return user;
       },
     }),
   ],
   pages: { signIn: "/login" },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, account, user, trigger }) {
       if (user) {
-        console.log(user);
-        // if (account?.provider !== "credentials" && user.emailVerified === null) {
-        //   const updatedUser = await prisma.user.update({
-        //     where: { id: user.id as string },
-        //     data: { emailVerified: new Date() },
-        //     select: { emailVerified: true, role: true, phone: true }, // Ambil data yang diperlukan
-        //   });
+        if (account?.provider !== "credentials" && user.emailVerified === null) {
+          const updatedUser = await prisma.user.update({
+            where: { id: user.id as string },
+            data: { emailVerified: new Date() },
+            select: { emailVerified: true, role: true, phone: true },
+          });
 
-        //   user.emailVerified = updatedUser.emailVerified;
-        //   user.role = updatedUser.role;
-        // }
+          user.emailVerified = updatedUser.emailVerified;
+          user.role = updatedUser.role;
+        }
 
         token.id = user.id;
         token.name = user.name;
@@ -72,7 +107,7 @@ export default {
         token.role = user.role;
         token.phone = user.phone;
         token.emailVerified = user.emailVerified;
-        // token.pendingEmail = user.pendingEmail;
+        token.pendingEmail = user.pendingEmail;
         return token;
       }
 
@@ -85,7 +120,7 @@ export default {
           token.role = latestUser.role;
           token.phone = latestUser.phone;
           token.emailVerified = latestUser.emailVerified;
-          //   token.pendingEmail = latestUser.pendingEmail;
+          token.pendingEmail = latestUser.pendingEmail;
         }
       }
 
@@ -99,7 +134,7 @@ export default {
       session.user.role = dbUser?.role;
       session.user.phone = dbUser?.phone;
       session.user.emailVerified = dbUser?.emailVerified as Date | null;
-      //   session.user.pendingEmail = dbUser?.pendingEmail;
+      session.user.pendingEmail = dbUser?.pendingEmail;
       return session;
     },
     // async signIn({ user, account }) {

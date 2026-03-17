@@ -32,9 +32,7 @@ model User {
   role                         Role    @default(USER)
   phone                        String?
   emailChangeVerificationToken String? @unique
-
-  // sessions      Session[]
-  // Authenticator Authenticator[]
+  pendingEmail                 String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

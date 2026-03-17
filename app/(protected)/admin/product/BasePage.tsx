@@ -2,6 +2,7 @@
 
 import { useProduct } from "@/hooks/tanstack/useProduct";
 import List from "./List";
+import Load from "@/components/fallbacks/Load";
 
 interface Props {
   page: number;
@@ -17,7 +18,7 @@ export default function BasePage({ page, limit, keyword, keywordAdmin }: Props) 
   const { data: data2 } = useProduct({ sortData: "name_asc" }) || {};
   const { products: allProducts } = data2 || {};
 
-  if (isLoading) return <h2>Loading...</h2>;
+  if (isLoading) return <Load />;
 
   return (
     <List
