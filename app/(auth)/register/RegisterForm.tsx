@@ -58,6 +58,7 @@ export default function RegisterForm() {
                 aria-invalid={fieldState.invalid}
                 placeholder="Your name"
                 autoComplete="off"
+                autoFocus
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>

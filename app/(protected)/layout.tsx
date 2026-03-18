@@ -1,5 +1,6 @@
 import AuthProvider from "@/components/providers/AuthProvider";
 import AsideMenuDesktop from "./AsideMenuDesktop";
+import EmailVerificationBanner from "./EmailVerificationBanner";
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,7 +10,10 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
           <div className="hidden md:block md:w-1/4 sticky top-16">
             <AsideMenuDesktop />
           </div>
-          <div className="w-full md:w-3/4">{children}</div>
+          <div className="w-full md:w-3/4">
+            <EmailVerificationBanner />
+            {children}
+          </div>
         </div>
       </div>
     </AuthProvider>

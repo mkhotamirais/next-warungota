@@ -100,7 +100,7 @@ export default function LoginForm() {
 
     setAlert({ type: "success", message: "Login successful! Redirecting..." });
     router.refresh();
-    router.push("/dashboard");
+    router.push("/admin");
   };
 
   return (
@@ -130,6 +130,7 @@ export default function LoginForm() {
                   placeholder="example@email.com"
                   autoComplete="off"
                   disabled={pending || secondsLeft > 0}
+                  autoFocus
                 />
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>

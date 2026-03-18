@@ -37,16 +37,15 @@ export async function proxy(request: NextRequest) {
       if (role === "USER") return NextResponse.redirect(new URL("/user", request.url));
     }
 
-    if (!isVerifiedEmail && (isUserRoute || isAdminRoute) && !isUserSaveRoutes) {
-      // return NextResponse.redirect(new URL("/verify-email-request", request.url));
-
+    if (!isVerifiedEmail) {
       const originalPath = request.nextUrl.pathname + request.nextUrl.search;
 
-      const verifyUrl = new URL("/verify-email-request", request.url);
-      // Sisipkan path asli ke dalam query param
-      verifyUrl.searchParams.set("callbackUrl", originalPath);
+      if ((isUserRoute || isAdminRoute) && !isUserSaveRoutes) {
+        const verifyUrl = new URL("/verify-email-request", request.url);
+        verifyUrl.searchParams.set("callbackUrl", originalPath);
 
-      return NextResponse.redirect(verifyUrl);
+        return NextResponse.redirect(verifyUrl);
+      }
     }
 
     if (isVerifiedEmail && (isVerifyRoute || isVerifyPendingRoute)) {

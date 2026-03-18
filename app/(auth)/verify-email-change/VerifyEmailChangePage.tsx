@@ -36,9 +36,10 @@ export default function VerifyEmailChangePage() {
         const res = await fetch("/api/emails/verify-email-change", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token: token, userId: userId }),
+          body: JSON.stringify({ token: token, userId: userId, callbackUrl }),
         });
         const result = await res.json();
+
         // const result = await verifyEmailChange({ token, userId });
 
         if (result.error) {

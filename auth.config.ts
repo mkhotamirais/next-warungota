@@ -72,7 +72,7 @@ export default {
             await fetch(`${baseUrl}/api/emails/send-email-verification`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email, userId: user.id }),
+              body: JSON.stringify({ email, userId: user.id, callbackUrl: "/user" }),
             });
           } catch (error) {
             console.error("Gagal kirim email verifikasi:", error);

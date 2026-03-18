@@ -4,9 +4,10 @@ import { redirect } from "next/navigation";
 
 export async function POST(req: Request) {
   const session = await auth();
+  const body = await req.json().catch(() => null);
 
   const { searchParams } = new URL(req.url);
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = body.callbackUrl || searchParams.get("callbackUrl") || "/";
 
   if (!session || !session.user || !session.user.email)
     return Response.json({ error: "Unauthorized" }, { status: 401 });
