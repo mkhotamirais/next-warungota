@@ -2,7 +2,7 @@ import { formatRupiah, smartTrim } from "@/lib/utils";
 import { ProductProps } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
-// import AddToCartFromProductList from "./AddToCartFromProductList";
+import AddToCartFromProductList from "../AddToCartFromProductList";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
   return (
@@ -32,7 +32,9 @@ export default function ProductCard({ item }: { item: ProductProps }) {
             {/* {formatRupiah(minPrice)}{" "} */}
             {/* {maxPrice > minPrice && maxPrice > 0 ? <span>- {formatRupiah(maxPrice)}</span> : null} */}
           </p>
-          <div>{/* <AddToCartFromProductList productId={item.id} productName={item.name} /> */}</div>
+          <div>
+            <AddToCartFromProductList productId={item.id} productName={item.name} />
+          </div>
         </div>
       </div>
     </div>

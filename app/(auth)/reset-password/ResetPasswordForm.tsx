@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,13 +15,21 @@ import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 type inferSchema = z.infer<typeof ResetPasswordSchema>;
 
-export default function ResetPasswordForm({ token, email }: { token: string; email: string }) {
+export default function ResetPasswordForm() {
   const form = useForm<inferSchema>({
     resolver: zodResolver(ResetPasswordSchema),
     defaultValues: { newPassword: "", confirmNewPassword: "" },
   });
   const pending = form.formState.isSubmitting;
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const token = searchParams.get("token");
+  const email = searchParams.get("email");
+
+  if (!token || !email) {
+    notFound();
+  }
 
   const [showPass, setShowPass] = useState(false);
   const [showConfPass, setShowConfPass] = useState(false);

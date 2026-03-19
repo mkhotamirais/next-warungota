@@ -8,7 +8,10 @@ import { z } from "zod";
 export async function GET(req: NextRequest) {
   try {
     const session = await auth();
-    if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
+
+    if (!session?.user?.id) {
+      return Response.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    }
 
     const { searchParams } = new URL(req.url);
     const limit = parseInt(searchParams.get("limit") || "8");
@@ -27,10 +30,10 @@ export async function GET(req: NextRequest) {
 
     const totalPages = Math.ceil(totalAddressCount / limit);
 
-    return Response.json({ addresses, totalPages, totalAddressCount });
+    return Response.json({ addresses, totalPages, totalAddressCount }, { status: 200 });
   } catch (error) {
     console.log(error);
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    return Response.json({ ok: false, message: "Internal Server Error" }, { status: 500 });
   }
 }
 

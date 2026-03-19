@@ -195,4 +195,7 @@ export const duitkuPaymentMethods = [
   { id: "AT", category: "paylater", name: "Atome", expiryPeriod: 60, desc: "Cicilan Atome" },
 ] as const;
 
-export const limit = 6;
+export const limits = {
+  product: 1,
+  address: 1,
+};

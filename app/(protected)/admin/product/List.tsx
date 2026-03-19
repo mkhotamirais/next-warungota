@@ -55,7 +55,7 @@ export default function List({ products, page, limit, totalPages, totalProductsC
         )}
       </div>
       {totalProductsCount > limit ? (
-        <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/product/page" />
+        <Pagination totalPages={totalPages} currentPage={page} path="/admin/product/page" />
       ) : null}
     </>
   );

@@ -10,3 +10,7 @@ export type SingleProductProps = Prisma.ProductGetPayload<{
     User: { select: { name: true } };
   };
 }> & { quantity?: number };
+
+export type CartItemProps = Prisma.CartItemGetPayload<{
+  include: { Product: true };
+}> & { quantity: number };

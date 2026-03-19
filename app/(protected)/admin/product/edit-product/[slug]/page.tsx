@@ -1,6 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import EditProductWrapper from "./EditProductWrapper";
+import { baseUrl } from "@/lib/constants";
+import { ProductProps } from "@/types/product";
+
+export const generateStaticParams = async () => {
+  const { products } = await fetch(`${baseUrl}/api/product`, { cache: "no-cache" }).then((res) => res.json());
+  return products.map((product: ProductProps) => ({ slug: product.slug }));
+};
 
 export default async function EditProduct() {
   return (
