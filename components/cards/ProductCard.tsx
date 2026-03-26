@@ -5,6 +5,7 @@ import Link from "next/link";
 import AddToCartFromProductList from "../AddToCartFromProductList";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
+  console.log(item);
   return (
     <div key={item.id} className="rounded-md overflow-hidden bg-white shadow-xs">
       <Link href={`/products/detail/${item.slug}`} className="w-full h-36 block">
@@ -16,6 +17,8 @@ export default function ProductCard({ item }: { item: ProductProps }) {
           className="w-full h-full rounded-t object-cover object-center"
         />
       </Link>
+
+      <p>a</p>
       <div className="p-2 sm:px-3">
         <Link href={`/products/detail/${item.slug}`} className="hover:underline">
           <h3 className="text-[13px] sm:text-sm capitalize h-10 text-gray-700 leading-snug">

@@ -43,6 +43,7 @@ export default function EditProductForm({ productCategories, product }: EditProd
 
   const [imagePreview, setImagePreview] = useState<string | null>(product?.imageUrl || null);
   const [removeImage, setRemoveImage] = useState(false);
+  console.log(imagePreview);
 
   const { updateProduct, isUpdating: pending } = useProduct();
 

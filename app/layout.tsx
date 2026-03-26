@@ -7,7 +7,7 @@ import { Toaster } from "sonner";
 import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
 import ClientProvider from "@/components/providers/ClientProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import MainProvider from "@/components/providers/MainProvider";
+// import MainProvider from "@/components/providers/MainProvider";
 
 const roboto = Roboto({
   variable: "--font-roboto",

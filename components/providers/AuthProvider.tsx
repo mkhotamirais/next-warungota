@@ -23,11 +23,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     <div className="container py-3">
       <div className="flex items-start">
         {!isCartRoute ? (
-          <div className="hidden md:block md:w-1/4 sticky top-16">
+          <div className="hidden md:block w-full md:w-1/4 sticky top-16">
             <AsideMenuDesktop />
           </div>
         ) : null}
-        <div className={`w-full ${isCartRoute ? "w-full" : "md:w-2/4"}`}>
+        <div className={`w-full ${isCartRoute ? "w-full" : "w-full md:w-3/4"}`}>
           <EmailVerificationBanner />
           {children}
         </div>

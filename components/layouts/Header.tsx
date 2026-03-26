@@ -6,7 +6,7 @@ import { menu as m } from "@/lib/constants";
 import AuthBtn from "./AuthBtn";
 import NavMobilePushBtn from "./NavMobilePushBtn";
 import NavMobilePush from "./NavMobilePush";
-import CartBtn from "../CartBtn";
+// import CartBtn from "../CartBtn";
 
 export default function Header() {
   return (
@@ -16,7 +16,7 @@ export default function Header() {
         <div className="flex-1 flex gap-2 items-cente justify-end md:justify-between">
           <NavDesktop menu={m.main} />
           <div className="flex gap-2 items-center">
-            <CartBtn />
+            {/* <CartBtn /> */}
             <AuthBtn />
             <NavMobilePushBtn />
           </div>

@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { Prisma } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
 import { productSchema } from "@/lib/schemas/product";
 import { generateSlug } from "@/lib/utils";
@@ -107,35 +108,52 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ slug:
   try {
     const { slug } = await params;
     const session = await auth();
-    if (!session || !session.user || session.user.role !== "ADMIN") {
+
+    // 1. Cek Autorisasi
+    if (session?.user?.role !== "ADMIN") {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // 2. Cari Produk
     const product = await prisma.product.findUnique({
       where: { slug },
       select: { id: true, imageUrl: true, name: true },
     });
 
-    if (!product) {
-      return Response.json({ error: "Product not found" }, { status: 404 });
-    }
+    if (!product) return Response.json({ ok: false, message: "Product not found" }, { status: 404 });
 
+    // 3. Hapus Gambar di Vercel Blob (Silent fail jika sudah tidak ada)
     if (product.imageUrl) {
       try {
         await del(product.imageUrl);
       } catch (blobError) {
-        console.log("Blob deletion failed:", blobError);
+        // Tetap lanjut meskipun blob tidak ditemukan/gagal dihapus
+        console.warn("Blob cleanup skipped:", blobError);
       }
     }
 
+    // 4. Hapus di Database
+    // Jika sudah migrate 'onDelete: Cascade', CartItem akan otomatis hilang
     await prisma.product.delete({
       where: { id: product.id },
     });
 
     revalidateProduct();
-    return Response.json({ message: `Product "${product.name}" deleted successfully` });
+    return Response.json({ ok: true, message: `Product "${product.name}" deleted successfully` });
   } catch (error) {
-    console.log(error);
-    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+    // Jika error karena OrderItem (onDelete: Restrict)
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2003") {
+        return Response.json(
+          {
+            ok: false,
+            message: "Produk tidak bisa dihapus karena sudah pernah dipesan oleh pelanggan.",
+          },
+          { status: 400 },
+        );
+      }
+    }
+
+    return Response.json({ ok: false, message: "Internal Server Error" }, { status: 500 });
   }
 }
