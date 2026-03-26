@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { useCart } from "@/hooks/zustand/useCart";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
+import { baseUrl } from "@/lib/constants";
 
 interface AddToCartFromProductListProps {
   productId: string;
@@ -23,7 +24,7 @@ export default function AddToCartFromProductList({ productId, productName }: Add
     if (added) return;
     setPending(productId);
 
-    const res = await fetch(`/api/cart`, {
+    const res = await fetch(`${baseUrl}/api/cart`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId, quantity: 1, actionType: "INCREMENT" }),

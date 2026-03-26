@@ -7,9 +7,8 @@ import { revalidatePath } from "next/cache";
 export async function GET() {
   try {
     const session = await auth();
-    if (!session?.user || session.user.role !== "USER") {
+    if (!session?.user || session.user.role !== "USER")
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const userId = session.user.id;
     const cart = await prisma.cart.findUnique({

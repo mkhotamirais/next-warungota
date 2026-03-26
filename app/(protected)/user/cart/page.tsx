@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function Cart() {
   return (
-    <div className="max-w-xl px-2">
+    <div className="max-w-xl px-2 mx-auto">
       <h1 className="h1 mb-4">Cart</h1>
       <Suspense fallback={<LoadCart />}>
         {/* <CartWrapper /> */}
