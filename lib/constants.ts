@@ -196,6 +196,6 @@ export const duitkuPaymentMethods = [
 ] as const;
 
 export const limits = {
-  product: 8,
-  address: 1,
+  product: 16,
+  address: 8,
 };

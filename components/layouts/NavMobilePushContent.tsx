@@ -1,16 +1,15 @@
 "use client";
 
-import { useMobileMenu } from "@/hooks/zustand/useMobileMenu";
-import React from "react";
-import { menu as m } from "@/lib/constants";
 import { Button } from "../ui/button";
 import Link from "next/link";
 
-const menu = m.main;
+interface Props {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  menu: { label: string; url: string }[];
+}
 
-export default function NavMobilePush() {
-  const { open, setOpen } = useMobileMenu();
-
+export default function NavMobilePushContent({ open, setOpen, menu }: Props) {
   return (
     <div
       onClick={(e) => e.stopPropagation()}

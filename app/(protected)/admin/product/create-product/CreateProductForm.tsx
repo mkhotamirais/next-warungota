@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner";
 import TiptapEditor from "@/components/ui/custom/tiptap/TiptapEditor";
 import { useProduct } from "@/hooks/tanstack/useProduct";
 import MultiInput from "@/components/ui/custom/MultiInput";
+import Link from "next/link";
 
 type inferSchema = z.infer<typeof productSchema>;
 
@@ -171,6 +172,18 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
           )}
         />
 
+        <Controller
+          name="tags"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="mt-4">
+              <FieldLabel htmlFor="tags">Tags / Keywords</FieldLabel>
+              <MultiInput value={field.value} onChange={field.onChange} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
         <div className="flex gap-2 items-center">
           <Controller
             name="price"
@@ -208,40 +221,37 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
           )}
         />
 
-        <Controller
-          name="categoryId"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="categoryId">Category</FieldLabel>
-              <Select value={field.value || defaultCategory?.id || ""} onValueChange={field.onChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Pilih category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {productCategoriesOptions?.map((item) => (
-                    <SelectItem key={item.value} value={item.value}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>{" "}
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
-          name="tags"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="mt-4">
-              <FieldLabel htmlFor="tags">Tags</FieldLabel>
-              <MultiInput value={field.value} onChange={field.onChange} />
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
+        {productCategoriesOptions?.length ? (
+          <Controller
+            name="categoryId"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="categoryId">Category</FieldLabel>
+                <Select value={field.value || defaultCategory?.id || ""} onValueChange={field.onChange}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Pilih category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {productCategoriesOptions?.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>{" "}
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        ) : (
+          <p>
+            Kategori produk belum ada{" "}
+            <Link href="/admin/product-category" className="text-primary font-bold hover:underline">
+              buat kategori produk
+            </Link>
+          </p>
+        )}
       </FieldGroup>
 
       <Button type="submit" className="mt-4" disabled={pending}>
