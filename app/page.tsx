@@ -5,7 +5,7 @@ import HomeProductCategoryList from "@/components/home/HomeProductCategoryList";
 import HomeProductList from "@/components/home/HomeProductList";
 
 export default async function Home() {
-  const { products } = await getProducts({ limit: 12 });
+  const { products } = await getProducts({ limit: 24 });
   const categories = await getProductCategories();
 
   return (

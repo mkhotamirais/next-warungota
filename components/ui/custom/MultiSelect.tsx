@@ -150,7 +150,7 @@ interface MultiSelectProps
    * If true, renders the multi-select component as a child of another component.
    * Optional, defaults to false.
    */
-  asChild?: boolean;
+  // asChild?: boolean;
 
   /**
    * Additional class names to apply custom styles to the multi-select component.
@@ -317,7 +317,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
       animationConfig,
       maxCount = 3,
       modalPopover = false,
-      asChild = false,
+      // asChild = false,
       className,
       hideSelectAll = false,
       searchable = true,
@@ -743,7 +743,8 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                   .join(", ")}`}
           </div>
 
-          <PopoverTrigger asChild>
+          {/* <PopoverTrigger asChild> */}
+          <PopoverTrigger>
             <Button
               ref={buttonRef}
               {...props}
@@ -772,7 +773,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
             >
               {selectedValues.length > 0 ? (
                 <div className="flex justify-between items-center w-full">
-                  <div
+                  {/* <div
                     className={cn(
                       "flex items-center gap-1",
                       singleLine ? "overflow-x-auto multiselect-singleline-scroll" : "flex-wrap",
@@ -785,6 +786,13 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
                           }
                         : {}
                     }
+                  > */}
+                  <div
+                    className={cn(
+                      "flex items-center gap-1",
+                      singleLine ? "overflow-x-auto multiselect-singleline-scroll pb-1" : "flex-wrap",
+                      responsiveSettings.compactMode && "gap-0.5",
+                    )}
                   >
                     {selectedValues
                       .slice(0, responsiveSettings.maxCount)
